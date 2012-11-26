@@ -7,6 +7,7 @@ tagline: John McCutchan
 
 # Dart libraries:
 
+
 * [vector_math](http://github.com/johnmccutchan/DartVectorMath)
 * [simple_audio](http://github.com/johnmccutchan/simple_audio)
 * [spectre](http://github.com/johnmccutchan/spectre)
@@ -16,16 +17,19 @@ tagline: John McCutchan
 
 # C++ libraries:
 
+
 * [pal](http://github.com/johnmccutchan/pal)
 * [optics](http://github.com/johnmccutchan/optics)
-* [em])(http://github.com/johnmccutchan/em)
+* [em](http://github.com/johnmccutchan/em)
 
 
 # Native Client:
 
+
 * [NaCl Acceleration Modules](http://github.com/johnmccutchan/NaClAMBase)
 
 # Blogs:
+
 
 * [johnmccutchan.com](http://www.johnmccutchan.com)
 * [dartgamedevs.org](http://www.dartgamedevs.org)
