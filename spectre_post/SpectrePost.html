@@ -1,0 +1,522 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>SpectrePost class / spectre_post Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre_post" data-type="SpectrePost">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre_post.html">spectre_post</a> &rsaquo; <a href="../spectre_post/SpectrePost.html">SpectrePost</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>SpectrePost</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class SpectrePost {
+ static GraphicsDevice _device;
+ static Map&lt;String, SpectrePostPass&gt; _passes;
+ static RasterizerState _rasterizerState;
+ static DepthState _depthState;
+ static BlendState _blendState;
+ static SingleArrayMesh _arrayMesh;
+ static VertexShader _vertexShader;
+
+ static void init(GraphicsDevice device) {
+   if (_device == null) {
+     _device = device;
+     _rasterizerState = new RasterizerState('SpectrePost.RS', _device);
+     _rasterizerState.cullMode = CullMode.None;
+     _depthState = new DepthState('SpectrePost.DS', _device);
+     _blendState = new BlendState('SpectrePost.PS', _device);
+     _blendState.enabled = true;
+     _blendState.colorSourceBlend = Blend.SourceColor;
+     _blendState.colorDestinationBlend = Blend.InverseSourceAlpha;
+     _blendState.alphaSourceBlend = Blend.SourceAlpha;
+     _blendState.alphaDestinationBlend = Blend.InverseDestinationAlpha;
+     _passes = new Map&lt;String, SpectrePostPass&gt;();
+     _arrayMesh = new SingleArrayMesh('SpectrePost.Mesh', _device);
+     const int numFloats = 6 * (3+2);
+     Float32List verts = new Float32List(6*(3+2));
+     int index = 0;
+     num depth = -1.0;
+     // Triangle 1
+     {
+       // Vertex 1
+       verts[index++] = -1.0;
+       verts[index++] = -1.0;
+       verts[index++] = depth;
+       verts[index++] = 0.0;
+       verts[index++] = 0.0;
+
+       // Vertex 2
+       verts[index++] = 1.0;
+       verts[index++] = -1.0;
+       verts[index++] = depth;
+       verts[index++] = 1.0;
+       verts[index++] = 0.0;
+
+       // Vertex 3
+       verts[index++] = 1.0;
+       verts[index++] = 1.0;
+       verts[index++] = depth;
+       verts[index++] = 1.0;
+       verts[index++] = 1.0;
+     }
+     // Triangle 2
+     {
+       // Vertex 1
+       verts[index++] = -1.0;
+       verts[index++] = -1.0;
+       verts[index++] = depth;
+       verts[index++] = 0.0;
+       verts[index++] = 0.0;
+
+       // Vertex 2
+       verts[index++] = 1.0;
+       verts[index++] = 1.0;
+       verts[index++] = depth;
+       verts[index++] = 1.0;
+       verts[index++] = 1.0;
+
+       // Vertex 3
+       verts[index++] = -1.0;
+       verts[index++] = 1.0;
+       verts[index++] = depth;
+       verts[index++] = 0.0;
+       verts[index++] = 1.0;
+     }
+     assert(index == numFloats);
+     _arrayMesh.vertexArray.uploadData(verts, UsagePattern.StaticDraw);
+     _arrayMesh.attributes['vPosition'] = new SpectreMeshAttribute('vPosition',
+                                                                   'float',
+                                                                   3, 0, 20,
+                                                                   false);
+     _arrayMesh.attributes['vTexCoord'] = new SpectreMeshAttribute('vTexCoord',
+                                                                   'float',
+                                                                   2, 12, 20,
+                                                                   false);
+     _vertexShader = new VertexShader('SpectrePost.VS', _device);
+     _vertexShader.source = '''
+precision highp float;
+
+attribute Vector3 vPosition;
+attribute Vector2 vTexCoord;
+
+varying Vector2 samplePoint;
+
+uniform Vector2 texScale;
+
+void main() {
+   Vector4 vPosition4 = Vector4(vPosition.x, vPosition.y, vPosition.z, 1.0);
+   gl_Position = vPosition4;
+   samplePoint = vTexCoord * texScale;
+}
+''';
+     addFragmentPass('blit', '''
+precision mediump float;
+
+varying Vector2 samplePoint;
+uniform sampler2D blitSource;
+
+void main() {
+   gl_FragColor = texture2D(blitSource, samplePoint);
+}''');
+     addFragmentPass('testblit', '''
+precision mediump float;
+
+varying Vector2 samplePoint;
+uniform sampler2D blitSource;
+
+void main() {
+   gl_FragColor = Vector4(1.0, 0.5, 0.5, 1.0);
+}''');
+     addFragmentPass('blur', '''
+         precision mediump float;
+
+         const float blurSize = 1.0/512.0;
+
+         varying Vector2 samplePoint;
+         uniform sampler2D RTScene;
+
+         void main() {
+           Vector2 vTexCoord = samplePoint;
+  Vector4 sum = texture2D(RTScene, Vector2(vTexCoord.x - 4.0*blurSize, vTexCoord.y)) * 0.05;
+  sum += texture2D(RTScene, Vector2(vTexCoord.x - 3.0*blurSize, vTexCoord.y)) * 0.09;
+  sum += texture2D(RTScene, Vector2(vTexCoord.x - 2.0*blurSize, vTexCoord.y)) * 0.12;
+  sum += texture2D(RTScene, Vector2(vTexCoord.x - blurSize, vTexCoord.y)) * 0.15;
+  sum += texture2D(RTScene, Vector2(vTexCoord.x, vTexCoord.y)) * 0.16;
+  sum += texture2D(RTScene, Vector2(vTexCoord.x + blurSize, vTexCoord.y)) * 0.15;
+  sum += texture2D(RTScene, Vector2(vTexCoord.x + 2.0*blurSize, vTexCoord.y)) * 0.12;
+  sum += texture2D(RTScene, Vector2(vTexCoord.x + 3.0*blurSize, vTexCoord.y)) * 0.09;
+  sum += texture2D(RTScene, Vector2(vTexCoord.x + 4.0*blurSize, vTexCoord.y)) * 0.05;
+
+  gl_FragColor = sum;
+
+     }''');
+   }
+ }
+
+ static void cleanup() {
+   _passes.forEach((k,v) {
+     spectreLog.Info('Cleaning up spectre post process $k');
+     v.cleanup(_device);
+   });
+   _passes.clear();
+   _arrayMesh.dispose();
+   _vertexShader.dispose();
+   _rasterizerState.dispose();
+   _blendState.dispose();
+   _depthState.dispose();
+ }
+
+ static void addPass(String name, SpectrePostPass pass) {
+   if (_passes[name] != null) {
+     spectreLog.Error('Attempt to add pass that already exists- $name');
+     return;
+   }
+   _passes[name] = pass;
+ }
+
+ static void addFragmentPass(String name, String fragmentSource) {
+   if (_passes[name] != null) {
+     spectreLog.Error('Attempt to add pass that already eists- $name');
+     return;
+   }
+   FragmentShader fragmentShader;
+   fragmentShader = new FragmentShader('SpectrePost.FS[$name]', _device);
+   fragmentShader.source = fragmentSource;
+   ShaderProgram passProgram;
+   passProgram = new ShaderProgram('SpectrePost.Program[$name]', _device);
+   passProgram.vertexShader = _vertexShader;
+   passProgram.fragmentShader = fragmentShader;
+   passProgram.link();
+   assert(passProgram.linked == true);
+   SpectrePostFragment spf;
+   InputLayout inputLayout;
+   inputLayout = new InputLayout('SpectrePost.IL[$name]', _device);
+   inputLayout.shaderProgram = passProgram;
+   inputLayout.mesh = _arrayMesh;
+   spf = new SpectrePostFragment(_device, name, passProgram, inputLayout);
+   _passes[name] = spf;
+ }
+
+ static void removePass(String name) {
+   SpectrePostPass pass = _passes[name];
+   if (pass != null) {
+     _passes.remove(name);
+     pass.cleanup(_device);
+   }
+ }
+
+ static void pass(String name, RenderTarget renderTargetHandle, Map&lt;String, dynamic&gt; arguments) {
+   SpectrePostPass pass = _passes[name];
+   if (pass == null) {
+     spectreLog.Error('Post process $name does not exist. Cannot do pass.');
+     return;
+   }
+   pass.setup(_device, arguments);
+   _device.context.setVertexBuffers(0, [_arrayMesh.vertexArray]);
+   _device.context.setIndexBuffer(null);
+   _device.context.setRasterizerState(_rasterizerState);
+   _device.context.setDepthState(_depthState);
+   _device.context.setBlendState(_blendState);
+   // FIXME: Make the following dynamic:
+   //_device.context.setUniform2f('texScale', 0.833, 0.46875);
+   _device.context.setConstant('texScale', [1.0, 1.0]);
+   _device.context.setPrimitiveTopology(
+       GraphicsContext.PrimitiveTopologyTriangles);
+   _device.context.setRenderTarget(renderTargetHandle);
+   _device.context.draw(6, 0);
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="init">
+<button class="show-code">Code</button>
+void <strong>init</strong>(<a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#init"
+              title="Permalink to SpectrePost.init">#</a></h4>
+<div class="doc">
+<pre class="source">
+static void init(GraphicsDevice device) {
+ if (_device == null) {
+   _device = device;
+   _rasterizerState = new RasterizerState('SpectrePost.RS', _device);
+   _rasterizerState.cullMode = CullMode.None;
+   _depthState = new DepthState('SpectrePost.DS', _device);
+   _blendState = new BlendState('SpectrePost.PS', _device);
+   _blendState.enabled = true;
+   _blendState.colorSourceBlend = Blend.SourceColor;
+   _blendState.colorDestinationBlend = Blend.InverseSourceAlpha;
+   _blendState.alphaSourceBlend = Blend.SourceAlpha;
+   _blendState.alphaDestinationBlend = Blend.InverseDestinationAlpha;
+   _passes = new Map&lt;String, SpectrePostPass&gt;();
+   _arrayMesh = new SingleArrayMesh('SpectrePost.Mesh', _device);
+   const int numFloats = 6 * (3+2);
+   Float32List verts = new Float32List(6*(3+2));
+   int index = 0;
+   num depth = -1.0;
+   // Triangle 1
+   {
+     // Vertex 1
+     verts[index++] = -1.0;
+     verts[index++] = -1.0;
+     verts[index++] = depth;
+     verts[index++] = 0.0;
+     verts[index++] = 0.0;
+
+     // Vertex 2
+     verts[index++] = 1.0;
+     verts[index++] = -1.0;
+     verts[index++] = depth;
+     verts[index++] = 1.0;
+     verts[index++] = 0.0;
+
+     // Vertex 3
+     verts[index++] = 1.0;
+     verts[index++] = 1.0;
+     verts[index++] = depth;
+     verts[index++] = 1.0;
+     verts[index++] = 1.0;
+   }
+   // Triangle 2
+   {
+     // Vertex 1
+     verts[index++] = -1.0;
+     verts[index++] = -1.0;
+     verts[index++] = depth;
+     verts[index++] = 0.0;
+     verts[index++] = 0.0;
+
+     // Vertex 2
+     verts[index++] = 1.0;
+     verts[index++] = 1.0;
+     verts[index++] = depth;
+     verts[index++] = 1.0;
+     verts[index++] = 1.0;
+
+     // Vertex 3
+     verts[index++] = -1.0;
+     verts[index++] = 1.0;
+     verts[index++] = depth;
+     verts[index++] = 0.0;
+     verts[index++] = 1.0;
+   }
+   assert(index == numFloats);
+   _arrayMesh.vertexArray.uploadData(verts, UsagePattern.StaticDraw);
+   _arrayMesh.attributes['vPosition'] = new SpectreMeshAttribute('vPosition',
+                                                                 'float',
+                                                                 3, 0, 20,
+                                                                 false);
+   _arrayMesh.attributes['vTexCoord'] = new SpectreMeshAttribute('vTexCoord',
+                                                                 'float',
+                                                                 2, 12, 20,
+                                                                 false);
+   _vertexShader = new VertexShader('SpectrePost.VS', _device);
+   _vertexShader.source = '''
+precision highp float;
+
+attribute Vector3 vPosition;
+attribute Vector2 vTexCoord;
+
+varying Vector2 samplePoint;
+
+uniform Vector2 texScale;
+
+void main() {
+ Vector4 vPosition4 = Vector4(vPosition.x, vPosition.y, vPosition.z, 1.0);
+ gl_Position = vPosition4;
+ samplePoint = vTexCoord * texScale;
+}
+''';
+   addFragmentPass('blit', '''
+precision mediump float;
+
+varying Vector2 samplePoint;
+uniform sampler2D blitSource;
+
+void main() {
+ gl_FragColor = texture2D(blitSource, samplePoint);
+}''');
+   addFragmentPass('testblit', '''
+precision mediump float;
+
+varying Vector2 samplePoint;
+uniform sampler2D blitSource;
+
+void main() {
+ gl_FragColor = Vector4(1.0, 0.5, 0.5, 1.0);
+}''');
+   addFragmentPass('blur', '''
+       precision mediump float;
+
+       const float blurSize = 1.0/512.0;
+
+       varying Vector2 samplePoint;
+       uniform sampler2D RTScene;
+
+       void main() {
+         Vector2 vTexCoord = samplePoint;
+Vector4 sum = texture2D(RTScene, Vector2(vTexCoord.x - 4.0*blurSize, vTexCoord.y)) * 0.05;
+sum += texture2D(RTScene, Vector2(vTexCoord.x - 3.0*blurSize, vTexCoord.y)) * 0.09;
+sum += texture2D(RTScene, Vector2(vTexCoord.x - 2.0*blurSize, vTexCoord.y)) * 0.12;
+sum += texture2D(RTScene, Vector2(vTexCoord.x - blurSize, vTexCoord.y)) * 0.15;
+sum += texture2D(RTScene, Vector2(vTexCoord.x, vTexCoord.y)) * 0.16;
+sum += texture2D(RTScene, Vector2(vTexCoord.x + blurSize, vTexCoord.y)) * 0.15;
+sum += texture2D(RTScene, Vector2(vTexCoord.x + 2.0*blurSize, vTexCoord.y)) * 0.12;
+sum += texture2D(RTScene, Vector2(vTexCoord.x + 3.0*blurSize, vTexCoord.y)) * 0.09;
+sum += texture2D(RTScene, Vector2(vTexCoord.x + 4.0*blurSize, vTexCoord.y)) * 0.05;
+
+gl_FragColor = sum;
+
+   }''');
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="cleanup">
+<button class="show-code">Code</button>
+void <strong>cleanup</strong>() <a class="anchor-link" href="#cleanup"
+              title="Permalink to SpectrePost.cleanup">#</a></h4>
+<div class="doc">
+<pre class="source">
+static void cleanup() {
+ _passes.forEach((k,v) {
+   spectreLog.Info('Cleaning up spectre post process $k');
+   v.cleanup(_device);
+ });
+ _passes.clear();
+ _arrayMesh.dispose();
+ _vertexShader.dispose();
+ _rasterizerState.dispose();
+ _blendState.dispose();
+ _depthState.dispose();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="addPass">
+<button class="show-code">Code</button>
+void <strong>addPass</strong>(String name, <a href="../spectre_post/SpectrePostPass.html">SpectrePostPass</a> pass) <a class="anchor-link" href="#addPass"
+              title="Permalink to SpectrePost.addPass">#</a></h4>
+<div class="doc">
+<pre class="source">
+static void addPass(String name, SpectrePostPass pass) {
+ if (_passes[name] != null) {
+   spectreLog.Error('Attempt to add pass that already exists- $name');
+   return;
+ }
+ _passes[name] = pass;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="addFragmentPass">
+<button class="show-code">Code</button>
+void <strong>addFragmentPass</strong>(String name, String fragmentSource) <a class="anchor-link" href="#addFragmentPass"
+              title="Permalink to SpectrePost.addFragmentPass">#</a></h4>
+<div class="doc">
+<pre class="source">
+static void addFragmentPass(String name, String fragmentSource) {
+ if (_passes[name] != null) {
+   spectreLog.Error('Attempt to add pass that already eists- $name');
+   return;
+ }
+ FragmentShader fragmentShader;
+ fragmentShader = new FragmentShader('SpectrePost.FS[$name]', _device);
+ fragmentShader.source = fragmentSource;
+ ShaderProgram passProgram;
+ passProgram = new ShaderProgram('SpectrePost.Program[$name]', _device);
+ passProgram.vertexShader = _vertexShader;
+ passProgram.fragmentShader = fragmentShader;
+ passProgram.link();
+ assert(passProgram.linked == true);
+ SpectrePostFragment spf;
+ InputLayout inputLayout;
+ inputLayout = new InputLayout('SpectrePost.IL[$name]', _device);
+ inputLayout.shaderProgram = passProgram;
+ inputLayout.mesh = _arrayMesh;
+ spf = new SpectrePostFragment(_device, name, passProgram, inputLayout);
+ _passes[name] = spf;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="removePass">
+<button class="show-code">Code</button>
+void <strong>removePass</strong>(String name) <a class="anchor-link" href="#removePass"
+              title="Permalink to SpectrePost.removePass">#</a></h4>
+<div class="doc">
+<pre class="source">
+static void removePass(String name) {
+ SpectrePostPass pass = _passes[name];
+ if (pass != null) {
+   _passes.remove(name);
+   pass.cleanup(_device);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="pass">
+<button class="show-code">Code</button>
+void <strong>pass</strong>(String name, <a href="../spectre/RenderTarget.html">RenderTarget</a> renderTargetHandle, Map&lt;String, dynamic&gt; arguments) <a class="anchor-link" href="#pass"
+              title="Permalink to SpectrePost.pass">#</a></h4>
+<div class="doc">
+<pre class="source">
+static void pass(String name, RenderTarget renderTargetHandle, Map&lt;String, dynamic&gt; arguments) {
+ SpectrePostPass pass = _passes[name];
+ if (pass == null) {
+   spectreLog.Error('Post process $name does not exist. Cannot do pass.');
+   return;
+ }
+ pass.setup(_device, arguments);
+ _device.context.setVertexBuffers(0, [_arrayMesh.vertexArray]);
+ _device.context.setIndexBuffer(null);
+ _device.context.setRasterizerState(_rasterizerState);
+ _device.context.setDepthState(_depthState);
+ _device.context.setBlendState(_blendState);
+ // FIXME: Make the following dynamic:
+ //_device.context.setUniform2f('texScale', 0.833, 0.46875);
+ _device.context.setConstant('texScale', [1.0, 1.0]);
+ _device.context.setPrimitiveTopology(
+     GraphicsContext.PrimitiveTopologyTriangles);
+ _device.context.setRenderTarget(renderTargetHandle);
+ _device.context.draw(6, 0);
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:33.053</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

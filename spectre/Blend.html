@@ -1,0 +1,373 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Blend class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="Blend">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/Blend.html">Blend</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>Blend</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Defines color blending factors.</p>
+<pre class="source">
+class Blend extends Enum {
+ /// Each component of the color is multiplied by (0, 0, 0, 0).
+ static const int Zero = WebGL.ZERO;
+ /// Each component of the color is multiplied by (1, 1, 1, 1).
+ static const int One = WebGL.ONE;
+ /// Each component of the color is multiplied by the source color.
+ ///
+ /// This can be represented as (Rs, Gs, Bs, As), where R, G, B, and A
+ /// respectively stand for the red, green, blue, and alpha source values.
+ static const int SourceColor = WebGL.SRC_COLOR;
+ /// Each component of the color is multiplied by the inverse of the source
+ /// color.
+ /// This can be represented as (1 − Rs, 1 − Gs, 1 − Bs, 1 − As) where
+ /// R, G, B, and A respectively stand for the red, green, blue, and alpha
+ /// destination values.
+ static const int InverseSourceColor = WebGL.ONE_MINUS_SRC_COLOR;
+ /// Each component of the color is multiplied by the alpha value of the
+ /// source. This can be represented as (As, As, As, As), where As is the
+ /// alpha source value.
+ static const int SourceAlpha = WebGL.SRC_ALPHA;
+ /// Each component of the color is multiplied by the inverse of the alpha
+ /// value of the source.
+ /// This can be represented as (1 − As, 1 − As, 1 − As, 1 − As), where As is
+ /// the alpha destination value.
+ static const int InverseSourceAlpha = WebGL.ONE_MINUS_SRC_ALPHA;
+ /// Each component of the color is multiplied by the alpha value of the
+ /// destination.
+ ///
+ /// This can be represented as (Ad, Ad, Ad, Ad), where Ad is the destination
+ /// alpha value.
+ static const int DestinationAlpha = WebGL.DST_ALPHA;
+ /// Each component of the color is multiplied by the inverse of the alpha
+ /// value of the destination.
+ ///
+ /// This can be represented as (1 − Ad, 1 − Ad, 1 − Ad, 1 − Ad), where Ad is
+ /// the alpha destination value.
+ static const int InverseDestinationAlpha = WebGL.ONE_MINUS_DST_ALPHA;
+ /// Each component color is multiplied by the destination color.
+ ///
+ /// This can be represented as (Rd, Gd, Bd, Ad), where R, G, B, and A
+ /// respectively stand for
+ /// red, green, blue, and alpha destination values.
+ static const int DestinationColor = WebGL.DST_COLOR;
+ /// Each component of the color is multiplied by the inverse of the
+ /// destination color.
+ ///
+ /// This can be represented as (1 − Rd, 1 − Gd, 1 − Bd, 1 − Ad), where
+ /// Rd, Gd, Bd, and Ad respectively stand for the red, green, blue, and alpha
+ /// destination values.
+ static const int InverseDestinationColor = WebGL.ONE_MINUS_DST_COLOR;
+ /// Each component of the color is multiplied by either the alpha of the
+ /// source color, or the inverse of the alpha of the source color, whichever
+ /// is greater.
+ ///
+ /// This can be represented as (f, f, f, 1), where f = min(A, 1 − Ad).
+ static const int SourceAlphaSaturation = WebGL.SRC_ALPHA_SATURATE;
+ /// Each component of the color is multiplied by a constant set in
+ /// BlendFactor.
+ static const int BlendFactor = WebGL.CONSTANT_COLOR;
+ /// Each component of the color is multiplied by the inverse of a constant
+ /// set in BlendFactor.
+ static const int InverseBlendFactor = WebGL.ONE_MINUS_CONSTANT_COLOR;
+
+ static Map&lt;String, int&gt; _values = {
+   'Blend.Zero' : Blend.Zero,
+   'Blend.One' : Blend.One,
+   'Blend.SourceColor' : Blend.SourceColor,
+   'Blend.InverseSourceColor' : Blend.InverseSourceColor,
+   'Blend.SourceAlpha' : Blend.SourceAlpha,
+   'Blend.InverseSourceAlpha' : Blend.InverseSourceAlpha,
+   'Blend.DestinationAlpha' : Blend.DestinationAlpha,
+   'Blend.InverseDestinationAlpha' : Blend.InverseDestinationAlpha,
+   'Blend.DestinationColor' : Blend.DestinationColor,
+   'Blend.InverseDestinationColor' : Blend.InverseDestinationColor,
+   'Blend.SourceAlphaSaturation' : Blend.SourceAlphaSaturation,
+   'Blend.BlendFactor' : Blend.BlendFactor,
+   'Blend.InverseBlendFactor' : Blend.InverseBlendFactor
+ };
+
+ /// Convert a [String] to a [Blend].
+ static int parse(String name) =&gt; Enum._parse(_values, name);
+ /// Convert a [Blend] to a [String].
+ static String stringify(int value) =&gt; Enum._stringify(_values, value);
+ /// Checks whether the value is a valid enumeration.
+ static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../spectre/Enum.html">Enum</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>Blend</strong></span></p>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="BlendFactor">
+<button class="show-code">Code</button>
+const int         <strong>BlendFactor</strong> <a class="anchor-link"
+            href="#BlendFactor"
+            title="Permalink to Blend.BlendFactor">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by a constant set in
+BlendFactor.</p>
+<pre class="source">
+static const int BlendFactor = WebGL.CONSTANT_COLOR
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="DestinationAlpha">
+<button class="show-code">Code</button>
+const int         <strong>DestinationAlpha</strong> <a class="anchor-link"
+            href="#DestinationAlpha"
+            title="Permalink to Blend.DestinationAlpha">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by the alpha value of the
+destination.</p>
+<p>This can be represented as (Ad, Ad, Ad, Ad), where Ad is the destination
+alpha value.</p>
+<pre class="source">
+static const int DestinationAlpha = WebGL.DST_ALPHA
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="DestinationColor">
+<button class="show-code">Code</button>
+const int         <strong>DestinationColor</strong> <a class="anchor-link"
+            href="#DestinationColor"
+            title="Permalink to Blend.DestinationColor">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component color is multiplied by the destination color.</p>
+<p>This can be represented as (Rd, Gd, Bd, Ad), where R, G, B, and A
+respectively stand for
+red, green, blue, and alpha destination values.</p>
+<pre class="source">
+static const int DestinationColor = WebGL.DST_COLOR
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="InverseBlendFactor">
+<button class="show-code">Code</button>
+const int         <strong>InverseBlendFactor</strong> <a class="anchor-link"
+            href="#InverseBlendFactor"
+            title="Permalink to Blend.InverseBlendFactor">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by the inverse of a constant
+set in BlendFactor.</p>
+<pre class="source">
+static const int InverseBlendFactor = WebGL.ONE_MINUS_CONSTANT_COLOR
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="InverseDestinationAlpha">
+<button class="show-code">Code</button>
+const int         <strong>InverseDestinationAlpha</strong> <a class="anchor-link"
+            href="#InverseDestinationAlpha"
+            title="Permalink to Blend.InverseDestinationAlpha">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by the inverse of the alpha
+value of the destination.</p>
+<p>This can be represented as (1 − Ad, 1 − Ad, 1 − Ad, 1 − Ad), where Ad is
+the alpha destination value.</p>
+<pre class="source">
+static const int InverseDestinationAlpha = WebGL.ONE_MINUS_DST_ALPHA
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="InverseDestinationColor">
+<button class="show-code">Code</button>
+const int         <strong>InverseDestinationColor</strong> <a class="anchor-link"
+            href="#InverseDestinationColor"
+            title="Permalink to Blend.InverseDestinationColor">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by the inverse of the
+destination color.</p>
+<p>This can be represented as (1 − Rd, 1 − Gd, 1 − Bd, 1 − Ad), where
+Rd, Gd, Bd, and Ad respectively stand for the red, green, blue, and alpha
+destination values.</p>
+<pre class="source">
+static const int InverseDestinationColor = WebGL.ONE_MINUS_DST_COLOR
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="InverseSourceAlpha">
+<button class="show-code">Code</button>
+const int         <strong>InverseSourceAlpha</strong> <a class="anchor-link"
+            href="#InverseSourceAlpha"
+            title="Permalink to Blend.InverseSourceAlpha">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by the inverse of the alpha
+value of the source.
+This can be represented as (1 − As, 1 − As, 1 − As, 1 − As), where As is
+the alpha destination value.</p>
+<pre class="source">
+static const int InverseSourceAlpha = WebGL.ONE_MINUS_SRC_ALPHA
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="InverseSourceColor">
+<button class="show-code">Code</button>
+const int         <strong>InverseSourceColor</strong> <a class="anchor-link"
+            href="#InverseSourceColor"
+            title="Permalink to Blend.InverseSourceColor">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by the inverse of the source
+color.
+This can be represented as (1 − Rs, 1 − Gs, 1 − Bs, 1 − As) where
+R, G, B, and A respectively stand for the red, green, blue, and alpha
+destination values.</p>
+<pre class="source">
+static const int InverseSourceColor = WebGL.ONE_MINUS_SRC_COLOR
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="One">
+<button class="show-code">Code</button>
+const int         <strong>One</strong> <a class="anchor-link"
+            href="#One"
+            title="Permalink to Blend.One">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by (1, 1, 1, 1).</p>
+<pre class="source">
+static const int One = WebGL.ONE
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="SourceAlpha">
+<button class="show-code">Code</button>
+const int         <strong>SourceAlpha</strong> <a class="anchor-link"
+            href="#SourceAlpha"
+            title="Permalink to Blend.SourceAlpha">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by the alpha value of the
+source. This can be represented as (As, As, As, As), where As is the
+alpha source value.</p>
+<pre class="source">
+static const int SourceAlpha = WebGL.SRC_ALPHA
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="SourceAlphaSaturation">
+<button class="show-code">Code</button>
+const int         <strong>SourceAlphaSaturation</strong> <a class="anchor-link"
+            href="#SourceAlphaSaturation"
+            title="Permalink to Blend.SourceAlphaSaturation">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by either the alpha of the
+source color, or the inverse of the alpha of the source color, whichever
+is greater.</p>
+<p>This can be represented as (f, f, f, 1), where f = min(A, 1 − Ad).</p>
+<pre class="source">
+static const int SourceAlphaSaturation = WebGL.SRC_ALPHA_SATURATE
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="SourceColor">
+<button class="show-code">Code</button>
+const int         <strong>SourceColor</strong> <a class="anchor-link"
+            href="#SourceColor"
+            title="Permalink to Blend.SourceColor">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by the source color.</p>
+<p>This can be represented as (Rs, Gs, Bs, As), where R, G, B, and A
+respectively stand for the red, green, blue, and alpha source values.</p>
+<pre class="source">
+static const int SourceColor = WebGL.SRC_COLOR
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Zero">
+<button class="show-code">Code</button>
+const int         <strong>Zero</strong> <a class="anchor-link"
+            href="#Zero"
+            title="Permalink to Blend.Zero">#</a>
+        </h4>
+        <div class="doc">
+<p>Each component of the color is multiplied by (0, 0, 0, 0).</p>
+<pre class="source">
+static const int Zero = WebGL.ZERO
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="parse">
+<button class="show-code">Code</button>
+int <strong>parse</strong>(String name) <a class="anchor-link" href="#parse"
+              title="Permalink to Blend.parse">#</a></h4>
+<div class="doc">
+<p>Convert a <code>String</code> to a <a class="crossref" href="../spectre/Blend.html">Blend</a>.</p>
+<pre class="source">
+static int parse(String name) =&gt; Enum._parse(_values, name);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="stringify">
+<button class="show-code">Code</button>
+String <strong>stringify</strong>(int value) <a class="anchor-link" href="#stringify"
+              title="Permalink to Blend.stringify">#</a></h4>
+<div class="doc">
+<p>Convert a <a class="crossref" href="../spectre/Blend.html">Blend</a> to a <code>String</code>.</p>
+<pre class="source">
+static String stringify(int value) =&gt; Enum._stringify(_values, value);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="isValid">
+<button class="show-code">Code</button>
+bool <strong>isValid</strong>(int value) <a class="anchor-link" href="#isValid"
+              title="Permalink to Blend.isValid">#</a></h4>
+<div class="doc">
+<p>Checks whether the value is a valid enumeration.</p>
+<pre class="source">
+static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.946</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

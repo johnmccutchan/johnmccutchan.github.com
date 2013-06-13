@@ -1,0 +1,125 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>GraphicsDeviceConfig class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="GraphicsDeviceConfig">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/GraphicsDeviceConfig.html">GraphicsDeviceConfig</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>GraphicsDeviceConfig</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Specifies the configuration of the <a class="crossref" href="../spectre/GraphicsDevice.html">GraphicsDevice</a>.</p>
+<p>When creating a <code>WebGL.RenderingContext</code> there are various options that
+can be passed in to specify the configuration. These options can only be
+specified when the
+<a class="crossref" href="../spectre/GraphicsDevice.html">GraphicsDevice</a> is created. Afterwards they cannot be modified.</p>
+<p>It should be noted that the underlying WebGL implementation takes these
+values as a suggestion. If the underlying hardware does not support the
+configuration it will be ignored. After creating the <a class="crossref" href="../spectre/GraphicsDevice.html">GraphicsDevice</a> the
+<a class="crossref" href="../spectre/GraphicsDeviceCapabilities.html">GraphicsDeviceCapabilities</a> should be queried directly.</p>
+<pre><code>GraphicsDeviceConfig config = new GraphicsDeviceConfig();
+config.stencilBuffer = true;
+
+GraphicsDevice device = new GraphicsDevice(surface, config);
+print('Has stencil ${device.capabilities.stencilBuffer}');
+</code></pre>
+<pre class="source">
+class GraphicsDeviceConfig {
+ //---------------------------------------------------------------------
+ // Member variables
+ //---------------------------------------------------------------------
+
+ /// Whether a stencil buffer should be used.
+ bool _stencilBuffer = false;
+
+ //---------------------------------------------------------------------
+ // Construction
+ //---------------------------------------------------------------------
+
+ /// Creates an instance of the [GraphicsDeviceConfig] class.
+ ///
+ /// The default values of [WebGL.ContextAttributes] are used.
+ ///
+ ///    GraphicsDeviceConfig config = new GraphicsDeviceConfig();
+ ///    config.stencil = false;
+ GraphicsDeviceConfig();
+
+ //---------------------------------------------------------------------
+ // Properties
+ //---------------------------------------------------------------------
+
+ /// Whether a stencil buffer should be created.
+ bool get stencilBuffer =&gt; _stencilBuffer;
+ set stencilBuffer(bool value) { _stencilBuffer = value; }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="GraphicsDeviceConfig">
+<button class="show-code">Code</button>
+new <strong>GraphicsDeviceConfig</strong>() <a class="anchor-link" href="#GraphicsDeviceConfig"
+              title="Permalink to GraphicsDeviceConfig.GraphicsDeviceConfig">#</a></h4>
+<div class="doc">
+<p>Creates an instance of the <a class="crossref" href="../spectre/GraphicsDeviceConfig.html#GraphicsDeviceConfig">GraphicsDeviceConfig</a> class.</p>
+<p>The default values of <code>WebGL.ContextAttributes</code> are used.</p>
+<p>   GraphicsDeviceConfig config = new GraphicsDeviceConfig();
+   config.stencil = false;</p>
+<pre class="source">
+GraphicsDeviceConfig();
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="stencilBuffer">
+<button class="show-code">Code</button>
+bool         <strong>stencilBuffer</strong> <a class="anchor-link"
+            href="#stencilBuffer"
+            title="Permalink to GraphicsDeviceConfig.stencilBuffer">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether a stencil buffer should be created.</p>
+<pre class="source">
+bool get stencilBuffer =&gt; _stencilBuffer;
+</pre>
+<pre class="source">
+set stencilBuffer(bool value) { _stencilBuffer = value; }
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.839</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

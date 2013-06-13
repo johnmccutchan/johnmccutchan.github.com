@@ -1,0 +1,690 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>MaterialShader class / spectre_renderer Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre_renderer" data-type="MaterialShader">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre_renderer.html">spectre_renderer</a> &rsaquo; <a href="../spectre_renderer/MaterialShader.html">MaterialShader</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>MaterialShader</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class MaterialShader extends Disposable {
+ String name;
+ final Renderer renderer;
+ Material _material;
+ Material get material =&gt; _material;
+ ShaderProgram _shader;
+ ShaderProgram get shader =&gt; _shader;
+
+ int _serial = 0;
+
+ final List&lt;SpectreTexture&gt; _textures = new List&lt;SpectreTexture&gt;();
+ final List&lt;SamplerState&gt; _samplers = new List&lt;SamplerState&gt;();
+
+ void _setupTextureSamplerTable() {
+   _textures.length = _shader.samplers.length;
+   _samplers.length = _shader.samplers.length;
+   for (int i = 0; i &lt; _shader.samplers.length; i++) {
+     _textures[i] = null;
+     _samplers[i] = null;
+   }
+ }
+
+ void _link() {
+   _setupTextureSamplerTable();
+   _serial++;
+ }
+
+ void link() {
+   _link();
+ }
+
+ set vertexShader(String source) {
+   _shader.vertexShader.source = source;
+   _shader.vertexShader.compile();
+   if (_shader.vertexShader.compiled) {
+     link();
+   } else {
+     print('Vertex Shader compile error in $name: '
+           '${_shader.vertexShader.compileLog}');
+   }
+ }
+ set fragmentShader(String source) {
+   _shader.fragmentShader.source = source;
+   _shader.fragmentShader.compile();
+   _shader.link();
+   if (_shader.fragmentShader.compiled) {
+     link();
+   } else {
+     print('Fragment Shader compile error in $name: '
+         '${_shader.vertexShader.compileLog}');
+   }
+
+ }
+
+ MaterialShader(this.name, this.renderer) {
+   _shader = new ShaderProgram(name, renderer.device);
+   _shader.vertexShader = new VertexShader(name, renderer.device);
+   _shader.fragmentShader = new FragmentShader(name, renderer.device);
+   _material = new Material(name, this, renderer);
+   _depthState = new DepthState(name, renderer.device);
+   _blendState = new BlendState(name, renderer.device);
+   _rasterizerState = new RasterizerState(name, renderer.device);
+ }
+
+ DepthState _depthState;
+ DepthState get depthState =&gt; _depthState;
+ RasterizerState _rasterizerState;
+ RasterizerState get rasterizerState =&gt; _rasterizerState;
+ BlendState _blendState;
+ BlendState get blendState =&gt; _blendState;
+
+ void finalize() {
+   if (_shader != null) {
+     _shader.vertexShader.dispose();
+     _shader.fragmentShader.dispose();
+     _shader.dispose();
+   }
+ }
+
+ void updateCameraConstants(Camera camera) {
+   if (camera == null) {
+     // TODO(johnmccutchan): Do we have a default camera setup?
+   }
+   Matrix4 projectionMatrix = camera.projectionMatrix;
+   Matrix4 viewMatrix = camera.viewMatrix;
+   Matrix4 projectionViewMatrix = camera.projectionMatrix;
+   projectionViewMatrix.multiply(viewMatrix);
+   Matrix4 viewRotationMatrix = makeViewMatrix(new Vector3.zero(),
+                                            camera.frontDirection,
+                                            new Vector3(0.0, 1.0, 0.0));
+   Matrix4 projectionViewRotationMatrix = camera.projectionMatrix;
+   projectionViewRotationMatrix.multiply(viewRotationMatrix);
+   ShaderProgramUniform uniform;
+   uniform = shader.uniforms['cameraView'];
+   if (uniform != null) {
+     shader.updateUniform(uniform, viewMatrix.storage);
+   }
+   uniform = shader.uniforms['cameraProjection'];
+   if (uniform != null) {
+     shader.updateUniform(uniform, projectionMatrix.storage);
+   }
+   uniform = shader.uniforms['cameraProjectionView'];
+   if (uniform != null) {
+     shader.updateUniform(uniform, projectionViewMatrix.storage);
+   }
+   uniform = shader.uniforms['cameraViewRotation'];
+   if (uniform != null) {
+     shader.updateUniform(uniform, viewRotationMatrix.storage);
+   }
+   uniform = shader.uniforms['cameraProjectionViewRotation'];
+   if (uniform != null) {
+     shader.updateUniform(uniform, projectionViewRotationMatrix.storage);
+   }
+ }
+
+ void updateObjectTransformConstant(Matrix4 T) {
+   ShaderProgramUniform uniform;
+   uniform = shader.uniforms['objectTransform'];
+   if (uniform != null) {
+     shader.updateUniform(uniform, T.storage);
+   }
+ }
+
+ static final Float32List _viewportStorage = new Float32List(4);
+ void updateViewportConstants(Viewport vp) {
+   ShaderProgramUniform uniform;
+   uniform = shader.uniforms['viewport'];
+   if (uniform != null) {
+     MaterialShader._viewportStorage[0] = vp.x.toDouble();
+     MaterialShader._viewportStorage[1] = vp.y.toDouble();
+     MaterialShader._viewportStorage[2] = vp.width.toDouble();
+     MaterialShader._viewportStorage[3] = vp.height.toDouble();
+     shader.updateUniform(uniform, MaterialShader._viewportStorage);
+   }
+ }
+
+ MaterialConstant _findConstant(String k, Material one, Material two,
+                                Material three) {
+   MaterialConstant constant;
+   if (one != null) {
+     constant = one.constants[k];
+     if (constant != null) {
+       return constant;
+     }
+   }
+   if (two != null) {
+     constant = two.constants[k];
+     if (constant != null) {
+       return constant;
+     }
+   }
+   if (three != null) {
+     constant = three.constants[k];
+     if (constant != null) {
+       return constant;
+     }
+   }
+   return constant;
+ }
+
+ MaterialTexture _findTexture(String k, Material one, Material two,
+                              Material three) {
+   MaterialTexture texture;
+   if (one != null) {
+     texture = one.textures[k];
+     if (texture != null) {
+       return texture;
+     }
+   }
+   if (two != null) {
+     texture = two.textures[k];
+     if (texture != null) {
+       return texture;
+     }
+   }
+   if (three != null) {
+     texture = three.textures[k];
+     if (texture != null) {
+       return texture;
+     }
+   }
+   return texture;
+ }
+
+ void apply(GraphicsDevice device, Material renderableMaterial) {
+   device.context.setBlendState(_blendState);
+   device.context.setRasterizerState(_rasterizerState);
+   device.context.setDepthState(_depthState);
+   device.context.setShaderProgram(shader);
+
+   shader.uniforms.forEach((String k, ShaderProgramUniform v) {
+     MaterialConstant constant = _findConstant(k, renderableMaterial, material,
+                                               null);
+     if (constant != null) {
+       shader.updateUniform(v, constant.value);
+     }
+   });
+
+   shader.samplers.forEach((String k, ShaderProgramSampler v) {
+     int textureUnit = v.textureUnit;
+     MaterialTexture texture = _findTexture(k, renderableMaterial, material,
+                                            null);
+     if (texture != null) {
+       _textures[textureUnit] = texture.texture;
+       _samplers[textureUnit] = texture.sampler;
+     }
+   });
+   device.context.setSamplers(0, _samplers);
+   device.context.setTextures(0, _textures);
+ }
+
+ void _applyConstant(String name, MaterialConstant constant) {
+ }
+
+ void _applyTexture(String name, MaterialTexture texture) {
+ }
+
+ dynamic toJson() {
+   Map json = new Map();
+   json['name'] = name;
+   json['depthState'] = depthState.toJson();
+   json['rasterizerState'] = rasterizerState.toJson();
+   json['blendState'] = blendState.toJson();
+   json['material'] = _material.toJson();
+   json['fragmentShader'] = _shader.fragmentShader.source;
+   json['vertexShader'] = _shader.vertexShader.source;
+   return json;
+ }
+
+ void fromJson(dynamic json) {
+   name = json['name'];
+   depthState.fromJson(json['depthState']);
+   rasterizerState.fromJson(json['rasterizerState']);
+   blendState.fromJson(json['blendState']);
+   _material.fromJson(json['material']);
+   _shader.fragmentShader.source = json['fragmentShader'];
+   _shader.vertexShader.source = json['vertexShader'];
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../disposable/Disposable.html">Disposable</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>MaterialShader</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="MaterialShader">
+<button class="show-code">Code</button>
+new <strong>MaterialShader</strong>(String name, <a href="../spectre_renderer/Renderer.html">Renderer</a> renderer) <a class="anchor-link" href="#MaterialShader"
+              title="Permalink to MaterialShader.MaterialShader">#</a></h4>
+<div class="doc">
+<pre class="source">
+MaterialShader(this.name, this.renderer) {
+ _shader = new ShaderProgram(name, renderer.device);
+ _shader.vertexShader = new VertexShader(name, renderer.device);
+ _shader.fragmentShader = new FragmentShader(name, renderer.device);
+ _material = new Material(name, this, renderer);
+ _depthState = new DepthState(name, renderer.device);
+ _blendState = new BlendState(name, renderer.device);
+ _rasterizerState = new RasterizerState(name, renderer.device);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="blendState">
+<button class="show-code">Code</button>
+final <a href="../spectre/BlendState.html">BlendState</a>         <strong>blendState</strong> <a class="anchor-link"
+            href="#blendState"
+            title="Permalink to MaterialShader.blendState">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+BlendState get blendState =&gt; _blendState;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="depthState">
+<button class="show-code">Code</button>
+final <a href="../spectre/DepthState.html">DepthState</a>         <strong>depthState</strong> <a class="anchor-link"
+            href="#depthState"
+            title="Permalink to MaterialShader.depthState">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+DepthState get depthState =&gt; _depthState;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="fragmentShader=">
+<button class="show-code">Code</button>
+dynamic <strong>set fragmentShader</strong>(String source) <a class="anchor-link" href="#fragmentShader="
+              title="Permalink to MaterialShader.set fragmentShader">#</a></h4>
+<div class="doc">
+<pre class="source">
+set fragmentShader(String source) {
+ _shader.fragmentShader.source = source;
+ _shader.fragmentShader.compile();
+ _shader.link();
+ if (_shader.fragmentShader.compiled) {
+   link();
+ } else {
+   print('Fragment Shader compile error in $name: '
+       '${_shader.vertexShader.compileLog}');
+ }
+
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isDisposed">
+<button class="show-code">Code</button>
+final bool         <strong>isDisposed</strong> <a class="anchor-link"
+            href="#isDisposed"
+            title="Permalink to MaterialShader.isDisposed">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>This object has been disposed. </p>
+<pre class="source">
+bool get isDisposed =&gt; _disposed;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="material">
+<button class="show-code">Code</button>
+final <a href="../spectre_renderer/Material.html">Material</a>         <strong>material</strong> <a class="anchor-link"
+            href="#material"
+            title="Permalink to MaterialShader.material">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Material get material =&gt; _material;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="name">
+<button class="show-code">Code</button>
+String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to MaterialShader.name">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+String name
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="pinCount">
+<button class="show-code">Code</button>
+final int         <strong>pinCount</strong> <a class="anchor-link"
+            href="#pinCount"
+            title="Permalink to MaterialShader.pinCount">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Count of pins </p>
+<pre class="source">
+int get pinCount =&gt; _referenceCount;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="rasterizerState">
+<button class="show-code">Code</button>
+final <a href="../spectre/RasterizerState.html">RasterizerState</a>         <strong>rasterizerState</strong> <a class="anchor-link"
+            href="#rasterizerState"
+            title="Permalink to MaterialShader.rasterizerState">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+RasterizerState get rasterizerState =&gt; _rasterizerState;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="renderer">
+<button class="show-code">Code</button>
+final <a href="../spectre_renderer/Renderer.html">Renderer</a>         <strong>renderer</strong> <a class="anchor-link"
+            href="#renderer"
+            title="Permalink to MaterialShader.renderer">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Renderer renderer
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="shader">
+<button class="show-code">Code</button>
+final <a href="../spectre/ShaderProgram.html">ShaderProgram</a>         <strong>shader</strong> <a class="anchor-link"
+            href="#shader"
+            title="Permalink to MaterialShader.shader">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+ShaderProgram get shader =&gt; _shader;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="vertexShader=">
+<button class="show-code">Code</button>
+dynamic <strong>set vertexShader</strong>(String source) <a class="anchor-link" href="#vertexShader="
+              title="Permalink to MaterialShader.set vertexShader">#</a></h4>
+<div class="doc">
+<pre class="source">
+set vertexShader(String source) {
+ _shader.vertexShader.source = source;
+ _shader.vertexShader.compile();
+ if (_shader.vertexShader.compiled) {
+   link();
+ } else {
+   print('Vertex Shader compile error in $name: '
+         '${_shader.vertexShader.compileLog}');
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="apply">
+<button class="show-code">Code</button>
+void <strong>apply</strong>(<a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device, <a href="../spectre_renderer/Material.html">Material</a> renderableMaterial) <a class="anchor-link" href="#apply"
+              title="Permalink to MaterialShader.apply">#</a></h4>
+<div class="doc">
+<pre class="source">
+void apply(GraphicsDevice device, Material renderableMaterial) {
+ device.context.setBlendState(_blendState);
+ device.context.setRasterizerState(_rasterizerState);
+ device.context.setDepthState(_depthState);
+ device.context.setShaderProgram(shader);
+
+ shader.uniforms.forEach((String k, ShaderProgramUniform v) {
+   MaterialConstant constant = _findConstant(k, renderableMaterial, material,
+                                             null);
+   if (constant != null) {
+     shader.updateUniform(v, constant.value);
+   }
+ });
+
+ shader.samplers.forEach((String k, ShaderProgramSampler v) {
+   int textureUnit = v.textureUnit;
+   MaterialTexture texture = _findTexture(k, renderableMaterial, material,
+                                          null);
+   if (texture != null) {
+     _textures[textureUnit] = texture.texture;
+     _samplers[textureUnit] = texture.sampler;
+   }
+ });
+ device.context.setSamplers(0, _samplers);
+ device.context.setTextures(0, _textures);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="dispose">
+<button class="show-code">Code</button>
+void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to MaterialShader.dispose">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Disposes of the object. If nothing else has this object pinned,
+the finalizer will be called. See <code>pin</code> for inverse. Throws
+an exception if the object is already disposed.</p>
+<pre class="source">
+void dispose() {
+ if (_disposed) {
+   throw new StateError('It is an error to dispose a disposed object.');
+   return;
+ }
+ _referenceCount--;
+ if (_referenceCount == 0) {
+   finalize();
+   _disposed = true;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="finalize">
+<button class="show-code">Code</button>
+void <strong>finalize</strong>() <a class="anchor-link" href="#finalize"
+              title="Permalink to MaterialShader.finalize">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Clean up any object state here. </p>
+<div class="docs-inherited-from">docs inherited from <a href="../disposable/Disposable.html">Disposable</a> </div></div>
+<pre class="source">
+void finalize() {
+ if (_shader != null) {
+   _shader.vertexShader.dispose();
+   _shader.fragmentShader.dispose();
+   _shader.dispose();
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="fromJson">
+<button class="show-code">Code</button>
+void <strong>fromJson</strong>(json) <a class="anchor-link" href="#fromJson"
+              title="Permalink to MaterialShader.fromJson">#</a></h4>
+<div class="doc">
+<pre class="source">
+void fromJson(dynamic json) {
+ name = json['name'];
+ depthState.fromJson(json['depthState']);
+ rasterizerState.fromJson(json['rasterizerState']);
+ blendState.fromJson(json['blendState']);
+ _material.fromJson(json['material']);
+ _shader.fragmentShader.source = json['fragmentShader'];
+ _shader.vertexShader.source = json['vertexShader'];
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="link">
+<button class="show-code">Code</button>
+void <strong>link</strong>() <a class="anchor-link" href="#link"
+              title="Permalink to MaterialShader.link">#</a></h4>
+<div class="doc">
+<pre class="source">
+void link() {
+ _link();
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="pin">
+<button class="show-code">Code</button>
+void <strong>pin</strong>() <a class="anchor-link" href="#pin"
+              title="Permalink to MaterialShader.pin">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Pin the disposable object. See <code>dispose</code> for inverse.
+Throws an exception if this object is already disposed.</p>
+<pre class="source">
+void pin() {
+ if (_disposed) {
+   throw new StateError('It is an error to pin a disposed object.');
+   return;
+ }
+ _referenceCount++;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toJson">
+<button class="show-code">Code</button>
+dynamic <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to MaterialShader.toJson">#</a></h4>
+<div class="doc">
+<pre class="source">
+dynamic toJson() {
+ Map json = new Map();
+ json['name'] = name;
+ json['depthState'] = depthState.toJson();
+ json['rasterizerState'] = rasterizerState.toJson();
+ json['blendState'] = blendState.toJson();
+ json['material'] = _material.toJson();
+ json['fragmentShader'] = _shader.fragmentShader.source;
+ json['vertexShader'] = _shader.vertexShader.source;
+ return json;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="updateCameraConstants">
+<button class="show-code">Code</button>
+void <strong>updateCameraConstants</strong>(<a href="../spectre/Camera.html">Camera</a> camera) <a class="anchor-link" href="#updateCameraConstants"
+              title="Permalink to MaterialShader.updateCameraConstants">#</a></h4>
+<div class="doc">
+<pre class="source">
+void updateCameraConstants(Camera camera) {
+ if (camera == null) {
+   // TODO(johnmccutchan): Do we have a default camera setup?
+ }
+ Matrix4 projectionMatrix = camera.projectionMatrix;
+ Matrix4 viewMatrix = camera.viewMatrix;
+ Matrix4 projectionViewMatrix = camera.projectionMatrix;
+ projectionViewMatrix.multiply(viewMatrix);
+ Matrix4 viewRotationMatrix = makeViewMatrix(new Vector3.zero(),
+                                          camera.frontDirection,
+                                          new Vector3(0.0, 1.0, 0.0));
+ Matrix4 projectionViewRotationMatrix = camera.projectionMatrix;
+ projectionViewRotationMatrix.multiply(viewRotationMatrix);
+ ShaderProgramUniform uniform;
+ uniform = shader.uniforms['cameraView'];
+ if (uniform != null) {
+   shader.updateUniform(uniform, viewMatrix.storage);
+ }
+ uniform = shader.uniforms['cameraProjection'];
+ if (uniform != null) {
+   shader.updateUniform(uniform, projectionMatrix.storage);
+ }
+ uniform = shader.uniforms['cameraProjectionView'];
+ if (uniform != null) {
+   shader.updateUniform(uniform, projectionViewMatrix.storage);
+ }
+ uniform = shader.uniforms['cameraViewRotation'];
+ if (uniform != null) {
+   shader.updateUniform(uniform, viewRotationMatrix.storage);
+ }
+ uniform = shader.uniforms['cameraProjectionViewRotation'];
+ if (uniform != null) {
+   shader.updateUniform(uniform, projectionViewRotationMatrix.storage);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="updateObjectTransformConstant">
+<button class="show-code">Code</button>
+void <strong>updateObjectTransformConstant</strong>(<a href="../vector_math/Matrix4.html">Matrix4</a> T) <a class="anchor-link" href="#updateObjectTransformConstant"
+              title="Permalink to MaterialShader.updateObjectTransformConstant">#</a></h4>
+<div class="doc">
+<pre class="source">
+void updateObjectTransformConstant(Matrix4 T) {
+ ShaderProgramUniform uniform;
+ uniform = shader.uniforms['objectTransform'];
+ if (uniform != null) {
+   shader.updateUniform(uniform, T.storage);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="updateViewportConstants">
+<button class="show-code">Code</button>
+void <strong>updateViewportConstants</strong>(<a href="../spectre/Viewport.html">Viewport</a> vp) <a class="anchor-link" href="#updateViewportConstants"
+              title="Permalink to MaterialShader.updateViewportConstants">#</a></h4>
+<div class="doc">
+<pre class="source">
+void updateViewportConstants(Viewport vp) {
+ ShaderProgramUniform uniform;
+ uniform = shader.uniforms['viewport'];
+ if (uniform != null) {
+   MaterialShader._viewportStorage[0] = vp.x.toDouble();
+   MaterialShader._viewportStorage[1] = vp.y.toDouble();
+   MaterialShader._viewportStorage[2] = vp.width.toDouble();
+   MaterialShader._viewportStorage[3] = vp.height.toDouble();
+   shader.updateUniform(uniform, MaterialShader._viewportStorage);
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:33.123</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

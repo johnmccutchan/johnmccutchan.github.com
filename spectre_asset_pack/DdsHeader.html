@@ -1,0 +1,476 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>DdsHeader class / spectre_asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre_asset_pack" data-type="DdsHeader">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre_asset_pack.html">spectre_asset_pack</a> &rsaquo; <a href="../spectre_asset_pack/DdsHeader.html">DdsHeader</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>DdsHeader</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>The header for the DDS file format.</p>
+<p>Accessors correspond to the <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb943982">DDS_HEADER</a>
+structure.</p>
+<pre class="source">
+class DdsHeader {
+ //---------------------------------------------------------------------
+ // Class variables
+ //---------------------------------------------------------------------
+
+ /// The offset in bytes to the DDS_HEADER struct within the file.
+ static const int _byteOffset = 4;
+ /// The size of the DDS_HEADER struct.
+ static const int _structSize = 124;
+
+ //---------------------------------------------------------------------
+ // Member variables
+ //---------------------------------------------------------------------
+
+ /// Flag within [flags] that signifies the textures have width.
+ static const int hasWidth = 0x4;
+ /// Flag within [flags] that signifies the textures have height.
+ static const int hasHeight = 0x2;
+ /// Flag within [flags] that signifies the textures have depth.
+ static const int hasDepth = 0x800000;
+ /// Flag within [flags] that signfies the textures have mipmaps.
+ static const int hasMipMaps = 0x20000;
+
+ /// Flag within [surfaceDetail] that signifies a cube map is present.
+ static const int isCubeMap = 0x200;
+ /// Flag within [surfaceDetail] that the positive x surface is present.
+ static const int hasCubeMapPositiveX = 0x400;
+ /// Flag within [surfaceDetail] that the negative x surface is present.
+ static const int hasCubeMapNegativeX = 0x800;
+ /// Flag within [surfaceDetail] that the positive y surface is present.
+ static const int hasCubeMapPositiveY = 0x1000;
+ /// Flag within [surfaceDetail] that the negative y surface is present.
+ static const int hasCubeMapNegativeY = 0x2000;
+ /// Flag within [surfaceDetail] that the positive z surface is present.
+ static const int hasCubeMapPositiveZ = 0x4000;
+ /// Flag within [surfaceDetail] that the negative z surface is present.
+ static const int hasCubeMapNegativeZ = 0x8000;
+ /// Flag within [surfaceDetail] signifying all cube map data is present.
+ static const int hasAllCubeMapFaces = isCubeMap
+                                     | hasCubeMapPositiveX | hasCubeMapNegativeX
+                                     | hasCubeMapPositiveY | hasCubeMapNegativeY
+                                     | hasCubeMapPositiveZ | hasCubeMapNegativeZ;
+ /// Flag within [surfaceDetail] that signifies a volume textue is present.
+ static const int isVolumeTexture = 0x200000;
+
+ //---------------------------------------------------------------------
+ // Member variables
+ //---------------------------------------------------------------------
+
+ /// The size of the structure.
+ int _size;
+ /// Flags to indicate which members contain valid data.
+ int _flags;
+ /// The height of the compressed texture.
+ int _height;
+ /// The width of the compressed texture.
+ int _width;
+
+ int _pitchOrLinearSize;
+ /// The depth of the compressed texture.
+ int _depth;
+ /// The number of mipmap levels.
+ int _mipMapCount;
+ /// Gets the surface complexity.
+ int _surfaceComplexity;
+ /// Gets details about the surface being stored.
+ ///
+ /// Stores flags signifying that a cubemap or volume texture is being
+ /// used. If the extended header is present then that data takes
+ /// precedence.
+ int _surfaceDetail;
+
+ //---------------------------------------------------------------------
+ // Constructor
+ //---------------------------------------------------------------------
+
+ /// Creates an instance of the [DdsHeader] class.
+ DdsHeader._internal(Uint8List buffer) {
+   Uint32List reader = new Uint32List.view(buffer, _byteOffset);
+
+   _size              = reader[0];
+   _flags             = reader[1];
+   _height            = (_flags &amp; hasHeight)  == hasHeight  ? reader[2] : 0;
+   _width             = (_flags &amp; hasWidth)   == hasWidth   ? reader[3] : 0;
+   _pitchOrLinearSize = reader[4];
+   _depth             = (_flags &amp; hasDepth)   == hasDepth   ? reader[5] : 1;
+   _mipMapCount       = (_flags &amp; hasMipMaps) == hasMipMaps ? reader[6] : 1;
+
+   // Check for a mip map count of 0
+   //
+   // Some writers, such as the DirectX Texture Tool, will write 0 for the mipmap count
+   // while others, such as texconv, will write 1 for the mipmap count.
+   //
+   // Standardize on a mipmap count of 1 meaning there are no actual mipmaps contained
+   // in the file.
+   if (_mipMapCount == 0) {
+     _mipMapCount = 1;
+   }
+
+   _surfaceComplexity = reader[26];
+   _surfaceDetail     = reader[27];
+ }
+
+ //---------------------------------------------------------------------
+ // Properties
+ //---------------------------------------------------------------------
+
+ /// The size of the structure.
+ int get size =&gt; _size;
+ /// Flags to indicate which members contain valid data.
+ int get flags =&gt; _flags;
+ /// The height of the compressed texture.
+ int get height =&gt; _height;
+ /// The width of the compressed texture.
+ int get width =&gt; _width;
+
+ int get pitchOrLinearSize =&gt; _pitchOrLinearSize;
+ /// The depth of the compressed texture.
+ int get depth =&gt; _depth;
+ /// The number of mipmap levels.
+ int get mipMapCount =&gt; _mipMapCount;
+ /// Gets the surface complexity.
+ int get surfaceComplexity =&gt; _surfaceComplexity;
+ /// Gets details about the surface being stored.
+ ///
+ /// Stores flags signifying that a cubemap or volume texture is being
+ /// used. If the extended header is present then that data takes
+ /// precedence.
+ int get surfaceDetail =&gt; _surfaceDetail;
+}
+</pre>
+</div>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="hasAllCubeMapFaces">
+<button class="show-code">Code</button>
+const int         <strong>hasAllCubeMapFaces</strong> <a class="anchor-link"
+            href="#hasAllCubeMapFaces"
+            title="Permalink to DdsHeader.hasAllCubeMapFaces">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#surfaceDetail">surfaceDetail</a> signifying all cube map data is present.</p>
+<pre class="source">
+static const int hasAllCubeMapFaces = isCubeMap
+                                   | hasCubeMapPositiveX | hasCubeMapNegativeX
+                                   | hasCubeMapPositiveY | hasCubeMapNegativeY
+                                   | hasCubeMapPositiveZ | hasCubeMapNegativeZ
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasCubeMapNegativeX">
+<button class="show-code">Code</button>
+const int         <strong>hasCubeMapNegativeX</strong> <a class="anchor-link"
+            href="#hasCubeMapNegativeX"
+            title="Permalink to DdsHeader.hasCubeMapNegativeX">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#surfaceDetail">surfaceDetail</a> that the negative x surface is present.</p>
+<pre class="source">
+static const int hasCubeMapNegativeX = 0x800
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasCubeMapNegativeY">
+<button class="show-code">Code</button>
+const int         <strong>hasCubeMapNegativeY</strong> <a class="anchor-link"
+            href="#hasCubeMapNegativeY"
+            title="Permalink to DdsHeader.hasCubeMapNegativeY">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#surfaceDetail">surfaceDetail</a> that the negative y surface is present.</p>
+<pre class="source">
+static const int hasCubeMapNegativeY = 0x2000
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasCubeMapNegativeZ">
+<button class="show-code">Code</button>
+const int         <strong>hasCubeMapNegativeZ</strong> <a class="anchor-link"
+            href="#hasCubeMapNegativeZ"
+            title="Permalink to DdsHeader.hasCubeMapNegativeZ">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#surfaceDetail">surfaceDetail</a> that the negative z surface is present.</p>
+<pre class="source">
+static const int hasCubeMapNegativeZ = 0x8000
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasCubeMapPositiveX">
+<button class="show-code">Code</button>
+const int         <strong>hasCubeMapPositiveX</strong> <a class="anchor-link"
+            href="#hasCubeMapPositiveX"
+            title="Permalink to DdsHeader.hasCubeMapPositiveX">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#surfaceDetail">surfaceDetail</a> that the positive x surface is present.</p>
+<pre class="source">
+static const int hasCubeMapPositiveX = 0x400
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasCubeMapPositiveY">
+<button class="show-code">Code</button>
+const int         <strong>hasCubeMapPositiveY</strong> <a class="anchor-link"
+            href="#hasCubeMapPositiveY"
+            title="Permalink to DdsHeader.hasCubeMapPositiveY">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#surfaceDetail">surfaceDetail</a> that the positive y surface is present.</p>
+<pre class="source">
+static const int hasCubeMapPositiveY = 0x1000
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasCubeMapPositiveZ">
+<button class="show-code">Code</button>
+const int         <strong>hasCubeMapPositiveZ</strong> <a class="anchor-link"
+            href="#hasCubeMapPositiveZ"
+            title="Permalink to DdsHeader.hasCubeMapPositiveZ">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#surfaceDetail">surfaceDetail</a> that the positive z surface is present.</p>
+<pre class="source">
+static const int hasCubeMapPositiveZ = 0x4000
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasDepth">
+<button class="show-code">Code</button>
+const int         <strong>hasDepth</strong> <a class="anchor-link"
+            href="#hasDepth"
+            title="Permalink to DdsHeader.hasDepth">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#flags">flags</a> that signifies the textures have depth.</p>
+<pre class="source">
+static const int hasDepth = 0x800000
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasHeight">
+<button class="show-code">Code</button>
+const int         <strong>hasHeight</strong> <a class="anchor-link"
+            href="#hasHeight"
+            title="Permalink to DdsHeader.hasHeight">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#flags">flags</a> that signifies the textures have height.</p>
+<pre class="source">
+static const int hasHeight = 0x2
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasMipMaps">
+<button class="show-code">Code</button>
+const int         <strong>hasMipMaps</strong> <a class="anchor-link"
+            href="#hasMipMaps"
+            title="Permalink to DdsHeader.hasMipMaps">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#flags">flags</a> that signfies the textures have mipmaps.</p>
+<pre class="source">
+static const int hasMipMaps = 0x20000
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasWidth">
+<button class="show-code">Code</button>
+const int         <strong>hasWidth</strong> <a class="anchor-link"
+            href="#hasWidth"
+            title="Permalink to DdsHeader.hasWidth">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#flags">flags</a> that signifies the textures have width.</p>
+<pre class="source">
+static const int hasWidth = 0x4
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isCubeMap">
+<button class="show-code">Code</button>
+const int         <strong>isCubeMap</strong> <a class="anchor-link"
+            href="#isCubeMap"
+            title="Permalink to DdsHeader.isCubeMap">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#surfaceDetail">surfaceDetail</a> that signifies a cube map is present.</p>
+<pre class="source">
+static const int isCubeMap = 0x200
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isVolumeTexture">
+<button class="show-code">Code</button>
+const int         <strong>isVolumeTexture</strong> <a class="anchor-link"
+            href="#isVolumeTexture"
+            title="Permalink to DdsHeader.isVolumeTexture">#</a>
+        </h4>
+        <div class="doc">
+<p>Flag within <a class="crossref" href="../spectre_asset_pack/DdsHeader.html#surfaceDetail">surfaceDetail</a> that signifies a volume textue is present.</p>
+<pre class="source">
+static const int isVolumeTexture = 0x200000
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="depth">
+<button class="show-code">Code</button>
+final int         <strong>depth</strong> <a class="anchor-link"
+            href="#depth"
+            title="Permalink to DdsHeader.depth">#</a>
+        </h4>
+        <div class="doc">
+<p>The depth of the compressed texture.</p>
+<pre class="source">
+int get depth =&gt; _depth;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="flags">
+<button class="show-code">Code</button>
+final int         <strong>flags</strong> <a class="anchor-link"
+            href="#flags"
+            title="Permalink to DdsHeader.flags">#</a>
+        </h4>
+        <div class="doc">
+<p>Flags to indicate which members contain valid data.</p>
+<pre class="source">
+int get flags =&gt; _flags;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="height">
+<button class="show-code">Code</button>
+final int         <strong>height</strong> <a class="anchor-link"
+            href="#height"
+            title="Permalink to DdsHeader.height">#</a>
+        </h4>
+        <div class="doc">
+<p>The height of the compressed texture.</p>
+<pre class="source">
+int get height =&gt; _height;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="mipMapCount">
+<button class="show-code">Code</button>
+final int         <strong>mipMapCount</strong> <a class="anchor-link"
+            href="#mipMapCount"
+            title="Permalink to DdsHeader.mipMapCount">#</a>
+        </h4>
+        <div class="doc">
+<p>The number of mipmap levels.</p>
+<pre class="source">
+int get mipMapCount =&gt; _mipMapCount;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="pitchOrLinearSize">
+<button class="show-code">Code</button>
+final int         <strong>pitchOrLinearSize</strong> <a class="anchor-link"
+            href="#pitchOrLinearSize"
+            title="Permalink to DdsHeader.pitchOrLinearSize">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get pitchOrLinearSize =&gt; _pitchOrLinearSize;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="size">
+<button class="show-code">Code</button>
+final int         <strong>size</strong> <a class="anchor-link"
+            href="#size"
+            title="Permalink to DdsHeader.size">#</a>
+        </h4>
+        <div class="doc">
+<p>The size of the structure.</p>
+<pre class="source">
+int get size =&gt; _size;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="surfaceComplexity">
+<button class="show-code">Code</button>
+final int         <strong>surfaceComplexity</strong> <a class="anchor-link"
+            href="#surfaceComplexity"
+            title="Permalink to DdsHeader.surfaceComplexity">#</a>
+        </h4>
+        <div class="doc">
+<p>Gets the surface complexity.</p>
+<pre class="source">
+int get surfaceComplexity =&gt; _surfaceComplexity;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="surfaceDetail">
+<button class="show-code">Code</button>
+final int         <strong>surfaceDetail</strong> <a class="anchor-link"
+            href="#surfaceDetail"
+            title="Permalink to DdsHeader.surfaceDetail">#</a>
+        </h4>
+        <div class="doc">
+<p>Gets details about the surface being stored.</p>
+<p>Stores flags signifying that a cubemap or volume texture is being
+used. If the extended header is present then that data takes
+precedence.</p>
+<pre class="source">
+int get surfaceDetail =&gt; _surfaceDetail;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="width">
+<button class="show-code">Code</button>
+final int         <strong>width</strong> <a class="anchor-link"
+            href="#width"
+            title="Permalink to DdsHeader.width">#</a>
+        </h4>
+        <div class="doc">
+<p>The width of the compressed texture.</p>
+<pre class="source">
+int get width =&gt; _width;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:33.040</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

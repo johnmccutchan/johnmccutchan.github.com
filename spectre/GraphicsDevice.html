@@ -1,0 +1,262 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>GraphicsDevice class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="GraphicsDevice">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>GraphicsDevice</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Spectre GPU Device</p>
+<pre class="source">
+class GraphicsDevice {
+ CanvasElement _surface;
+ GraphicsContext _context;
+ GraphicsContext get context =&gt; _context;
+
+ GraphicsDeviceCapabilities _capabilities;
+ GraphicsDeviceCapabilities get capabilities =&gt; _capabilities;
+
+ WebGL.RenderingContext _gl;
+ WebGL.RenderingContext get gl =&gt; _gl;
+
+ int get canvasWidth =&gt; _surface.width;
+ int get canvasHeight =&gt; _surface.height;
+ int get frontBufferWidth =&gt; _gl.drawingBufferWidth;
+ int get frontBufferHeight =&gt; _gl.drawingBufferHeight;
+
+ final Set&lt;DeviceChild&gt; children = new Set&lt;DeviceChild&gt;();
+ void _addChild(DeviceChild child) {
+   if (children.contains(child)) {
+     throw new StateError('$child is already registered.');
+   }
+   children.add(child);
+ }
+
+ void _removeChild(DeviceChild child) {
+   if (children.contains(child) == false) {
+     throw new StateError('$child is not registered');
+   }
+   children.remove(child);
+ }
+
+ void _drawSquare(CanvasRenderingContext2D context2d, int x, int y, int w,
+                  int h) {
+   context2d.save();
+   context2d.beginPath();
+   context2d.translate(x, y);
+   context2d.fillStyle = "#656565";
+   context2d.fillRect(0, 0, w, h);
+   context2d.restore();
+ }
+
+ void _drawGrid(CanvasRenderingContext2D context2d, int width, int height,
+                int horizSlices, int vertSlices) {
+   int sliceWidth = width ~/ horizSlices;
+   int sliceHeight = height ~/ vertSlices;
+   int sliceHalfWidth = sliceWidth ~/ 2;
+   for (int i = 0; i &lt; horizSlices; i++) {
+     for (int j = 0; j &lt; vertSlices; j++) {
+       if (j % 2 == 0) {
+         _drawSquare(context2d, i * sliceWidth, j * sliceHeight,
+                     sliceHalfWidth, sliceHeight);
+       } else {
+         _drawSquare(context2d, i * sliceWidth + sliceHalfWidth,
+                     j * sliceHeight, sliceHalfWidth, sliceHeight);
+       }
+     }
+   }
+ }
+
+ /// Initializes an instance of the [GraphicsDevice] class.
+ ///
+ /// A [WebGL.RenderingContext] is created from the given [surface].
+ /// Additionally an
+ /// optional instance of [GraphicsDeviceConfig] can be passed in to control
+ /// the creation of the underlying frame buffer.
+ GraphicsDevice(CanvasElement surface, [GraphicsDeviceConfig config = null]) {
+   assert(surface != null);
+   _surface = surface;
+   // Get the WebGL context.
+   if (config == null) {
+     config = new GraphicsDeviceConfig();
+   }
+   _gl = surface.getContext3d(stencil: config.stencilBuffer);
+   _capabilities = new GraphicsDeviceCapabilities._fromContext(gl);
+   print(_capabilities);
+   // Create the associated GraphicsContext.
+   _context = new GraphicsContext(this);
+   RenderTarget._systemRenderTarget = new RenderTarget.systemTarget(
+       'WebGLFrontBuffer',
+       this);
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="GraphicsDevice">
+<button class="show-code">Code</button>
+new <strong>GraphicsDevice</strong>(CanvasElement surface, [<a href="../spectre/GraphicsDeviceConfig.html">GraphicsDeviceConfig</a> config = null]) <a class="anchor-link" href="#GraphicsDevice"
+              title="Permalink to GraphicsDevice.GraphicsDevice">#</a></h4>
+<div class="doc">
+<p>Initializes an instance of the <a class="crossref" href="../spectre/GraphicsDevice.html#GraphicsDevice">GraphicsDevice</a> class.</p>
+<p>A <code>WebGL.RenderingContext</code> is created from the given 
+<span class="param">surface</span>.
+Additionally an
+optional instance of <a class="crossref" href="../spectre/GraphicsDeviceConfig.html">GraphicsDeviceConfig</a> can be passed in to control
+the creation of the underlying frame buffer.</p>
+<pre class="source">
+GraphicsDevice(CanvasElement surface, [GraphicsDeviceConfig config = null]) {
+ assert(surface != null);
+ _surface = surface;
+ // Get the WebGL context.
+ if (config == null) {
+   config = new GraphicsDeviceConfig();
+ }
+ _gl = surface.getContext3d(stencil: config.stencilBuffer);
+ _capabilities = new GraphicsDeviceCapabilities._fromContext(gl);
+ print(_capabilities);
+ // Create the associated GraphicsContext.
+ _context = new GraphicsContext(this);
+ RenderTarget._systemRenderTarget = new RenderTarget.systemTarget(
+     'WebGLFrontBuffer',
+     this);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="canvasHeight">
+<button class="show-code">Code</button>
+final int         <strong>canvasHeight</strong> <a class="anchor-link"
+            href="#canvasHeight"
+            title="Permalink to GraphicsDevice.canvasHeight">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get canvasHeight =&gt; _surface.height;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="canvasWidth">
+<button class="show-code">Code</button>
+final int         <strong>canvasWidth</strong> <a class="anchor-link"
+            href="#canvasWidth"
+            title="Permalink to GraphicsDevice.canvasWidth">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get canvasWidth =&gt; _surface.width;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="capabilities">
+<button class="show-code">Code</button>
+final <a href="../spectre/GraphicsDeviceCapabilities.html">GraphicsDeviceCapabilities</a>         <strong>capabilities</strong> <a class="anchor-link"
+            href="#capabilities"
+            title="Permalink to GraphicsDevice.capabilities">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+GraphicsDeviceCapabilities get capabilities =&gt; _capabilities;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="children">
+<button class="show-code">Code</button>
+final Set&lt;<a href="../spectre/DeviceChild.html">DeviceChild</a>&gt;         <strong>children</strong> <a class="anchor-link"
+            href="#children"
+            title="Permalink to GraphicsDevice.children">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Set&lt;DeviceChild&gt; children = new Set&lt;DeviceChild&gt;()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="context">
+<button class="show-code">Code</button>
+final <a href="../spectre/GraphicsContext.html">GraphicsContext</a>         <strong>context</strong> <a class="anchor-link"
+            href="#context"
+            title="Permalink to GraphicsDevice.context">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+GraphicsContext get context =&gt; _context;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="frontBufferHeight">
+<button class="show-code">Code</button>
+final int         <strong>frontBufferHeight</strong> <a class="anchor-link"
+            href="#frontBufferHeight"
+            title="Permalink to GraphicsDevice.frontBufferHeight">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get frontBufferHeight =&gt; _gl.drawingBufferHeight;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="frontBufferWidth">
+<button class="show-code">Code</button>
+final int         <strong>frontBufferWidth</strong> <a class="anchor-link"
+            href="#frontBufferWidth"
+            title="Permalink to GraphicsDevice.frontBufferWidth">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get frontBufferWidth =&gt; _gl.drawingBufferWidth;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="gl">
+<button class="show-code">Code</button>
+final RenderingContext         <strong>gl</strong> <a class="anchor-link"
+            href="#gl"
+            title="Permalink to GraphicsDevice.gl">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+WebGL.RenderingContext get gl =&gt; _gl;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.847</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

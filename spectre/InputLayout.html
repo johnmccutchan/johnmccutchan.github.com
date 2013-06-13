@@ -1,0 +1,357 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>InputLayout class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="InputLayout">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/InputLayout.html">InputLayout</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>InputLayout</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class InputLayout extends DeviceChild {
+ /** List of active attributes. */
+ final List&lt;VertexAttribute&gt; attributes = new List&lt;VertexAttribute&gt;();
+ /** List of attributes expected by the shader but missing from the mesh. */
+ final List&lt;ShaderProgramAttribute&gt; missingAttributes =
+     new List&lt;ShaderProgramAttribute&gt;();
+
+ ShaderProgram _shaderProgram;
+ ShaderProgram get shaderProgram =&gt; _shaderProgram;
+ /** Set the shader program. Input layout will be verified to be [ready]. */
+ set shaderProgram(ShaderProgram shaderProgram) {
+   _shaderProgram = shaderProgram;
+   _refresh();
+ }
+
+ SpectreMesh _mesh;
+ SpectreMesh get mesh =&gt; _mesh;
+ /** Set the mesh. Input layout will be verified to be [ready]. */
+ set mesh(SpectreMesh mesh) {
+   _mesh = mesh;
+   _refresh();
+ }
+
+ /** In order for a InputLayout to be ready the mesh must have
+  * all the attributes the shader program requires.
+  */
+ bool get ready =&gt; _shaderProgram != null &amp;&amp; _mesh != null &amp;&amp;
+                   missingAttributes.length == 0;
+
+ void _refresh() {
+   attributes.clear();
+   missingAttributes.clear();
+
+   if (_shaderProgram == null || _mesh == null) {
+     return;
+   }
+
+   if (_shaderProgram.attributes.length == 0) {
+     print('InputLayout $name shaderProgram has 0 attributes.');
+     return;
+   }
+
+   if (_mesh.attributes.length == 0) {
+     print('InputLayout $name mesh has 0 attributes.');
+     return;
+   }
+
+   _shaderProgram.attributes.forEach((name, shaderProgramAttribute) {
+     SpectreMeshAttribute meshAttribute = _mesh.attributes[name];
+     if (meshAttribute == null) {
+       missingAttributes.add(shaderProgramAttribute);
+     } else {
+       VertexAttribute element = new VertexAttribute.atAttributeIndex(
+           meshAttribute.attribute,
+           shaderProgramAttribute.location);
+       attributes.add(element);
+     }
+   });
+ }
+
+ InputLayout(String name, GraphicsDevice device)
+     : super._internal(name, device) {
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../disposable/Disposable.html">Disposable</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../spectre/DeviceChild.html">DeviceChild</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>InputLayout</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="InputLayout">
+<button class="show-code">Code</button>
+new <strong>InputLayout</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#InputLayout"
+              title="Permalink to InputLayout.InputLayout">#</a></h4>
+<div class="doc">
+<pre class="source">
+InputLayout(String name, GraphicsDevice device)
+   : super._internal(name, device) {
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="attributes">
+<button class="show-code">Code</button>
+final List&lt;<a href="../spectre/VertexAttribute.html">VertexAttribute</a>&gt;         <strong>attributes</strong> <a class="anchor-link"
+            href="#attributes"
+            title="Permalink to InputLayout.attributes">#</a>
+        </h4>
+        <div class="doc">
+<p>List of active attributes. </p>
+<pre class="source">
+final List&lt;VertexAttribute&gt; attributes = new List&lt;VertexAttribute&gt;()
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="device">
+<button class="show-code">Code</button>
+final <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a>         <strong>device</strong> <a class="anchor-link"
+            href="#device"
+            title="Permalink to InputLayout.device">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final GraphicsDevice device
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isDisposed">
+<button class="show-code">Code</button>
+final bool         <strong>isDisposed</strong> <a class="anchor-link"
+            href="#isDisposed"
+            title="Permalink to InputLayout.isDisposed">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>This object has been disposed. </p>
+<pre class="source">
+bool get isDisposed =&gt; _disposed;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="mesh">
+<button class="show-code">Code</button>
+<a href="../spectre/SpectreMesh.html">SpectreMesh</a>         <strong>mesh</strong> <a class="anchor-link"
+            href="#mesh"
+            title="Permalink to InputLayout.mesh">#</a>
+        </h4>
+        <div class="doc">
+<p>Set the mesh. Input layout will be verified to be <a class="crossref" href="../spectre/InputLayout.html#ready">ready</a>. </p>
+<pre class="source">
+SpectreMesh get mesh =&gt; _mesh;
+</pre>
+<pre class="source">
+set mesh(SpectreMesh mesh) {
+ _mesh = mesh;
+ _refresh();
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="missingAttributes">
+<button class="show-code">Code</button>
+final List&lt;<a href="../spectre/ShaderProgramAttribute.html">ShaderProgramAttribute</a>&gt;         <strong>missingAttributes</strong> <a class="anchor-link"
+            href="#missingAttributes"
+            title="Permalink to InputLayout.missingAttributes">#</a>
+        </h4>
+        <div class="doc">
+<p>List of attributes expected by the shader but missing from the mesh. </p>
+<pre class="source">
+final List&lt;ShaderProgramAttribute&gt; missingAttributes =
+   new List&lt;ShaderProgramAttribute&gt;()
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to InputLayout.name">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="pinCount">
+<button class="show-code">Code</button>
+final int         <strong>pinCount</strong> <a class="anchor-link"
+            href="#pinCount"
+            title="Permalink to InputLayout.pinCount">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Count of pins </p>
+<pre class="source">
+int get pinCount =&gt; _referenceCount;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="ready">
+<button class="show-code">Code</button>
+final bool         <strong>ready</strong> <a class="anchor-link"
+            href="#ready"
+            title="Permalink to InputLayout.ready">#</a>
+        </h4>
+        <div class="doc">
+<p>In order for a InputLayout to be ready the mesh must have
+all the attributes the shader program requires.</p>
+<pre class="source">
+bool get ready =&gt; _shaderProgram != null &amp;&amp; _mesh != null &amp;&amp;
+                 missingAttributes.length == 0;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="shaderProgram">
+<button class="show-code">Code</button>
+<a href="../spectre/ShaderProgram.html">ShaderProgram</a>         <strong>shaderProgram</strong> <a class="anchor-link"
+            href="#shaderProgram"
+            title="Permalink to InputLayout.shaderProgram">#</a>
+        </h4>
+        <div class="doc">
+<p>Set the shader program. Input layout will be verified to be <a class="crossref" href="../spectre/InputLayout.html#ready">ready</a>. </p>
+<pre class="source">
+ShaderProgram get shaderProgram =&gt; _shaderProgram;
+</pre>
+<pre class="source">
+set shaderProgram(ShaderProgram shaderProgram) {
+ _shaderProgram = shaderProgram;
+ _refresh();
+}
+</pre>
+</div>
+</div>
+</div>
+<div class="inherited">
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="dispose">
+<button class="show-code">Code</button>
+void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to InputLayout.dispose">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Disposes of the object. If nothing else has this object pinned,
+the finalizer will be called. See <code>pin</code> for inverse. Throws
+an exception if the object is already disposed.</p>
+<pre class="source">
+void dispose() {
+ if (_disposed) {
+   throw new StateError('It is an error to dispose a disposed object.');
+   return;
+ }
+ _referenceCount--;
+ if (_referenceCount == 0) {
+   finalize();
+   _disposed = true;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="finalize">
+<button class="show-code">Code</button>
+void <strong>finalize</strong>() <a class="anchor-link" href="#finalize"
+              title="Permalink to InputLayout.finalize">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Clean up any object state here. </p>
+<div class="docs-inherited-from">docs inherited from <a href="../disposable/Disposable.html">Disposable</a> </div></div>
+<pre class="source">
+void finalize() {
+ print('Finalizing ${this.runtimeType} $name.');
+ device._removeChild(this);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="fromJson">
+<button class="show-code">Code</button>
+void <strong>fromJson</strong>(a) <a class="anchor-link" href="#fromJson"
+              title="Permalink to InputLayout.fromJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+void fromJson(dynamic a) {
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="pin">
+<button class="show-code">Code</button>
+void <strong>pin</strong>() <a class="anchor-link" href="#pin"
+              title="Permalink to InputLayout.pin">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Pin the disposable object. See <code>dispose</code> for inverse.
+Throws an exception if this object is already disposed.</p>
+<pre class="source">
+void pin() {
+ if (_disposed) {
+   throw new StateError('It is an error to pin a disposed object.');
+   return;
+ }
+ _referenceCount++;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toJson">
+<button class="show-code">Code</button>
+dynamic <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to InputLayout.toJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+dynamic toJson() {
+ return '';
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to InputLayout.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() =&gt; name;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.831</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

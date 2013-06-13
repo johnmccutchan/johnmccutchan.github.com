@@ -1,0 +1,58 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>simple_audio_asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="favicon.ico">
+        
+        </head>
+        <body data-library="simple_audio_asset_pack">
+        <div class="page">
+        <div class="header">
+          <a href="index.html"><div class="logo"></div></a>
+          <a href="index.html">Dart Documentation</a>
+         &rsaquo; <a href="simple_audio_asset_pack.html">simple_audio_asset_pack</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+<h2><strong>simple_audio_asset_pack</strong> library</h2>
+<div>
+<h3>Functions</h3>
+<div class="method"><h4 id="registerSimpleAudioWithAssetManager">
+<button class="show-code">Code</button>
+void <strong>registerSimpleAudioWithAssetManager</strong>(<a href="simple_audio/AudioManager.html">AudioManager</a> audioManager, <a href="asset_pack/AssetManager.html">AssetManager</a> assetManager) <a class="anchor-link" href="#registerSimpleAudioWithAssetManager"
+              title="Permalink to registerSimpleAudioWithAssetManager">#</a></h4>
+<div class="doc">
+<p>Register the <code>simple_audio</code> audio manager with the <code>asset_pack</code>
+asset manager. After calling this function, the asset manager
+will be able to load clips.</p>
+<pre class="source">
+void registerSimpleAudioWithAssetManager(AudioManager audioManager,
+                                        AssetManager assetManager) {
+ assetManager.importers['audioclip'] = new NoopImporter();
+ assetManager.loaders['audioclip'] = new _AssetLoaderClip(audioManager);
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.573</div>
+        </div>
+        <script async src="client-live-nav.js"></script>
+        </body></html>
+        

@@ -1,0 +1,220 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>SkinnedMeshInstance class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="SkinnedMeshInstance">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/SkinnedMeshInstance.html">SkinnedMeshInstance</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>SkinnedMeshInstance</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class SkinnedMeshInstance {
+ SkinnedMesh mesh;
+ PosedSkeleton posedSkeleton;
+
+ // current time.
+ double _currentTime = 0.0;
+ double get currentTime =&gt; _currentTime;
+ set currentTime(double value) {
+   _currentTime = value;
+   if (_currentAnimation == null || _currentAnimation.runTime == 0.0) {
+     _currentTime = 0.0;
+   } else {
+     while (_currentTime &gt;= _currentAnimation.runTime) {
+       _currentTime -= _currentAnimation.runTime;
+     }
+   }
+ }
+
+ SkeletonAnimation _currentAnimation;
+ String get currentAnimation =&gt; _currentAnimation.name;
+ set currentAnimation(String name) {
+   _currentAnimation = mesh.animations[name];
+   currentTime = 0.0;
+ }
+
+ SkinnedMeshInstance(SkinnedMesh this.mesh) {
+   posedSkeleton = new PosedSkeleton(mesh.skeleton);
+   _currentAnimation = mesh._currentAnimation;
+ }
+
+ bool update(double dt, bool useSimd) {
+   if(_currentAnimation == null)
+     return false; // TODO: In this case the posedSkeleton should be set to all identity matricies
+
+   double oldCurrentTime = currentTime;
+   currentTime += dt * _currentAnimation.timeScale;
+
+   if(useSimd) {
+     mesh.skeletonPoserSIMD.pose(mesh.skeleton, _currentAnimation, posedSkeleton, _currentTime);
+   } else {
+     mesh.skeletonPoser.pose(mesh.skeleton, _currentAnimation, posedSkeleton, _currentTime);
+   }
+
+   return oldCurrentTime &gt; currentTime;
+ }
+
+ void skin(bool useSimd) {
+   mesh.skin(posedSkeleton, useSimd);
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="SkinnedMeshInstance">
+<button class="show-code">Code</button>
+new <strong>SkinnedMeshInstance</strong>(<a href="../spectre/SkinnedMesh.html">SkinnedMesh</a> mesh) <a class="anchor-link" href="#SkinnedMeshInstance"
+              title="Permalink to SkinnedMeshInstance.SkinnedMeshInstance">#</a></h4>
+<div class="doc">
+<pre class="source">
+SkinnedMeshInstance(SkinnedMesh this.mesh) {
+ posedSkeleton = new PosedSkeleton(mesh.skeleton);
+ _currentAnimation = mesh._currentAnimation;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="currentAnimation">
+<button class="show-code">Code</button>
+String         <strong>currentAnimation</strong> <a class="anchor-link"
+            href="#currentAnimation"
+            title="Permalink to SkinnedMeshInstance.currentAnimation">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+String get currentAnimation =&gt; _currentAnimation.name;
+</pre>
+<pre class="source">
+set currentAnimation(String name) {
+ _currentAnimation = mesh.animations[name];
+ currentTime = 0.0;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="currentTime">
+<button class="show-code">Code</button>
+double         <strong>currentTime</strong> <a class="anchor-link"
+            href="#currentTime"
+            title="Permalink to SkinnedMeshInstance.currentTime">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+double get currentTime =&gt; _currentTime;
+</pre>
+<pre class="source">
+set currentTime(double value) {
+ _currentTime = value;
+ if (_currentAnimation == null || _currentAnimation.runTime == 0.0) {
+   _currentTime = 0.0;
+ } else {
+   while (_currentTime &gt;= _currentAnimation.runTime) {
+     _currentTime -= _currentAnimation.runTime;
+   }
+ }
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="mesh">
+<button class="show-code">Code</button>
+<a href="../spectre/SkinnedMesh.html">SkinnedMesh</a>         <strong>mesh</strong> <a class="anchor-link"
+            href="#mesh"
+            title="Permalink to SkinnedMeshInstance.mesh">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+SkinnedMesh mesh
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="posedSkeleton">
+<button class="show-code">Code</button>
+<a href="../spectre/PosedSkeleton.html">PosedSkeleton</a>         <strong>posedSkeleton</strong> <a class="anchor-link"
+            href="#posedSkeleton"
+            title="Permalink to SkinnedMeshInstance.posedSkeleton">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+PosedSkeleton posedSkeleton
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="skin">
+<button class="show-code">Code</button>
+void <strong>skin</strong>(bool useSimd) <a class="anchor-link" href="#skin"
+              title="Permalink to SkinnedMeshInstance.skin">#</a></h4>
+<div class="doc">
+<pre class="source">
+void skin(bool useSimd) {
+ mesh.skin(posedSkeleton, useSimd);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="update">
+<button class="show-code">Code</button>
+bool <strong>update</strong>(double dt, bool useSimd) <a class="anchor-link" href="#update"
+              title="Permalink to SkinnedMeshInstance.update">#</a></h4>
+<div class="doc">
+<pre class="source">
+bool update(double dt, bool useSimd) {
+ if(_currentAnimation == null)
+   return false; // TODO: In this case the posedSkeleton should be set to all identity matricies
+
+ double oldCurrentTime = currentTime;
+ currentTime += dt * _currentAnimation.timeScale;
+
+ if(useSimd) {
+   mesh.skeletonPoserSIMD.pose(mesh.skeleton, _currentAnimation, posedSkeleton, _currentTime);
+ } else {
+   mesh.skeletonPoser.pose(mesh.skeleton, _currentAnimation, posedSkeleton, _currentTime);
+ }
+
+ return oldCurrentTime &gt; currentTime;
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.595</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

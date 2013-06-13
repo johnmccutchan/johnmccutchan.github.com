@@ -1,0 +1,1069 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>BlendState class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="BlendState">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/BlendState.html">BlendState</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>BlendState</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>BlendState controls how output from your fragment shader is blended onto
+the framebuffer. Set using <a class="crossref" href="../spectre/GraphicsContext.html#setBlendState">GraphicsContext.setBlendState</a>.</p>
+<pre class="source">
+class BlendState extends DeviceChild {
+ //---------------------------------------------------------------------
+ // Serialization names
+ //---------------------------------------------------------------------
+
+ /// Serialization name for [enabled].
+ static const String _blendEnabledName = 'enabled';
+ /// Serialization name for [blendFactorRed].
+ static const String _blendFactorRedName = 'blendFactorRed';
+ /// Serialization name for [blendFactorGreen].
+ static const String _blendFactorGreenName = 'blendFactorGreen';
+ /// Serialization name for [blendFactorBlue].
+ static const String _blendFactorBlueName = 'blendFactorBlue';
+ /// Serialization name for [blendFactorAlpha].
+ static const String _blendFactorAlphaName = 'blendFactorAlpha';
+ /// Serialization name for [alphaBlendOperation].
+ static const String _alphaBlendOperationName = 'alphaBlendOperation';
+ /// Serialization name for [alphaDestinationBlend].
+ static const String _alphaDestinationBlendName = 'alphaDestination';
+ /// Serialization name for [alphaSourceBlend].
+ static const String _alphaSourceBlendName = 'alphaSourceBlend';
+ /// Serialization name for [colorBlendOperation].
+ static const String _colorBlendOperationName = 'colorBlendOperation';
+ /// Serialization name for [colorDestinationBlend].
+ static const String _colorDestinationBlendName = 'colorDestinationBlend';
+ /// Serialization name for [colorSourceBlend].
+ static const String _colorSourceBlendName = 'colorSourceBlend';
+ /// Serialization name for [writeRenderTargetRed].
+ static const String _writeRenderTargetRedName = 'writeRenderTargetRed';
+ /// Serialization name for [writeRenderTargetGreen].
+ static const String _writeRenderTargetGreenName = 'writeRenderTargetGreen';
+ /// Serialization name for [writeRenderTargetBlue].
+ static const String _writeRenderTargetBlueName = 'writeRenderTargetBlue';
+ /// Serialization name for [writeRenderTargetAlpha].
+ static const String _writeRenderTargetAlphaName = 'writeRenderTargetAlpha';
+
+ //---------------------------------------------------------------------
+ // Member variables
+ //---------------------------------------------------------------------
+
+ /// Whether blending operations are enabled. Enabled by default.
+ bool _enabled = true;
+
+ /// The red component of the blend factor for alpha blending.
+ double _blendFactorRed = 1.0;
+ /// The green component of the blend factor for alpha blending.
+ double _blendFactorGreen = 1.0;
+ /// The blue component of the blend factor for alpha blending.
+ double _blendFactorBlue = 1.0;
+ /// The alpha component of the blend factor for alpha blending.
+ double _blendFactorAlpha = 1.0;
+
+ /// The arithmetic operation when blending alpha values.
+ /// The default is [BlendOperation.Add].
+ int _alphaBlendOperation = BlendOperation.Add;
+ /// The blend factor for the destination alpha; the percentage of the
+ /// destination alpha included in the result.
+ /// The default is [Blend.One].
+ int _alphaDestinationBlend = Blend.One;
+ /// The alpha blend factor.
+ /// The default is [Blend.One].
+ int _alphaSourceBlend = Blend.One;
+ /// The arithmetic operation when blending color values.
+ /// The default is [BlendOperation.Add].
+ int _colorBlendOperation = BlendOperation.Add;
+ /// The blend factor for the destination color.
+ /// The default is [Blend.One].
+ int _colorDestinationBlend = Blend.One;
+ /// The blend factor for the source color.
+ /// The default is Blend.One.
+ int _colorSourceBlend = Blend.One;
+
+ /// Whether the red channel is enabled for writing during color blending.
+ bool _writeRenderTargetRed = true;
+ /// Whether the green channel is enabled for writing during color blending.
+ bool _writeRenderTargetGreen = true;
+ /// Whether the blue channel is enabled for writing during color blending.
+ bool _writeRenderTargetBlue = true;
+ /// Whether the alpha channel is enabled for writing during color blending.
+ bool _writeRenderTargetAlpha = true;
+
+ //---------------------------------------------------------------------
+ // Construction
+ //---------------------------------------------------------------------
+
+ /// Creates an instance of the BlendState class with default values.
+ BlendState(String name, GraphicsDevice device)
+   : super._internal(name, device);
+
+ /// Initializes an instance of the BlendState class with settings for
+ /// additive blend. This adds the destination data to the source data without
+ /// using alpha.
+ BlendState.additive(String name, GraphicsDevice device)
+   : super._internal(name, device)
+   , _alphaDestinationBlend = Blend.One
+   , _alphaSourceBlend = Blend.SourceAlpha
+   , _colorDestinationBlend = Blend.One
+   , _colorSourceBlend = Blend.SourceAlpha;
+
+ /// Initializes an intance of the BlendState class with settings for alpha
+ /// blend. This blends the source and destination data using alpha.
+ BlendState.alphaBlend(String name, GraphicsDevice device)
+   : super._internal(name, device)
+   , _alphaDestinationBlend = Blend.InverseSourceAlpha
+   , _alphaSourceBlend = Blend.One
+   , _colorDestinationBlend = Blend.InverseSourceAlpha
+   , _colorSourceBlend = Blend.One;
+
+ /// Initializes an instance of the BlendState class with settings for blending
+ /// with non-premultipled alpha. This blends source and destination data by
+ /// using alpha while assuming the color data contains no alpha information.
+ BlendState.nonPremultiplied(String name, GraphicsDevice device)
+   : super._internal(name, device)
+   , _alphaDestinationBlend = Blend.InverseSourceAlpha
+   , _alphaSourceBlend = Blend.SourceAlpha
+   , _colorDestinationBlend = Blend.InverseSourceAlpha
+   , _colorSourceBlend = Blend.SourceAlpha;
+
+ /// Initializes an instance of the BlendState class with settings for opaque
+ /// blend. This overwrites the source with the destination data.
+ BlendState.opaque(String name, GraphicsDevice device)
+   : super._internal(name, device)
+   , _enabled = false
+   , _alphaDestinationBlend = Blend.Zero
+   , _alphaSourceBlend = Blend.One
+   , _colorDestinationBlend = Blend.Zero
+   , _colorSourceBlend = Blend.One;
+
+ //---------------------------------------------------------------------
+ // Properties
+ //---------------------------------------------------------------------
+
+ /// Whether blending operations are enabled.
+ bool get enabled =&gt; _enabled;
+ set enabled(bool value) { _enabled = value; }
+
+ /// The red component of the blend factor for alpha blending.
+ /// Throws [ArgumentError] if [value] is not in the range [0, 1].
+ set blendFactorRed(double value) {
+   if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+     _blendFactorRed = value;
+
+     return;
+   }
+
+   throw new ArgumentError('blendFactorRed must be in the range [0, 1]');
+ }
+ double get blendFactorRed =&gt; _blendFactorRed;
+
+ /// The green component of the blend factor for alpha blending.
+ /// Throws [ArgumentError] if [value] is not in the range [0, 1].
+ set blendFactorGreen(double value) {
+   if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+     _blendFactorGreen = value;
+     return;
+   }
+
+   throw new ArgumentError('blendFactorGreen must be in the range [0, 1]');
+ }
+ double get blendFactorGreen =&gt; _blendFactorGreen;
+
+
+ /// The blue component of the blend factor for alpha blending.
+ /// Throws [ArgumentError] if [value] is not in the range [0, 1].
+ set blendFactorBlue(double value) {
+   if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+     _blendFactorBlue = value;
+     return;
+   }
+
+   throw new ArgumentError('blendFactorGreen must be in the range [0, 1]');
+ }
+ double get blendFactorBlue =&gt; _blendFactorBlue;
+
+
+ /// The alpha component of the blend factor for alpha blending.
+ /// Throws [ArgumentError] if [value] is not in the range [0, 1].
+ set blendFactorAlpha(double value) {
+   if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+     _blendFactorAlpha = value;
+     return;
+   }
+
+   throw new ArgumentError('blendFactorGreen must be in the range [0, 1]');
+ }
+ double get blendFactorAlpha =&gt; _blendFactorAlpha;
+
+
+ /// The arithmetic operation when blending alpha values.
+ /// The default is [BlendOperation.Add]. Throws [ArgumentError] if the
+ /// [value] is not an enumeration within [BlendOperation].
+ set alphaBlendOperation(int value) {
+   if (!BlendOperation.isValid(value)) {
+     throw new ArgumentError('alphaBlendOperation must be an enumeration '
+                             'within BlendOperation.');
+   }
+
+   _alphaBlendOperation = value;
+ }
+ int get alphaBlendOperation =&gt; _alphaBlendOperation;
+
+
+ /// The blend factor for the destination alpha; the percentage of the
+ /// destination alpha included in the result. The default is [Blend.One].
+ /// Throws [ArgumentError] if the [value] is not an enumeration within
+ /// [Blend].
+ set alphaDestinationBlend(int value) {
+   if (!Blend.isValid(value)) {
+     throw new ArgumentError('alphaDestinationBlend must be an enumeration '
+                             'within Blend.');
+   }
+
+   _alphaDestinationBlend = value;
+ }
+ int get alphaDestinationBlend =&gt; _alphaDestinationBlend;
+
+
+ /// The alpha blend factor.
+ /// The default is [Blend.One].
+ /// Throws [ArgumentError] if the [value] is not an enumeration within
+ /// [Blend].
+ set alphaSourceBlend(int value) {
+   if (!Blend.isValid(value)) {
+     throw new ArgumentError('alphaSourceBlend must be an enumeration within '
+                             'Blend.');
+   }
+
+   _alphaSourceBlend = value;
+ }
+ int get alphaSourceBlend =&gt; _alphaSourceBlend;
+
+
+ /// The arithmetic operation when blending color values.
+ /// The default is [BlendOperation.Add].
+ /// Throws [ArgumentError] if the [value] is not an enumeration within
+ /// [Blend].
+ set colorBlendOperation(int value) {
+   if (!BlendOperation.isValid(value)) {
+     throw new ArgumentError('colorBlendOperation must be an enumeration '
+                             'within BlendOperation.');
+   }
+
+   _colorBlendOperation = value;
+ }
+ int get colorBlendOperation =&gt; _colorBlendOperation;
+
+ /// The blend factor for the destination color.
+ /// The default is [Blend.One].
+ /// Throws [ArgumentError] if the [value] is not an enumeration within
+ /// [Blend].
+ set colorDestinationBlend(int value) {
+   if (!Blend.isValid(value)) {
+     throw new ArgumentError('colorDestinationBlend must be an enumeration '
+                             'within Blend.');
+   }
+
+   _colorDestinationBlend = value;
+ }
+ int get colorDestinationBlend =&gt; _colorDestinationBlend;
+
+
+ /// The blend factor for the source color.
+ /// The default is Blend.One.
+ /// Throws [ArgumentError] if the [value] is not an enumeration within
+ /// [Blend].
+ set colorSourceBlend(int value) {
+   if (!Blend.isValid(value)) {
+     throw new ArgumentError('colorSourceBlend must be an enumeration within '
+                             'Blend.');
+   }
+
+   _colorSourceBlend = value;
+ }
+ int get colorSourceBlend =&gt; _colorSourceBlend;
+
+
+ /// Whether the red channel is enabled for writing during color blending.
+ bool get writeRenderTargetRed =&gt; _writeRenderTargetRed;
+ set writeRenderTargetRed(bool value) { _writeRenderTargetRed = value; }
+
+ /// Whether the green channel is enabled for writing during color blending.
+ bool get writeRenderTargetGreen =&gt; _writeRenderTargetGreen;
+ set writeRenderTargetGreen(bool value) { _writeRenderTargetGreen = value; }
+
+ /// Whether the blue channel is enabled for writing during color blending.
+ bool get writeRenderTargetBlue =&gt; _writeRenderTargetBlue;
+ set writeRenderTargetBlue(bool value) { _writeRenderTargetBlue = value; }
+
+ /// Whether the alpha channel is enabled for writing during color blending.
+ bool get writeRenderTargetAlpha =&gt; _writeRenderTargetAlpha;
+ set writeRenderTargetAlpha(bool value) { _writeRenderTargetAlpha = value; }
+
+ //---------------------------------------------------------------------
+ // Serialization
+ //---------------------------------------------------------------------
+
+ /// Serializes the [BlendState] to a JSON.
+ dynamic toJson() {
+   Map json = new Map();
+
+   json[_blendEnabledName] = _enabled;
+
+   json[_blendFactorRedName]   = _blendFactorRed;
+   json[_blendFactorGreenName] = _blendFactorGreen;
+   json[_blendFactorBlueName]  = _blendFactorBlue;
+   json[_blendFactorAlphaName] = _blendFactorAlpha;
+
+   json[_alphaBlendOperationName]   =
+       BlendOperation.stringify(_alphaBlendOperation);
+   json[_alphaDestinationBlendName] =
+       Blend.stringify(_alphaDestinationBlend);
+   json[_alphaSourceBlendName]      =
+       Blend.stringify(_alphaSourceBlend);
+
+   json[_colorBlendOperationName]   =
+       BlendOperation.stringify(_colorBlendOperation);
+   json[_colorDestinationBlendName] =
+       Blend.stringify(_colorDestinationBlend);
+   json[_colorSourceBlendName]      =
+       Blend.stringify(_colorSourceBlend);
+
+   json[_writeRenderTargetRedName]   = _writeRenderTargetRed;
+   json[_writeRenderTargetGreenName] = _writeRenderTargetGreen;
+   json[_writeRenderTargetBlueName]  = _writeRenderTargetBlue;
+   json[_writeRenderTargetAlphaName] = _writeRenderTargetAlpha;
+
+   return json;
+ }
+
+ /// Deserializes the [BlendState] from a JSON.
+ void fromJson(Map values) {
+   assert(values != null);
+
+   dynamic value;
+
+   value = values[_blendEnabledName];
+   _enabled = (value != null) ? value : _enabled;
+
+   value = values[_blendFactorRedName];
+   _blendFactorRed = (value != null) ? value : _blendFactorRed;
+   value = values[_blendFactorGreenName];
+   _blendFactorGreen = (value != null) ? value : _blendFactorGreen;
+   value = values[_blendFactorBlueName];
+   _blendFactorBlue = (value != null) ? value : _blendFactorBlue;
+   value = values[_blendFactorAlphaName];
+   _blendFactorAlpha = (value != null) ? value : _blendFactorAlpha;
+
+   value = values[_alphaBlendOperationName];
+   _alphaBlendOperation = (value != null) ?
+       BlendOperation.parse(value) : _alphaBlendOperation;
+   value = values[_alphaDestinationBlendName];
+   _alphaDestinationBlend = (value != null) ?
+       Blend.parse(value) : _alphaDestinationBlend;
+   value = values[_alphaSourceBlendName];
+   _alphaSourceBlend = (value != null) ?
+       Blend.parse(value) : _alphaSourceBlend;
+
+   value = values[_colorBlendOperationName];
+   _colorBlendOperation = (value != null) ?
+       BlendOperation.parse(value) : _colorBlendOperation;
+   value = values[_colorDestinationBlendName];
+   _colorDestinationBlend = (value != null) ?
+       Blend.parse(value) : _colorDestinationBlend;
+   value = values[_colorSourceBlendName];
+   _colorSourceBlend = (value != null) ?
+       Blend.parse(value) : _colorSourceBlend;
+
+   value = values[_writeRenderTargetRedName];
+   _writeRenderTargetRed = (value != null) ? value : _writeRenderTargetRed;
+   value = values[_writeRenderTargetGreenName];
+   _writeRenderTargetGreen = (value != null) ? value : _writeRenderTargetGreen;
+   value = values[_writeRenderTargetBlueName];
+   _writeRenderTargetBlue = (value != null) ? value : _writeRenderTargetBlue;
+   value = values[_writeRenderTargetAlphaName];
+   _writeRenderTargetAlpha = (value != null) ? value : _writeRenderTargetAlpha;
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../disposable/Disposable.html">Disposable</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../spectre/DeviceChild.html">DeviceChild</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>BlendState</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="BlendState">
+<button class="show-code">Code</button>
+new <strong>BlendState</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#BlendState"
+              title="Permalink to BlendState.BlendState">#</a></h4>
+<div class="doc">
+<p>Creates an instance of the BlendState class with default values.</p>
+<pre class="source">
+BlendState(String name, GraphicsDevice device)
+ : super._internal(name, device);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="BlendState.additive">
+<button class="show-code">Code</button>
+new <strong>BlendState.additive</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#BlendState.additive"
+              title="Permalink to BlendState.BlendState.additive">#</a></h4>
+<div class="doc">
+<p>Initializes an instance of the BlendState class with settings for
+additive blend. This adds the destination data to the source data without
+using alpha.</p>
+<pre class="source">
+BlendState.additive(String name, GraphicsDevice device)
+ : super._internal(name, device)
+ , _alphaDestinationBlend = Blend.One
+ , _alphaSourceBlend = Blend.SourceAlpha
+ , _colorDestinationBlend = Blend.One
+ , _colorSourceBlend = Blend.SourceAlpha;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="BlendState.alphaBlend">
+<button class="show-code">Code</button>
+new <strong>BlendState.alphaBlend</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#BlendState.alphaBlend"
+              title="Permalink to BlendState.BlendState.alphaBlend">#</a></h4>
+<div class="doc">
+<p>Initializes an intance of the BlendState class with settings for alpha
+blend. This blends the source and destination data using alpha.</p>
+<pre class="source">
+BlendState.alphaBlend(String name, GraphicsDevice device)
+ : super._internal(name, device)
+ , _alphaDestinationBlend = Blend.InverseSourceAlpha
+ , _alphaSourceBlend = Blend.One
+ , _colorDestinationBlend = Blend.InverseSourceAlpha
+ , _colorSourceBlend = Blend.One;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="BlendState.nonPremultiplied">
+<button class="show-code">Code</button>
+new <strong>BlendState.nonPremultiplied</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#BlendState.nonPremultiplied"
+              title="Permalink to BlendState.BlendState.nonPremultiplied">#</a></h4>
+<div class="doc">
+<p>Initializes an instance of the BlendState class with settings for blending
+with non-premultipled alpha. This blends source and destination data by
+using alpha while assuming the color data contains no alpha information.</p>
+<pre class="source">
+BlendState.nonPremultiplied(String name, GraphicsDevice device)
+ : super._internal(name, device)
+ , _alphaDestinationBlend = Blend.InverseSourceAlpha
+ , _alphaSourceBlend = Blend.SourceAlpha
+ , _colorDestinationBlend = Blend.InverseSourceAlpha
+ , _colorSourceBlend = Blend.SourceAlpha;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="BlendState.opaque">
+<button class="show-code">Code</button>
+new <strong>BlendState.opaque</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#BlendState.opaque"
+              title="Permalink to BlendState.BlendState.opaque">#</a></h4>
+<div class="doc">
+<p>Initializes an instance of the BlendState class with settings for opaque
+blend. This overwrites the source with the destination data.</p>
+<pre class="source">
+BlendState.opaque(String name, GraphicsDevice device)
+ : super._internal(name, device)
+ , _enabled = false
+ , _alphaDestinationBlend = Blend.Zero
+ , _alphaSourceBlend = Blend.One
+ , _colorDestinationBlend = Blend.Zero
+ , _colorSourceBlend = Blend.One;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="alphaBlendOperation">
+<button class="show-code">Code</button>
+int         <strong>alphaBlendOperation</strong> <a class="anchor-link"
+            href="#alphaBlendOperation"
+            title="Permalink to BlendState.alphaBlendOperation">#</a>
+        </h4>
+        <div class="doc">
+<p>The arithmetic operation when blending alpha values.
+The default is <a class="crossref" href="../spectre/BlendOperation.html#Add">BlendOperation.Add</a>. Throws <code>ArgumentError</code> if the
+<code>value</code> is not an enumeration within <a class="crossref" href="../spectre/BlendOperation.html">BlendOperation</a>.</p>
+<pre class="source">
+int get alphaBlendOperation =&gt; _alphaBlendOperation;
+</pre>
+<pre class="source">
+set alphaBlendOperation(int value) {
+ if (!BlendOperation.isValid(value)) {
+   throw new ArgumentError('alphaBlendOperation must be an enumeration '
+                           'within BlendOperation.');
+ }
+
+ _alphaBlendOperation = value;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="alphaDestinationBlend">
+<button class="show-code">Code</button>
+int         <strong>alphaDestinationBlend</strong> <a class="anchor-link"
+            href="#alphaDestinationBlend"
+            title="Permalink to BlendState.alphaDestinationBlend">#</a>
+        </h4>
+        <div class="doc">
+<p>The blend factor for the destination alpha; the percentage of the
+destination alpha included in the result. The default is <a class="crossref" href="../spectre/Blend.html#One">Blend.One</a>.
+Throws <code>ArgumentError</code> if the <code>value</code> is not an enumeration within
+<a class="crossref" href="../spectre/Blend.html">Blend</a>.</p>
+<pre class="source">
+int get alphaDestinationBlend =&gt; _alphaDestinationBlend;
+</pre>
+<pre class="source">
+set alphaDestinationBlend(int value) {
+ if (!Blend.isValid(value)) {
+   throw new ArgumentError('alphaDestinationBlend must be an enumeration '
+                           'within Blend.');
+ }
+
+ _alphaDestinationBlend = value;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="alphaSourceBlend">
+<button class="show-code">Code</button>
+int         <strong>alphaSourceBlend</strong> <a class="anchor-link"
+            href="#alphaSourceBlend"
+            title="Permalink to BlendState.alphaSourceBlend">#</a>
+        </h4>
+        <div class="doc">
+<p>The alpha blend factor.
+The default is <a class="crossref" href="../spectre/Blend.html#One">Blend.One</a>.
+Throws <code>ArgumentError</code> if the <code>value</code> is not an enumeration within
+<a class="crossref" href="../spectre/Blend.html">Blend</a>.</p>
+<pre class="source">
+int get alphaSourceBlend =&gt; _alphaSourceBlend;
+</pre>
+<pre class="source">
+set alphaSourceBlend(int value) {
+ if (!Blend.isValid(value)) {
+   throw new ArgumentError('alphaSourceBlend must be an enumeration within '
+                           'Blend.');
+ }
+
+ _alphaSourceBlend = value;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="blendFactorAlpha">
+<button class="show-code">Code</button>
+double         <strong>blendFactorAlpha</strong> <a class="anchor-link"
+            href="#blendFactorAlpha"
+            title="Permalink to BlendState.blendFactorAlpha">#</a>
+        </h4>
+        <div class="doc">
+<p>The alpha component of the blend factor for alpha blending.
+Throws <code>ArgumentError</code> if <code>value</code> is not in the range <code>0, 1</code>.</p>
+<pre class="source">
+double get blendFactorAlpha =&gt; _blendFactorAlpha;
+</pre>
+<pre class="source">
+set blendFactorAlpha(double value) {
+ if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+   _blendFactorAlpha = value;
+   return;
+ }
+
+ throw new ArgumentError('blendFactorGreen must be in the range [0, 1]');
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="blendFactorBlue">
+<button class="show-code">Code</button>
+double         <strong>blendFactorBlue</strong> <a class="anchor-link"
+            href="#blendFactorBlue"
+            title="Permalink to BlendState.blendFactorBlue">#</a>
+        </h4>
+        <div class="doc">
+<p>The blue component of the blend factor for alpha blending.
+Throws <code>ArgumentError</code> if <code>value</code> is not in the range <code>0, 1</code>.</p>
+<pre class="source">
+double get blendFactorBlue =&gt; _blendFactorBlue;
+</pre>
+<pre class="source">
+set blendFactorBlue(double value) {
+ if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+   _blendFactorBlue = value;
+   return;
+ }
+
+ throw new ArgumentError('blendFactorGreen must be in the range [0, 1]');
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="blendFactorGreen">
+<button class="show-code">Code</button>
+double         <strong>blendFactorGreen</strong> <a class="anchor-link"
+            href="#blendFactorGreen"
+            title="Permalink to BlendState.blendFactorGreen">#</a>
+        </h4>
+        <div class="doc">
+<p>The green component of the blend factor for alpha blending.
+Throws <code>ArgumentError</code> if <code>value</code> is not in the range <code>0, 1</code>.</p>
+<pre class="source">
+double get blendFactorGreen =&gt; _blendFactorGreen;
+</pre>
+<pre class="source">
+set blendFactorGreen(double value) {
+ if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+   _blendFactorGreen = value;
+   return;
+ }
+
+ throw new ArgumentError('blendFactorGreen must be in the range [0, 1]');
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="blendFactorRed">
+<button class="show-code">Code</button>
+double         <strong>blendFactorRed</strong> <a class="anchor-link"
+            href="#blendFactorRed"
+            title="Permalink to BlendState.blendFactorRed">#</a>
+        </h4>
+        <div class="doc">
+<p>The red component of the blend factor for alpha blending.
+Throws <code>ArgumentError</code> if <code>value</code> is not in the range <code>0, 1</code>.</p>
+<pre class="source">
+double get blendFactorRed =&gt; _blendFactorRed;
+</pre>
+<pre class="source">
+set blendFactorRed(double value) {
+ if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+   _blendFactorRed = value;
+
+   return;
+ }
+
+ throw new ArgumentError('blendFactorRed must be in the range [0, 1]');
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="colorBlendOperation">
+<button class="show-code">Code</button>
+int         <strong>colorBlendOperation</strong> <a class="anchor-link"
+            href="#colorBlendOperation"
+            title="Permalink to BlendState.colorBlendOperation">#</a>
+        </h4>
+        <div class="doc">
+<p>The arithmetic operation when blending color values.
+The default is <a class="crossref" href="../spectre/BlendOperation.html#Add">BlendOperation.Add</a>.
+Throws <code>ArgumentError</code> if the <code>value</code> is not an enumeration within
+<a class="crossref" href="../spectre/Blend.html">Blend</a>.</p>
+<pre class="source">
+int get colorBlendOperation =&gt; _colorBlendOperation;
+</pre>
+<pre class="source">
+set colorBlendOperation(int value) {
+ if (!BlendOperation.isValid(value)) {
+   throw new ArgumentError('colorBlendOperation must be an enumeration '
+                           'within BlendOperation.');
+ }
+
+ _colorBlendOperation = value;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="colorDestinationBlend">
+<button class="show-code">Code</button>
+int         <strong>colorDestinationBlend</strong> <a class="anchor-link"
+            href="#colorDestinationBlend"
+            title="Permalink to BlendState.colorDestinationBlend">#</a>
+        </h4>
+        <div class="doc">
+<p>The blend factor for the destination color.
+The default is <a class="crossref" href="../spectre/Blend.html#One">Blend.One</a>.
+Throws <code>ArgumentError</code> if the <code>value</code> is not an enumeration within
+<a class="crossref" href="../spectre/Blend.html">Blend</a>.</p>
+<pre class="source">
+int get colorDestinationBlend =&gt; _colorDestinationBlend;
+</pre>
+<pre class="source">
+set colorDestinationBlend(int value) {
+ if (!Blend.isValid(value)) {
+   throw new ArgumentError('colorDestinationBlend must be an enumeration '
+                           'within Blend.');
+ }
+
+ _colorDestinationBlend = value;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="colorSourceBlend">
+<button class="show-code">Code</button>
+int         <strong>colorSourceBlend</strong> <a class="anchor-link"
+            href="#colorSourceBlend"
+            title="Permalink to BlendState.colorSourceBlend">#</a>
+        </h4>
+        <div class="doc">
+<p>The blend factor for the source color.
+The default is Blend.One.
+Throws <code>ArgumentError</code> if the <code>value</code> is not an enumeration within
+<a class="crossref" href="../spectre/Blend.html">Blend</a>.</p>
+<pre class="source">
+int get colorSourceBlend =&gt; _colorSourceBlend;
+</pre>
+<pre class="source">
+set colorSourceBlend(int value) {
+ if (!Blend.isValid(value)) {
+   throw new ArgumentError('colorSourceBlend must be an enumeration within '
+                           'Blend.');
+ }
+
+ _colorSourceBlend = value;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="device">
+<button class="show-code">Code</button>
+final <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a>         <strong>device</strong> <a class="anchor-link"
+            href="#device"
+            title="Permalink to BlendState.device">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final GraphicsDevice device
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="enabled">
+<button class="show-code">Code</button>
+bool         <strong>enabled</strong> <a class="anchor-link"
+            href="#enabled"
+            title="Permalink to BlendState.enabled">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether blending operations are enabled.</p>
+<pre class="source">
+bool get enabled =&gt; _enabled;
+</pre>
+<pre class="source">
+set enabled(bool value) { _enabled = value; }
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isDisposed">
+<button class="show-code">Code</button>
+final bool         <strong>isDisposed</strong> <a class="anchor-link"
+            href="#isDisposed"
+            title="Permalink to BlendState.isDisposed">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>This object has been disposed. </p>
+<pre class="source">
+bool get isDisposed =&gt; _disposed;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to BlendState.name">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="pinCount">
+<button class="show-code">Code</button>
+final int         <strong>pinCount</strong> <a class="anchor-link"
+            href="#pinCount"
+            title="Permalink to BlendState.pinCount">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Count of pins </p>
+<pre class="source">
+int get pinCount =&gt; _referenceCount;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="writeRenderTargetAlpha">
+<button class="show-code">Code</button>
+bool         <strong>writeRenderTargetAlpha</strong> <a class="anchor-link"
+            href="#writeRenderTargetAlpha"
+            title="Permalink to BlendState.writeRenderTargetAlpha">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether the alpha channel is enabled for writing during color blending.</p>
+<pre class="source">
+bool get writeRenderTargetAlpha =&gt; _writeRenderTargetAlpha;
+</pre>
+<pre class="source">
+set writeRenderTargetAlpha(bool value) { _writeRenderTargetAlpha = value; }
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="writeRenderTargetBlue">
+<button class="show-code">Code</button>
+bool         <strong>writeRenderTargetBlue</strong> <a class="anchor-link"
+            href="#writeRenderTargetBlue"
+            title="Permalink to BlendState.writeRenderTargetBlue">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether the blue channel is enabled for writing during color blending.</p>
+<pre class="source">
+bool get writeRenderTargetBlue =&gt; _writeRenderTargetBlue;
+</pre>
+<pre class="source">
+set writeRenderTargetBlue(bool value) { _writeRenderTargetBlue = value; }
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="writeRenderTargetGreen">
+<button class="show-code">Code</button>
+bool         <strong>writeRenderTargetGreen</strong> <a class="anchor-link"
+            href="#writeRenderTargetGreen"
+            title="Permalink to BlendState.writeRenderTargetGreen">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether the green channel is enabled for writing during color blending.</p>
+<pre class="source">
+bool get writeRenderTargetGreen =&gt; _writeRenderTargetGreen;
+</pre>
+<pre class="source">
+set writeRenderTargetGreen(bool value) { _writeRenderTargetGreen = value; }
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="writeRenderTargetRed">
+<button class="show-code">Code</button>
+bool         <strong>writeRenderTargetRed</strong> <a class="anchor-link"
+            href="#writeRenderTargetRed"
+            title="Permalink to BlendState.writeRenderTargetRed">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether the red channel is enabled for writing during color blending.</p>
+<pre class="source">
+bool get writeRenderTargetRed =&gt; _writeRenderTargetRed;
+</pre>
+<pre class="source">
+set writeRenderTargetRed(bool value) { _writeRenderTargetRed = value; }
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="dispose">
+<button class="show-code">Code</button>
+void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to BlendState.dispose">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Disposes of the object. If nothing else has this object pinned,
+the finalizer will be called. See <code>pin</code> for inverse. Throws
+an exception if the object is already disposed.</p>
+<pre class="source">
+void dispose() {
+ if (_disposed) {
+   throw new StateError('It is an error to dispose a disposed object.');
+   return;
+ }
+ _referenceCount--;
+ if (_referenceCount == 0) {
+   finalize();
+   _disposed = true;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="finalize">
+<button class="show-code">Code</button>
+void <strong>finalize</strong>() <a class="anchor-link" href="#finalize"
+              title="Permalink to BlendState.finalize">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Clean up any object state here. </p>
+<div class="docs-inherited-from">docs inherited from <a href="../disposable/Disposable.html">Disposable</a> </div></div>
+<pre class="source">
+void finalize() {
+ print('Finalizing ${this.runtimeType} $name.');
+ device._removeChild(this);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="fromJson">
+<button class="show-code">Code</button>
+void <strong>fromJson</strong>(Map values) <a class="anchor-link" href="#fromJson"
+              title="Permalink to BlendState.fromJson">#</a></h4>
+<div class="doc">
+<p>Deserializes the <a class="crossref" href="../spectre/BlendState.html#BlendState">BlendState</a> from a JSON.</p>
+<pre class="source">
+void fromJson(Map values) {
+ assert(values != null);
+
+ dynamic value;
+
+ value = values[_blendEnabledName];
+ _enabled = (value != null) ? value : _enabled;
+
+ value = values[_blendFactorRedName];
+ _blendFactorRed = (value != null) ? value : _blendFactorRed;
+ value = values[_blendFactorGreenName];
+ _blendFactorGreen = (value != null) ? value : _blendFactorGreen;
+ value = values[_blendFactorBlueName];
+ _blendFactorBlue = (value != null) ? value : _blendFactorBlue;
+ value = values[_blendFactorAlphaName];
+ _blendFactorAlpha = (value != null) ? value : _blendFactorAlpha;
+
+ value = values[_alphaBlendOperationName];
+ _alphaBlendOperation = (value != null) ?
+     BlendOperation.parse(value) : _alphaBlendOperation;
+ value = values[_alphaDestinationBlendName];
+ _alphaDestinationBlend = (value != null) ?
+     Blend.parse(value) : _alphaDestinationBlend;
+ value = values[_alphaSourceBlendName];
+ _alphaSourceBlend = (value != null) ?
+     Blend.parse(value) : _alphaSourceBlend;
+
+ value = values[_colorBlendOperationName];
+ _colorBlendOperation = (value != null) ?
+     BlendOperation.parse(value) : _colorBlendOperation;
+ value = values[_colorDestinationBlendName];
+ _colorDestinationBlend = (value != null) ?
+     Blend.parse(value) : _colorDestinationBlend;
+ value = values[_colorSourceBlendName];
+ _colorSourceBlend = (value != null) ?
+     Blend.parse(value) : _colorSourceBlend;
+
+ value = values[_writeRenderTargetRedName];
+ _writeRenderTargetRed = (value != null) ? value : _writeRenderTargetRed;
+ value = values[_writeRenderTargetGreenName];
+ _writeRenderTargetGreen = (value != null) ? value : _writeRenderTargetGreen;
+ value = values[_writeRenderTargetBlueName];
+ _writeRenderTargetBlue = (value != null) ? value : _writeRenderTargetBlue;
+ value = values[_writeRenderTargetAlphaName];
+ _writeRenderTargetAlpha = (value != null) ? value : _writeRenderTargetAlpha;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="pin">
+<button class="show-code">Code</button>
+void <strong>pin</strong>() <a class="anchor-link" href="#pin"
+              title="Permalink to BlendState.pin">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Pin the disposable object. See <code>dispose</code> for inverse.
+Throws an exception if this object is already disposed.</p>
+<pre class="source">
+void pin() {
+ if (_disposed) {
+   throw new StateError('It is an error to pin a disposed object.');
+   return;
+ }
+ _referenceCount++;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toJson">
+<button class="show-code">Code</button>
+dynamic <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to BlendState.toJson">#</a></h4>
+<div class="doc">
+<p>Serializes the <a class="crossref" href="../spectre/BlendState.html#BlendState">BlendState</a> to a JSON.</p>
+<pre class="source">
+dynamic toJson() {
+ Map json = new Map();
+
+ json[_blendEnabledName] = _enabled;
+
+ json[_blendFactorRedName]   = _blendFactorRed;
+ json[_blendFactorGreenName] = _blendFactorGreen;
+ json[_blendFactorBlueName]  = _blendFactorBlue;
+ json[_blendFactorAlphaName] = _blendFactorAlpha;
+
+ json[_alphaBlendOperationName]   =
+     BlendOperation.stringify(_alphaBlendOperation);
+ json[_alphaDestinationBlendName] =
+     Blend.stringify(_alphaDestinationBlend);
+ json[_alphaSourceBlendName]      =
+     Blend.stringify(_alphaSourceBlend);
+
+ json[_colorBlendOperationName]   =
+     BlendOperation.stringify(_colorBlendOperation);
+ json[_colorDestinationBlendName] =
+     Blend.stringify(_colorDestinationBlend);
+ json[_colorSourceBlendName]      =
+     Blend.stringify(_colorSourceBlend);
+
+ json[_writeRenderTargetRedName]   = _writeRenderTargetRed;
+ json[_writeRenderTargetGreenName] = _writeRenderTargetGreen;
+ json[_writeRenderTargetBlueName]  = _writeRenderTargetBlue;
+ json[_writeRenderTargetAlphaName] = _writeRenderTargetAlpha;
+
+ return json;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to BlendState.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() =&gt; name;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.920</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

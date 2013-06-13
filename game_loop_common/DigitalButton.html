@@ -1,0 +1,173 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>DigitalButton class / game_loop_common Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="game_loop_common" data-type="DigitalButton">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../game_loop_common.html">game_loop_common</a> &rsaquo; <a href="../game_loop_common/DigitalButton.html">DigitalButton</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>DigitalButton</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>The state of a digital button: frame and time when button was
+last pressed and released.</p>
+<pre class="source">
+class DigitalButton {
+ /** buttonId */
+ final int buttonId;
+ /** Frame when button was last pressed. */
+ int framePressed = 0;
+ /** Frame when button was last released. */
+ int frameReleased = 0;
+ /** Time when button was last pressed. */
+ double timePressed = 0.0;
+ /** Time when button was last released. */
+ double timeReleased = 0.0;
+ DigitalButton(this.buttonId);
+
+ /** Is button down in this frame? */
+ bool get down =&gt; framePressed &gt; frameReleased;
+ /** Is button up in this frame? */
+ bool get up =&gt; frameReleased &gt;= framePressed;
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="DigitalButton">
+<button class="show-code">Code</button>
+new <strong>DigitalButton</strong>(int buttonId) <a class="anchor-link" href="#DigitalButton"
+              title="Permalink to DigitalButton.DigitalButton">#</a></h4>
+<div class="doc">
+<pre class="source">
+DigitalButton(this.buttonId);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="buttonId">
+<button class="show-code">Code</button>
+final int         <strong>buttonId</strong> <a class="anchor-link"
+            href="#buttonId"
+            title="Permalink to DigitalButton.buttonId">#</a>
+        </h4>
+        <div class="doc">
+<p>buttonId </p>
+<pre class="source">
+final int buttonId
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="down">
+<button class="show-code">Code</button>
+final bool         <strong>down</strong> <a class="anchor-link"
+            href="#down"
+            title="Permalink to DigitalButton.down">#</a>
+        </h4>
+        <div class="doc">
+<p>Is button down in this frame? </p>
+<pre class="source">
+bool get down =&gt; framePressed &gt; frameReleased;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="framePressed">
+<button class="show-code">Code</button>
+int         <strong>framePressed</strong> <a class="anchor-link"
+            href="#framePressed"
+            title="Permalink to DigitalButton.framePressed">#</a>
+        </h4>
+        <div class="doc">
+<p>Frame when button was last pressed. </p>
+<pre class="source">
+int framePressed = 0
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="frameReleased">
+<button class="show-code">Code</button>
+int         <strong>frameReleased</strong> <a class="anchor-link"
+            href="#frameReleased"
+            title="Permalink to DigitalButton.frameReleased">#</a>
+        </h4>
+        <div class="doc">
+<p>Frame when button was last released. </p>
+<pre class="source">
+int frameReleased = 0
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="timePressed">
+<button class="show-code">Code</button>
+double         <strong>timePressed</strong> <a class="anchor-link"
+            href="#timePressed"
+            title="Permalink to DigitalButton.timePressed">#</a>
+        </h4>
+        <div class="doc">
+<p>Time when button was last pressed. </p>
+<pre class="source">
+double timePressed = 0.0
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="timeReleased">
+<button class="show-code">Code</button>
+double         <strong>timeReleased</strong> <a class="anchor-link"
+            href="#timeReleased"
+            title="Permalink to DigitalButton.timeReleased">#</a>
+        </h4>
+        <div class="doc">
+<p>Time when button was last released. </p>
+<pre class="source">
+double timeReleased = 0.0
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="up">
+<button class="show-code">Code</button>
+final bool         <strong>up</strong> <a class="anchor-link"
+            href="#up"
+            title="Permalink to DigitalButton.up">#</a>
+        </h4>
+        <div class="doc">
+<p>Is button up in this frame? </p>
+<pre class="source">
+bool get up =&gt; frameReleased &gt;= framePressed;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.387</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

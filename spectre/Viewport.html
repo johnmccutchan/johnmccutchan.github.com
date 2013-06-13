@@ -1,0 +1,559 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Viewport class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="Viewport">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/Viewport.html">Viewport</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>Viewport</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>The window dimensions of a render-target surface onto which a 3D
+volume projects.
+Set using <a class="crossref" href="../spectre/GraphicsContext.html#setViewport">GraphicsContext.setViewport</a></p>
+<pre class="source">
+class Viewport extends DeviceChild {
+ //---------------------------------------------------------------------
+ // Serialization names
+ //---------------------------------------------------------------------
+
+ /// Serialization name for [x].
+ static const String _xName = 'x';
+ /// Serialization name for [y].
+ static const String _yName = 'y';
+ /// Serialization name for [width].
+ static const String _widthName = 'width';
+ /// Serialization name for [height].
+ static const String _heightName = 'height';
+ /// Serialization name for [minDepth].
+ static const String _minDepthName = 'minDepth';
+ /// Serialization name for [maxDepth].
+ static const String _maxDepthName = 'maxDepth';
+
+ //---------------------------------------------------------------------
+ // Member variables
+ //---------------------------------------------------------------------
+
+ /// The x-coordinate of the upper left corner of the viewport on the
+ /// render-target surface.
+ int _x = 0;
+ /// The y-coordinate of the upper left corner of the viewport on the
+ /// render-target surface.
+ int _y = 0;
+ /// The width of the viewport on the render-target surface, in pixels.
+ int _width = 640;
+ /// The height of the viewport on the render-target surface, in pixels.
+ int _height = 480;
+ /// The minimum depth of the viewport.
+ double _minDepth = 0.0;
+ /// The maximum depth of the viewport.
+ double _maxDepth = 1.0;
+
+ //---------------------------------------------------------------------
+ // Construction
+ //---------------------------------------------------------------------
+
+ /// Creates an instance of the [Viewport] class.
+ Viewport(String name, GraphicsDevice device)
+   : super._internal(name, device);
+
+ /// Creates an instance of the [Viewport] class.
+ /// The rectangular bounding box is specified.
+ Viewport.bounds(String name, GraphicsDevice device, int this._x, int this._y,
+                 int this._width, int this._height)
+   : super._internal(name, device);
+
+ //---------------------------------------------------------------------
+ // Properties
+ //---------------------------------------------------------------------
+
+ /// The x-coordinate of the upper left corner of the viewport on the
+ /// render-target surface.
+ int get x =&gt; _x;
+ set x(int value) { _x = value; }
+
+ /// The y-coordinate of the upper left corner of the viewport on the
+ /// render-target surface.
+ int get y =&gt; _y ;
+ set y(int value) { _y = value; }
+
+ /// The width of the viewport on the render-target surface, in pixels.
+ /// Throws [ArgumentError] if [value] is not a positive number.
+ set width(int value) {
+   if (value &lt; 0) {
+     throw new ArgumentError('width must be a positive number');
+   }
+
+   _width = value;
+ }
+ int get width =&gt; _width;
+
+ /// The height of the viewport on the render-target surface, in pixels.
+ /// Throws [ArgumentError] if [value] is not a positive number.
+ set height(int value) {
+   if (value &lt; 0) {
+     throw new ArgumentError('height must be a positive number');
+   }
+
+   _height = value;
+ }
+ int get height =&gt; _height;
+
+ /// The minimum depth of the viewport.
+ /// Throws [ArgumentError] if [value] is not in the range [0, 1].
+ set minDepth(double value) {
+   if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+     _minDepth = value;
+     return;
+   }
+
+   throw new ArgumentError('minDepth must be in the range [0, 1]');
+ }
+ double get minDepth =&gt; _minDepth;
+
+
+ /// The aspect ratio used by the viewport.
+ double get aspectRatio =&gt; width / height;
+
+ /// The maximum depth of the viewport.
+ /// Throws [ArgumentError] if [value] is not in the range [0, 1].
+ set maxDepth(double value) {
+   if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+     _maxDepth = value;
+     return;
+   }
+
+   throw new ArgumentError('maxDepth must be in the range [0, 1]');
+ }
+ double get maxDepth =&gt; _maxDepth;
+
+ //---------------------------------------------------------------------
+ // Serialization
+ //---------------------------------------------------------------------
+
+ /// Serializes the [RasterizerState] to a JSON.
+ dynamic toJson() {
+   Map json = new Map();
+
+   json[_xName] = _x;
+   json[_yName] = _y;
+
+   json[_widthName]  = _width;
+   json[_heightName] = _height;
+
+   json[_minDepthName] = _minDepth;
+   json[_maxDepthName] = _maxDepth;
+
+   return json;
+ }
+
+ /// Deserializes the [RasterizerState] from a JSON.
+ void fromJson(dynamic values) {
+   assert(values != null);
+
+   dynamic value;
+
+   value = values[_xName];
+   _x = (value != null) ? value : _x;
+   value = values[_yName];
+   _y = (value != null) ? value : _y;
+
+   value = values[_widthName];
+   _width = (value != null) ? value : _width;
+   value = values[_heightName];
+   _height = (value != null) ? value : _height;
+
+   value = values[_minDepthName];
+   _minDepth = (value != null) ? value : _minDepth;
+   value = values[_maxDepthName];
+   _maxDepth = (value != null) ? value : _maxDepth;
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../disposable/Disposable.html">Disposable</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../spectre/DeviceChild.html">DeviceChild</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>Viewport</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="Viewport">
+<button class="show-code">Code</button>
+new <strong>Viewport</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#Viewport"
+              title="Permalink to Viewport.Viewport">#</a></h4>
+<div class="doc">
+<p>Creates an instance of the <a class="crossref" href="../spectre/Viewport.html#Viewport">Viewport</a> class.</p>
+<pre class="source">
+Viewport(String name, GraphicsDevice device)
+ : super._internal(name, device);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="Viewport.bounds">
+<button class="show-code">Code</button>
+new <strong>Viewport.bounds</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device, int _x, int _y, int _width, int _height) <a class="anchor-link" href="#Viewport.bounds"
+              title="Permalink to Viewport.Viewport.bounds">#</a></h4>
+<div class="doc">
+<p>Creates an instance of the <a class="crossref" href="../spectre/Viewport.html#Viewport">Viewport</a> class.
+The rectangular bounding box is specified.</p>
+<pre class="source">
+Viewport.bounds(String name, GraphicsDevice device, int this._x, int this._y,
+               int this._width, int this._height)
+ : super._internal(name, device);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="aspectRatio">
+<button class="show-code">Code</button>
+final double         <strong>aspectRatio</strong> <a class="anchor-link"
+            href="#aspectRatio"
+            title="Permalink to Viewport.aspectRatio">#</a>
+        </h4>
+        <div class="doc">
+<p>The aspect ratio used by the viewport.</p>
+<pre class="source">
+double get aspectRatio =&gt; width / height;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="device">
+<button class="show-code">Code</button>
+final <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a>         <strong>device</strong> <a class="anchor-link"
+            href="#device"
+            title="Permalink to Viewport.device">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final GraphicsDevice device
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="height">
+<button class="show-code">Code</button>
+int         <strong>height</strong> <a class="anchor-link"
+            href="#height"
+            title="Permalink to Viewport.height">#</a>
+        </h4>
+        <div class="doc">
+<p>The height of the viewport on the render-target surface, in pixels.
+Throws <code>ArgumentError</code> if <code>value</code> is not a positive number.</p>
+<pre class="source">
+int get height =&gt; _height;
+</pre>
+<pre class="source">
+set height(int value) {
+ if (value &lt; 0) {
+   throw new ArgumentError('height must be a positive number');
+ }
+
+ _height = value;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isDisposed">
+<button class="show-code">Code</button>
+final bool         <strong>isDisposed</strong> <a class="anchor-link"
+            href="#isDisposed"
+            title="Permalink to Viewport.isDisposed">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>This object has been disposed. </p>
+<pre class="source">
+bool get isDisposed =&gt; _disposed;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="maxDepth">
+<button class="show-code">Code</button>
+double         <strong>maxDepth</strong> <a class="anchor-link"
+            href="#maxDepth"
+            title="Permalink to Viewport.maxDepth">#</a>
+        </h4>
+        <div class="doc">
+<p>The maximum depth of the viewport.
+Throws <code>ArgumentError</code> if <code>value</code> is not in the range <code>0, 1</code>.</p>
+<pre class="source">
+double get maxDepth =&gt; _maxDepth;
+</pre>
+<pre class="source">
+set maxDepth(double value) {
+ if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+   _maxDepth = value;
+   return;
+ }
+
+ throw new ArgumentError('maxDepth must be in the range [0, 1]');
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="minDepth">
+<button class="show-code">Code</button>
+double         <strong>minDepth</strong> <a class="anchor-link"
+            href="#minDepth"
+            title="Permalink to Viewport.minDepth">#</a>
+        </h4>
+        <div class="doc">
+<p>The minimum depth of the viewport.
+Throws <code>ArgumentError</code> if <code>value</code> is not in the range <code>0, 1</code>.</p>
+<pre class="source">
+double get minDepth =&gt; _minDepth;
+</pre>
+<pre class="source">
+set minDepth(double value) {
+ if ((value &gt;= 0.0) &amp;&amp; (value &lt;= 1.0)) {
+   _minDepth = value;
+   return;
+ }
+
+ throw new ArgumentError('minDepth must be in the range [0, 1]');
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to Viewport.name">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="pinCount">
+<button class="show-code">Code</button>
+final int         <strong>pinCount</strong> <a class="anchor-link"
+            href="#pinCount"
+            title="Permalink to Viewport.pinCount">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Count of pins </p>
+<pre class="source">
+int get pinCount =&gt; _referenceCount;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="width">
+<button class="show-code">Code</button>
+int         <strong>width</strong> <a class="anchor-link"
+            href="#width"
+            title="Permalink to Viewport.width">#</a>
+        </h4>
+        <div class="doc">
+<p>The width of the viewport on the render-target surface, in pixels.
+Throws <code>ArgumentError</code> if <code>value</code> is not a positive number.</p>
+<pre class="source">
+int get width =&gt; _width;
+</pre>
+<pre class="source">
+set width(int value) {
+ if (value &lt; 0) {
+   throw new ArgumentError('width must be a positive number');
+ }
+
+ _width = value;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="x">
+<button class="show-code">Code</button>
+int         <strong>x</strong> <a class="anchor-link"
+            href="#x"
+            title="Permalink to Viewport.x">#</a>
+        </h4>
+        <div class="doc">
+<p>The x-coordinate of the upper left corner of the viewport on the
+render-target surface.</p>
+<pre class="source">
+int get x =&gt; _x;
+</pre>
+<pre class="source">
+set x(int value) { _x = value; }
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="y">
+<button class="show-code">Code</button>
+int         <strong>y</strong> <a class="anchor-link"
+            href="#y"
+            title="Permalink to Viewport.y">#</a>
+        </h4>
+        <div class="doc">
+<p>The y-coordinate of the upper left corner of the viewport on the
+render-target surface.</p>
+<pre class="source">
+int get y =&gt; _y ;
+</pre>
+<pre class="source">
+set y(int value) { _y = value; }
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="dispose">
+<button class="show-code">Code</button>
+void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to Viewport.dispose">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Disposes of the object. If nothing else has this object pinned,
+the finalizer will be called. See <code>pin</code> for inverse. Throws
+an exception if the object is already disposed.</p>
+<pre class="source">
+void dispose() {
+ if (_disposed) {
+   throw new StateError('It is an error to dispose a disposed object.');
+   return;
+ }
+ _referenceCount--;
+ if (_referenceCount == 0) {
+   finalize();
+   _disposed = true;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="finalize">
+<button class="show-code">Code</button>
+void <strong>finalize</strong>() <a class="anchor-link" href="#finalize"
+              title="Permalink to Viewport.finalize">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Clean up any object state here. </p>
+<div class="docs-inherited-from">docs inherited from <a href="../disposable/Disposable.html">Disposable</a> </div></div>
+<pre class="source">
+void finalize() {
+ print('Finalizing ${this.runtimeType} $name.');
+ device._removeChild(this);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="fromJson">
+<button class="show-code">Code</button>
+void <strong>fromJson</strong>(values) <a class="anchor-link" href="#fromJson"
+              title="Permalink to Viewport.fromJson">#</a></h4>
+<div class="doc">
+<p>Deserializes the <a class="crossref" href="../spectre/RasterizerState.html">RasterizerState</a> from a JSON.</p>
+<pre class="source">
+void fromJson(dynamic values) {
+ assert(values != null);
+
+ dynamic value;
+
+ value = values[_xName];
+ _x = (value != null) ? value : _x;
+ value = values[_yName];
+ _y = (value != null) ? value : _y;
+
+ value = values[_widthName];
+ _width = (value != null) ? value : _width;
+ value = values[_heightName];
+ _height = (value != null) ? value : _height;
+
+ value = values[_minDepthName];
+ _minDepth = (value != null) ? value : _minDepth;
+ value = values[_maxDepthName];
+ _maxDepth = (value != null) ? value : _maxDepth;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="pin">
+<button class="show-code">Code</button>
+void <strong>pin</strong>() <a class="anchor-link" href="#pin"
+              title="Permalink to Viewport.pin">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Pin the disposable object. See <code>dispose</code> for inverse.
+Throws an exception if this object is already disposed.</p>
+<pre class="source">
+void pin() {
+ if (_disposed) {
+   throw new StateError('It is an error to pin a disposed object.');
+   return;
+ }
+ _referenceCount++;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toJson">
+<button class="show-code">Code</button>
+dynamic <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to Viewport.toJson">#</a></h4>
+<div class="doc">
+<p>Serializes the <a class="crossref" href="../spectre/RasterizerState.html">RasterizerState</a> to a JSON.</p>
+<pre class="source">
+dynamic toJson() {
+ Map json = new Map();
+
+ json[_xName] = _x;
+ json[_yName] = _y;
+
+ json[_widthName]  = _width;
+ json[_heightName] = _height;
+
+ json[_minDepthName] = _minDepth;
+ json[_maxDepthName] = _maxDepth;
+
+ return json;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to Viewport.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() =&gt; name;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.686</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

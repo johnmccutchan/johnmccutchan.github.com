@@ -1,0 +1,805 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>BoneAnimation class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="BoneAnimation">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/BoneAnimation.html">BoneAnimation</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>BoneAnimation</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Key frame animation data for a single bone in a skeleton.</p>
+<pre class="source">
+class BoneAnimation {
+ final String boneName;
+ final int boneIndex;
+
+ Float32List get positionTimes =&gt; _positionTimes;
+ Float32List get positionValues =&gt; _positionValues;
+ Float32List get rotationTimes =&gt; _rotationTimes;
+ Float32List get rotationValues =&gt; _rotationValues;
+ Float32List get scaleTimes =&gt; _scaleTimes;
+ Float32List get scaleValues =&gt; _scaleValues;
+
+ Float32List _positionTimes;
+ Float32List _positionValues;
+ Float32List _rotationTimes;
+ Float32List _rotationValues;
+ Float32List _scaleTimes;
+ Float32List _scaleValues;
+ 
+ Float32x4List positionValues4;
+ Float32x4List rotationValues4;
+ Float32x4List scaleValues4;
+ 
+ final Float32List _positionMatrix = new Float32List(16);
+ final Float32List _rotationMatrix = new Float32List(16);
+ final Float32List _scaleMatrix = new Float32List(16);
+ 
+ Float32x4List _positionMatrix4;
+ Float32x4List _rotationMatrix4;
+ Float32x4List _scaleMatrix4;
+
+ /// Construct bone animation with [boneName]. Animation key frames
+ /// will be loaded from [positions], [rotations], and [scales].
+ BoneAnimation(this.boneName, this.boneIndex, List&lt;Map&gt; positions,
+               List&lt;Map&gt; rotations, List&lt;Map&gt; scales) {
+   updatePositions(positions);
+   updateRotations(rotations);
+   updateScales(scales);
+   
+   positionValues4 = new Float32x4List.view(_positionValues.buffer);
+   rotationValues4 = new Float32x4List.view(_rotationValues.buffer);
+   scaleValues4 = new Float32x4List.view(_scaleValues.buffer);
+   
+   _positionMatrix4 = new Float32x4List.view(_positionMatrix.buffer);
+   _rotationMatrix4 = new Float32x4List.view(_rotationMatrix.buffer);
+   _scaleMatrix4 = new Float32x4List.view(_scaleMatrix.buffer);
+ }
+
+ /// Makes bone have no position animation.
+ void setNoPositionAnimation() {
+   _positionTimes = new Float32List(1);
+   _positionValues = new Float32List(4);
+   _positionTimes[0] = 0.0;
+   _positionValues[0] = 0.0;
+   _positionValues[1] = 0.0;
+   _positionValues[2] = 0.0;
+   _positionValues[3] = 1.0;
+ }
+
+ /// Makes room for [length] position animation frames.
+ /// All position animation frames will be zero.
+ void setPositionAnimationLength(int length) {
+   _positionTimes = new Float32List(length);
+   _positionValues = new Float32List(length*4);
+   _positionTimes[0] = 0.0;
+   _positionValues[0] = 0.0;
+   _positionValues[1] = 0.0;
+   _positionValues[2] = 0.0;
+   _positionValues[3] = 1.0;
+ }
+
+ /// Builds bone animation data from key frames in [positions].
+ void updatePositions(List&lt;Map&gt; positions) {
+   if (positions == null || positions.length == 0) {
+     setNoPositionAnimation();
+     return;
+   }
+   _positionTimes = new Float32List(positions.length);
+   _positionValues = new Float32List(positions.length*4);
+   for (int i = 0; i &lt; _positionTimes.length; i++) {
+     _positionTimes[i] = positions[i]['time'].toDouble();
+     _positionValues[i*4+0] = positions[i]['value'][0].toDouble();
+     _positionValues[i*4+1] = positions[i]['value'][1].toDouble();
+     _positionValues[i*4+2] = positions[i]['value'][2].toDouble();
+     _positionValues[i*4+3] = 1.0;
+   }
+ }
+
+ /// Makes bone have no rotation animation.
+ void setNoRotationAnimation() {
+   _rotationTimes = new Float32List(1);
+   _rotationValues = new Float32List(4);
+   _rotationTimes[0] = 0.0;
+   _rotationValues[0] = 0.0;
+   _rotationValues[1] = 0.0;
+   _rotationValues[2] = 0.0;
+   _rotationValues[3] = 1.0;
+ }
+
+ /// Makes room for [length] rotation animation frames.
+ /// All rotation animation frames will be zero.
+ void setRotationAnimationLength(int length) {
+   _rotationTimes = new Float32List(length);
+   _rotationValues = new Float32List(length*4);
+   _rotationTimes[0] = 0.0;
+   _rotationValues[0] = 0.0;
+   _rotationValues[1] = 0.0;
+   _rotationValues[2] = 0.0;
+   _rotationValues[3] = 1.0;
+ }
+
+ /// Builds bone animation data from key frames in [rotations].
+ void updateRotations(List&lt;Map&gt; rotations) {
+   if (rotations == null || rotations.length == 0) {
+     setNoRotationAnimation();
+     return;
+   }
+   _rotationTimes = new Float32List(rotations.length);
+   _rotationValues = new Float32List(rotations.length*4);
+   for (int i = 0; i &lt; _rotationTimes.length; i++) {
+     _rotationTimes[i] = rotations[i]['time'].toDouble();
+     _rotationValues[i*4+0] = rotations[i]['value'][0].toDouble();
+     _rotationValues[i*4+1] = rotations[i]['value'][1].toDouble();
+     _rotationValues[i*4+2] = rotations[i]['value'][2].toDouble();
+     _rotationValues[i*4+3] = rotations[i]['value'][3].toDouble();
+   }
+ }
+
+ /// Makes bone have no scale animation.
+ void setNoScaleAnimation() {
+   _scaleTimes = new Float32List(1);
+   _scaleValues = new Float32List(4);
+   _scaleTimes[0] = 0.0;
+   _scaleValues[0] = 1.0;
+   _scaleValues[1] = 1.0;
+   _scaleValues[2] = 1.0;
+   _scaleValues[3] = 1.0;
+ }
+
+ /// Makes room for [length] scale animation frames.
+ /// All scale animation frames will be zero.
+ void setScaleAnimationLength(int length) {
+   _scaleTimes = new Float32List(length);
+   _scaleValues = new Float32List(length*4);
+   _scaleTimes[0] = 0.0;
+   _scaleValues[0] = 1.0;
+   _scaleValues[1] = 1.0;
+   _scaleValues[2] = 1.0;
+   _scaleValues[3] = 1.0;
+ }
+
+ /// Builds bone animation data from key frames in [scales].
+ void updateScales(List&lt;Map&gt; scales) {
+   if (scales == null || scales.length == 0) {
+     setNoScaleAnimation();
+     return;
+   }
+   _scaleTimes = new Float32List(scales.length);
+   _scaleValues = new Float32List(scales.length*4);
+   for (int i = 0; i &lt; _scaleTimes.length; i++) {
+     _scaleTimes[i] = scales[i]['time'].toDouble();
+     _scaleValues[i*4+0] = scales[i]['value'][0].toDouble();
+     _scaleValues[i*4+1] = scales[i]['value'][1].toDouble();
+     _scaleValues[i*4+2] = scales[i]['value'][2].toDouble();
+     _scaleValues[i*4+3] = 1.0;
+   }
+ }
+
+ int _findTime(Float32List timeList, double t) {
+   for (int i = 0; i &lt; timeList.length-1; i++) {
+     if (t &lt; timeList[i+1]) {
+       return i;
+     }
+   }
+   return 0;
+ }
+
+ int _findPositionIndex(double t) {
+   return _findTime(_positionTimes, t) &lt;&lt; 2;
+ }
+
+ int _findScaleIndex(double t) {
+   return _findTime(_scaleTimes, t) &lt;&lt; 2;
+ }
+
+ int _findRotationIndex(double t) {
+   return _findTime(_rotationTimes, t) &lt;&lt; 2;
+ }
+ 
+ void buildTransformMatricesAtTime(double t) {
+   int positionIndex = _findPositionIndex(t);
+   int rotationIndex = _findRotationIndex(t);
+   int scaleIndex = _findScaleIndex(t);
+   assert(positionIndex &gt;= 0);
+   assert(rotationIndex &gt;= 0);
+   assert(scaleIndex &gt;= 0);
+   
+   double sx = _scaleValues[scaleIndex+0];
+   double sy = _scaleValues[scaleIndex+1];
+   double sz = _scaleValues[scaleIndex+2];
+
+   _scaleMatrix[0] = sx;
+   _scaleMatrix[5] = sy;
+   _scaleMatrix[10] = sz;
+   _scaleMatrix[15] = 1.0;
+
+   _positionMatrix[0] = 1.0;
+   _positionMatrix[5] = 1.0;
+   _positionMatrix[10] = 1.0;
+   _positionMatrix[12] = _positionValues[positionIndex+0];
+   _positionMatrix[13] = _positionValues[positionIndex+1];
+   _positionMatrix[14] = _positionValues[positionIndex+2];
+   _positionMatrix[15] = 1.0;
+
+   double x = _rotationValues[rotationIndex+0];
+   double y = _rotationValues[rotationIndex+1];
+   double z = _rotationValues[rotationIndex+2];
+   double w = _rotationValues[rotationIndex+3];
+   double x2 = x + x;
+   double y2 = y + y;
+   double z2 = z + z;
+
+   double xx = x * x2;
+   double xy = x * y2;
+   double xz = x * z2;
+   double yy = y * y2;
+   double yz = y * z2;
+   double zz = z * z2;
+   double wx = w * x2;
+   double wy = w * y2;
+   double wz = w * z2;
+
+   _rotationMatrix[0] = 1.0 - (yy + zz);
+   _rotationMatrix[1] = xy + wz;
+   _rotationMatrix[2] = xz - wy;
+   _rotationMatrix[4] = xy - wz;
+   _rotationMatrix[5] = 1.0 - (xx + zz);
+   _rotationMatrix[6] = yz + wx;
+   _rotationMatrix[8] = xz + wy;
+   _rotationMatrix[9] = yz - wx;
+   _rotationMatrix[10] = 1.0 - (xx + yy);
+   _rotationMatrix[15] = 1.0;
+ }
+
+ /// Set [boneMatrix] to correspond to bone animation at time [t].
+ /// Does not interpolate between key frames.
+ void setBoneMatrixAtTime(double t, Float32List boneMatrix) {
+   buildTransformMatricesAtTime(t);
+   Matrix44Operations.multiply(boneMatrix, 0, _scaleMatrix, 0,
+                               _rotationMatrix, 0);
+   Matrix44Operations.multiply(boneMatrix, 0, _positionMatrix, 0,
+                               boneMatrix, 0);
+ }
+ 
+ /// Set [boneMatrix] to correspond to bone animation at time [t].
+ /// Does not interpolate between key frames.
+ void setBoneMatrixAtTimeSIMD(double t, Float32x4List boneMatrix) {
+   buildTransformMatricesAtTime(t);
+   
+   Matrix44SIMDOperations.multiply(boneMatrix, 0, _scaleMatrix4, 0,
+                                   _rotationMatrix4, 0);
+   Matrix44SIMDOperations.multiply(boneMatrix, 0, _positionMatrix4, 0,
+                                   boneMatrix, 0);
+ }
+
+ /// Set bone matrix [transform] to correspond to bone animation at time [t].
+ /// Does interpolate between key frames.
+ void setBoneMatrixAtTimeInterpolate(double t, Float32List transform) {
+   throw new UnsupportedError('Implement me!');
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="BoneAnimation">
+<button class="show-code">Code</button>
+new <strong>BoneAnimation</strong>(String boneName, int boneIndex, List&lt;Map&gt; positions, List&lt;Map&gt; rotations, List&lt;Map&gt; scales) <a class="anchor-link" href="#BoneAnimation"
+              title="Permalink to BoneAnimation.BoneAnimation">#</a></h4>
+<div class="doc">
+<p>Construct bone animation with 
+<span class="param">boneName</span>. Animation key frames
+will be loaded from 
+<span class="param">positions</span>, 
+<span class="param">rotations</span>, and 
+<span class="param">scales</span>.</p>
+<pre class="source">
+BoneAnimation(this.boneName, this.boneIndex, List&lt;Map&gt; positions,
+             List&lt;Map&gt; rotations, List&lt;Map&gt; scales) {
+ updatePositions(positions);
+ updateRotations(rotations);
+ updateScales(scales);
+ 
+ positionValues4 = new Float32x4List.view(_positionValues.buffer);
+ rotationValues4 = new Float32x4List.view(_rotationValues.buffer);
+ scaleValues4 = new Float32x4List.view(_scaleValues.buffer);
+ 
+ _positionMatrix4 = new Float32x4List.view(_positionMatrix.buffer);
+ _rotationMatrix4 = new Float32x4List.view(_rotationMatrix.buffer);
+ _scaleMatrix4 = new Float32x4List.view(_scaleMatrix.buffer);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="boneIndex">
+<button class="show-code">Code</button>
+final int         <strong>boneIndex</strong> <a class="anchor-link"
+            href="#boneIndex"
+            title="Permalink to BoneAnimation.boneIndex">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final int boneIndex
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="boneName">
+<button class="show-code">Code</button>
+final String         <strong>boneName</strong> <a class="anchor-link"
+            href="#boneName"
+            title="Permalink to BoneAnimation.boneName">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String boneName
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="positionTimes">
+<button class="show-code">Code</button>
+final Float32List         <strong>positionTimes</strong> <a class="anchor-link"
+            href="#positionTimes"
+            title="Permalink to BoneAnimation.positionTimes">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32List get positionTimes =&gt; _positionTimes;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="positionValues">
+<button class="show-code">Code</button>
+final Float32List         <strong>positionValues</strong> <a class="anchor-link"
+            href="#positionValues"
+            title="Permalink to BoneAnimation.positionValues">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32List get positionValues =&gt; _positionValues;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="positionValues4">
+<button class="show-code">Code</button>
+Float32x4List         <strong>positionValues4</strong> <a class="anchor-link"
+            href="#positionValues4"
+            title="Permalink to BoneAnimation.positionValues4">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32x4List positionValues4
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="rotationTimes">
+<button class="show-code">Code</button>
+final Float32List         <strong>rotationTimes</strong> <a class="anchor-link"
+            href="#rotationTimes"
+            title="Permalink to BoneAnimation.rotationTimes">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32List get rotationTimes =&gt; _rotationTimes;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="rotationValues">
+<button class="show-code">Code</button>
+final Float32List         <strong>rotationValues</strong> <a class="anchor-link"
+            href="#rotationValues"
+            title="Permalink to BoneAnimation.rotationValues">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32List get rotationValues =&gt; _rotationValues;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="rotationValues4">
+<button class="show-code">Code</button>
+Float32x4List         <strong>rotationValues4</strong> <a class="anchor-link"
+            href="#rotationValues4"
+            title="Permalink to BoneAnimation.rotationValues4">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32x4List rotationValues4
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="scaleTimes">
+<button class="show-code">Code</button>
+final Float32List         <strong>scaleTimes</strong> <a class="anchor-link"
+            href="#scaleTimes"
+            title="Permalink to BoneAnimation.scaleTimes">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32List get scaleTimes =&gt; _scaleTimes;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="scaleValues">
+<button class="show-code">Code</button>
+final Float32List         <strong>scaleValues</strong> <a class="anchor-link"
+            href="#scaleValues"
+            title="Permalink to BoneAnimation.scaleValues">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32List get scaleValues =&gt; _scaleValues;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="scaleValues4">
+<button class="show-code">Code</button>
+Float32x4List         <strong>scaleValues4</strong> <a class="anchor-link"
+            href="#scaleValues4"
+            title="Permalink to BoneAnimation.scaleValues4">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32x4List scaleValues4
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="buildTransformMatricesAtTime">
+<button class="show-code">Code</button>
+void <strong>buildTransformMatricesAtTime</strong>(double t) <a class="anchor-link" href="#buildTransformMatricesAtTime"
+              title="Permalink to BoneAnimation.buildTransformMatricesAtTime">#</a></h4>
+<div class="doc">
+<pre class="source">
+void buildTransformMatricesAtTime(double t) {
+ int positionIndex = _findPositionIndex(t);
+ int rotationIndex = _findRotationIndex(t);
+ int scaleIndex = _findScaleIndex(t);
+ assert(positionIndex &gt;= 0);
+ assert(rotationIndex &gt;= 0);
+ assert(scaleIndex &gt;= 0);
+ 
+ double sx = _scaleValues[scaleIndex+0];
+ double sy = _scaleValues[scaleIndex+1];
+ double sz = _scaleValues[scaleIndex+2];
+
+ _scaleMatrix[0] = sx;
+ _scaleMatrix[5] = sy;
+ _scaleMatrix[10] = sz;
+ _scaleMatrix[15] = 1.0;
+
+ _positionMatrix[0] = 1.0;
+ _positionMatrix[5] = 1.0;
+ _positionMatrix[10] = 1.0;
+ _positionMatrix[12] = _positionValues[positionIndex+0];
+ _positionMatrix[13] = _positionValues[positionIndex+1];
+ _positionMatrix[14] = _positionValues[positionIndex+2];
+ _positionMatrix[15] = 1.0;
+
+ double x = _rotationValues[rotationIndex+0];
+ double y = _rotationValues[rotationIndex+1];
+ double z = _rotationValues[rotationIndex+2];
+ double w = _rotationValues[rotationIndex+3];
+ double x2 = x + x;
+ double y2 = y + y;
+ double z2 = z + z;
+
+ double xx = x * x2;
+ double xy = x * y2;
+ double xz = x * z2;
+ double yy = y * y2;
+ double yz = y * z2;
+ double zz = z * z2;
+ double wx = w * x2;
+ double wy = w * y2;
+ double wz = w * z2;
+
+ _rotationMatrix[0] = 1.0 - (yy + zz);
+ _rotationMatrix[1] = xy + wz;
+ _rotationMatrix[2] = xz - wy;
+ _rotationMatrix[4] = xy - wz;
+ _rotationMatrix[5] = 1.0 - (xx + zz);
+ _rotationMatrix[6] = yz + wx;
+ _rotationMatrix[8] = xz + wy;
+ _rotationMatrix[9] = yz - wx;
+ _rotationMatrix[10] = 1.0 - (xx + yy);
+ _rotationMatrix[15] = 1.0;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setBoneMatrixAtTime">
+<button class="show-code">Code</button>
+void <strong>setBoneMatrixAtTime</strong>(double t, Float32List boneMatrix) <a class="anchor-link" href="#setBoneMatrixAtTime"
+              title="Permalink to BoneAnimation.setBoneMatrixAtTime">#</a></h4>
+<div class="doc">
+<p>Set 
+<span class="param">boneMatrix</span> to correspond to bone animation at time 
+<span class="param">t</span>.
+Does not interpolate between key frames.</p>
+<pre class="source">
+void setBoneMatrixAtTime(double t, Float32List boneMatrix) {
+ buildTransformMatricesAtTime(t);
+ Matrix44Operations.multiply(boneMatrix, 0, _scaleMatrix, 0,
+                             _rotationMatrix, 0);
+ Matrix44Operations.multiply(boneMatrix, 0, _positionMatrix, 0,
+                             boneMatrix, 0);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setBoneMatrixAtTimeInterpolate">
+<button class="show-code">Code</button>
+void <strong>setBoneMatrixAtTimeInterpolate</strong>(double t, Float32List transform) <a class="anchor-link" href="#setBoneMatrixAtTimeInterpolate"
+              title="Permalink to BoneAnimation.setBoneMatrixAtTimeInterpolate">#</a></h4>
+<div class="doc">
+<p>Set bone matrix 
+<span class="param">transform</span> to correspond to bone animation at time 
+<span class="param">t</span>.
+Does interpolate between key frames.</p>
+<pre class="source">
+void setBoneMatrixAtTimeInterpolate(double t, Float32List transform) {
+ throw new UnsupportedError('Implement me!');
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setBoneMatrixAtTimeSIMD">
+<button class="show-code">Code</button>
+void <strong>setBoneMatrixAtTimeSIMD</strong>(double t, Float32x4List boneMatrix) <a class="anchor-link" href="#setBoneMatrixAtTimeSIMD"
+              title="Permalink to BoneAnimation.setBoneMatrixAtTimeSIMD">#</a></h4>
+<div class="doc">
+<p>Set 
+<span class="param">boneMatrix</span> to correspond to bone animation at time 
+<span class="param">t</span>.
+Does not interpolate between key frames.</p>
+<pre class="source">
+void setBoneMatrixAtTimeSIMD(double t, Float32x4List boneMatrix) {
+ buildTransformMatricesAtTime(t);
+ 
+ Matrix44SIMDOperations.multiply(boneMatrix, 0, _scaleMatrix4, 0,
+                                 _rotationMatrix4, 0);
+ Matrix44SIMDOperations.multiply(boneMatrix, 0, _positionMatrix4, 0,
+                                 boneMatrix, 0);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setNoPositionAnimation">
+<button class="show-code">Code</button>
+void <strong>setNoPositionAnimation</strong>() <a class="anchor-link" href="#setNoPositionAnimation"
+              title="Permalink to BoneAnimation.setNoPositionAnimation">#</a></h4>
+<div class="doc">
+<p>Makes bone have no position animation.</p>
+<pre class="source">
+void setNoPositionAnimation() {
+ _positionTimes = new Float32List(1);
+ _positionValues = new Float32List(4);
+ _positionTimes[0] = 0.0;
+ _positionValues[0] = 0.0;
+ _positionValues[1] = 0.0;
+ _positionValues[2] = 0.0;
+ _positionValues[3] = 1.0;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setNoRotationAnimation">
+<button class="show-code">Code</button>
+void <strong>setNoRotationAnimation</strong>() <a class="anchor-link" href="#setNoRotationAnimation"
+              title="Permalink to BoneAnimation.setNoRotationAnimation">#</a></h4>
+<div class="doc">
+<p>Makes bone have no rotation animation.</p>
+<pre class="source">
+void setNoRotationAnimation() {
+ _rotationTimes = new Float32List(1);
+ _rotationValues = new Float32List(4);
+ _rotationTimes[0] = 0.0;
+ _rotationValues[0] = 0.0;
+ _rotationValues[1] = 0.0;
+ _rotationValues[2] = 0.0;
+ _rotationValues[3] = 1.0;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setNoScaleAnimation">
+<button class="show-code">Code</button>
+void <strong>setNoScaleAnimation</strong>() <a class="anchor-link" href="#setNoScaleAnimation"
+              title="Permalink to BoneAnimation.setNoScaleAnimation">#</a></h4>
+<div class="doc">
+<p>Makes bone have no scale animation.</p>
+<pre class="source">
+void setNoScaleAnimation() {
+ _scaleTimes = new Float32List(1);
+ _scaleValues = new Float32List(4);
+ _scaleTimes[0] = 0.0;
+ _scaleValues[0] = 1.0;
+ _scaleValues[1] = 1.0;
+ _scaleValues[2] = 1.0;
+ _scaleValues[3] = 1.0;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setPositionAnimationLength">
+<button class="show-code">Code</button>
+void <strong>setPositionAnimationLength</strong>(int length) <a class="anchor-link" href="#setPositionAnimationLength"
+              title="Permalink to BoneAnimation.setPositionAnimationLength">#</a></h4>
+<div class="doc">
+<p>Makes room for 
+<span class="param">length</span> position animation frames.
+All position animation frames will be zero.</p>
+<pre class="source">
+void setPositionAnimationLength(int length) {
+ _positionTimes = new Float32List(length);
+ _positionValues = new Float32List(length*4);
+ _positionTimes[0] = 0.0;
+ _positionValues[0] = 0.0;
+ _positionValues[1] = 0.0;
+ _positionValues[2] = 0.0;
+ _positionValues[3] = 1.0;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setRotationAnimationLength">
+<button class="show-code">Code</button>
+void <strong>setRotationAnimationLength</strong>(int length) <a class="anchor-link" href="#setRotationAnimationLength"
+              title="Permalink to BoneAnimation.setRotationAnimationLength">#</a></h4>
+<div class="doc">
+<p>Makes room for 
+<span class="param">length</span> rotation animation frames.
+All rotation animation frames will be zero.</p>
+<pre class="source">
+void setRotationAnimationLength(int length) {
+ _rotationTimes = new Float32List(length);
+ _rotationValues = new Float32List(length*4);
+ _rotationTimes[0] = 0.0;
+ _rotationValues[0] = 0.0;
+ _rotationValues[1] = 0.0;
+ _rotationValues[2] = 0.0;
+ _rotationValues[3] = 1.0;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="setScaleAnimationLength">
+<button class="show-code">Code</button>
+void <strong>setScaleAnimationLength</strong>(int length) <a class="anchor-link" href="#setScaleAnimationLength"
+              title="Permalink to BoneAnimation.setScaleAnimationLength">#</a></h4>
+<div class="doc">
+<p>Makes room for 
+<span class="param">length</span> scale animation frames.
+All scale animation frames will be zero.</p>
+<pre class="source">
+void setScaleAnimationLength(int length) {
+ _scaleTimes = new Float32List(length);
+ _scaleValues = new Float32List(length*4);
+ _scaleTimes[0] = 0.0;
+ _scaleValues[0] = 1.0;
+ _scaleValues[1] = 1.0;
+ _scaleValues[2] = 1.0;
+ _scaleValues[3] = 1.0;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="updatePositions">
+<button class="show-code">Code</button>
+void <strong>updatePositions</strong>(List&lt;Map&gt; positions) <a class="anchor-link" href="#updatePositions"
+              title="Permalink to BoneAnimation.updatePositions">#</a></h4>
+<div class="doc">
+<p>Builds bone animation data from key frames in 
+<span class="param">positions</span>.</p>
+<pre class="source">
+void updatePositions(List&lt;Map&gt; positions) {
+ if (positions == null || positions.length == 0) {
+   setNoPositionAnimation();
+   return;
+ }
+ _positionTimes = new Float32List(positions.length);
+ _positionValues = new Float32List(positions.length*4);
+ for (int i = 0; i &lt; _positionTimes.length; i++) {
+   _positionTimes[i] = positions[i]['time'].toDouble();
+   _positionValues[i*4+0] = positions[i]['value'][0].toDouble();
+   _positionValues[i*4+1] = positions[i]['value'][1].toDouble();
+   _positionValues[i*4+2] = positions[i]['value'][2].toDouble();
+   _positionValues[i*4+3] = 1.0;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="updateRotations">
+<button class="show-code">Code</button>
+void <strong>updateRotations</strong>(List&lt;Map&gt; rotations) <a class="anchor-link" href="#updateRotations"
+              title="Permalink to BoneAnimation.updateRotations">#</a></h4>
+<div class="doc">
+<p>Builds bone animation data from key frames in 
+<span class="param">rotations</span>.</p>
+<pre class="source">
+void updateRotations(List&lt;Map&gt; rotations) {
+ if (rotations == null || rotations.length == 0) {
+   setNoRotationAnimation();
+   return;
+ }
+ _rotationTimes = new Float32List(rotations.length);
+ _rotationValues = new Float32List(rotations.length*4);
+ for (int i = 0; i &lt; _rotationTimes.length; i++) {
+   _rotationTimes[i] = rotations[i]['time'].toDouble();
+   _rotationValues[i*4+0] = rotations[i]['value'][0].toDouble();
+   _rotationValues[i*4+1] = rotations[i]['value'][1].toDouble();
+   _rotationValues[i*4+2] = rotations[i]['value'][2].toDouble();
+   _rotationValues[i*4+3] = rotations[i]['value'][3].toDouble();
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="updateScales">
+<button class="show-code">Code</button>
+void <strong>updateScales</strong>(List&lt;Map&gt; scales) <a class="anchor-link" href="#updateScales"
+              title="Permalink to BoneAnimation.updateScales">#</a></h4>
+<div class="doc">
+<p>Builds bone animation data from key frames in 
+<span class="param">scales</span>.</p>
+<pre class="source">
+void updateScales(List&lt;Map&gt; scales) {
+ if (scales == null || scales.length == 0) {
+   setNoScaleAnimation();
+   return;
+ }
+ _scaleTimes = new Float32List(scales.length);
+ _scaleValues = new Float32List(scales.length*4);
+ for (int i = 0; i &lt; _scaleTimes.length; i++) {
+   _scaleTimes[i] = scales[i]['time'].toDouble();
+   _scaleValues[i*4+0] = scales[i]['value'][0].toDouble();
+   _scaleValues[i*4+1] = scales[i]['value'][1].toDouble();
+   _scaleValues[i*4+2] = scales[i]['value'][2].toDouble();
+   _scaleValues[i*4+3] = 1.0;
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.620</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

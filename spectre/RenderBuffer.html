@@ -1,0 +1,417 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>RenderBuffer class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="RenderBuffer">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/RenderBuffer.html">RenderBuffer</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>RenderBuffer</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>A <a class="crossref" href="../spectre/RenderBuffer.html#RenderBuffer">RenderBuffer</a> represents the storage for either a color, depth,
+or stencil buffer render target attachment.</p>
+<pre class="source">
+class RenderBuffer extends DeviceChild {
+ static const int FormatRGB = WebGL.RGB565;
+ static const int FormatRGBA = WebGL.RGBA4;
+ static const int FormatDepth = WebGL.DEPTH_COMPONENT16;
+
+ static String formatToString(int format) {
+   if (format == FormatRGB) {
+     return 'RGB';
+   }
+   if (format == FormatRGBA) {
+     return 'RGBA';
+   }
+   if (format == FormatDepth) {
+     return 'Depth';
+   }
+   assert(false);
+ }
+
+ static int stringToFormat(String format) {
+   if (format == 'RGB') {
+     return FormatRGB;
+   }
+   if (format == 'RGBA') {
+     return FormatRGBA;
+   }
+   if (format == 'Depth') {
+     return FormatDepth;
+   }
+   assert(false);
+ }
+
+ final int _target = WebGL.RENDERBUFFER;
+ final int _target_param = WebGL.RENDERBUFFER_BINDING;
+
+ int _width = 0;
+ int get width =&gt; _width;
+ int _height = 0;
+ int get height =&gt; _height;
+ int _format = FormatRGB;
+ WebGL.Renderbuffer _buffer;
+
+ RenderBuffer(String name, GraphicsDevice device) :
+     super._internal(name, device) {
+   _buffer = device.gl.createRenderbuffer();
+ }
+
+ void finalize() {
+   super.finalize();
+   device.gl.deleteRenderbuffer(_buffer);
+   _buffer = null;
+ }
+
+ void _allocateStorage(int width, int height, int format) {
+   device.gl.renderbufferStorage(_target, _format, _width, _height);
+ }
+
+ /** Allocate storage for render buffer with [format] and
+  * [width]x[height] pixels.
+  */
+ void allocateStorage(int width, int height, int format) {
+   _width = width;
+   _height = height;
+   _format = format;
+   WebGL.Renderbuffer oldBind = device.gl.getParameter(_target_param);
+   device.gl.bindRenderbuffer(_target, _buffer);
+   _allocateStorage(width, height, format);
+   device.gl.bindRenderbuffer(_target, oldBind);
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../disposable/Disposable.html">Disposable</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../spectre/DeviceChild.html">DeviceChild</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>RenderBuffer</strong></span></p>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="FormatDepth">
+<button class="show-code">Code</button>
+const int         <strong>FormatDepth</strong> <a class="anchor-link"
+            href="#FormatDepth"
+            title="Permalink to RenderBuffer.FormatDepth">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int FormatDepth = WebGL.DEPTH_COMPONENT16
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="FormatRGB">
+<button class="show-code">Code</button>
+const int         <strong>FormatRGB</strong> <a class="anchor-link"
+            href="#FormatRGB"
+            title="Permalink to RenderBuffer.FormatRGB">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int FormatRGB = WebGL.RGB565
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="FormatRGBA">
+<button class="show-code">Code</button>
+const int         <strong>FormatRGBA</strong> <a class="anchor-link"
+            href="#FormatRGBA"
+            title="Permalink to RenderBuffer.FormatRGBA">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int FormatRGBA = WebGL.RGBA4
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="formatToString">
+<button class="show-code">Code</button>
+String <strong>formatToString</strong>(int format) <a class="anchor-link" href="#formatToString"
+              title="Permalink to RenderBuffer.formatToString">#</a></h4>
+<div class="doc">
+<pre class="source">
+static String formatToString(int format) {
+ if (format == FormatRGB) {
+   return 'RGB';
+ }
+ if (format == FormatRGBA) {
+   return 'RGBA';
+ }
+ if (format == FormatDepth) {
+   return 'Depth';
+ }
+ assert(false);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="stringToFormat">
+<button class="show-code">Code</button>
+int <strong>stringToFormat</strong>(String format) <a class="anchor-link" href="#stringToFormat"
+              title="Permalink to RenderBuffer.stringToFormat">#</a></h4>
+<div class="doc">
+<pre class="source">
+static int stringToFormat(String format) {
+ if (format == 'RGB') {
+   return FormatRGB;
+ }
+ if (format == 'RGBA') {
+   return FormatRGBA;
+ }
+ if (format == 'Depth') {
+   return FormatDepth;
+ }
+ assert(false);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="RenderBuffer">
+<button class="show-code">Code</button>
+new <strong>RenderBuffer</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#RenderBuffer"
+              title="Permalink to RenderBuffer.RenderBuffer">#</a></h4>
+<div class="doc">
+<pre class="source">
+RenderBuffer(String name, GraphicsDevice device) :
+   super._internal(name, device) {
+ _buffer = device.gl.createRenderbuffer();
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field inherited"><h4 id="device">
+<button class="show-code">Code</button>
+final <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a>         <strong>device</strong> <a class="anchor-link"
+            href="#device"
+            title="Permalink to RenderBuffer.device">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final GraphicsDevice device
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="height">
+<button class="show-code">Code</button>
+final int         <strong>height</strong> <a class="anchor-link"
+            href="#height"
+            title="Permalink to RenderBuffer.height">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get height =&gt; _height;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isDisposed">
+<button class="show-code">Code</button>
+final bool         <strong>isDisposed</strong> <a class="anchor-link"
+            href="#isDisposed"
+            title="Permalink to RenderBuffer.isDisposed">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>This object has been disposed. </p>
+<pre class="source">
+bool get isDisposed =&gt; _disposed;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to RenderBuffer.name">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="pinCount">
+<button class="show-code">Code</button>
+final int         <strong>pinCount</strong> <a class="anchor-link"
+            href="#pinCount"
+            title="Permalink to RenderBuffer.pinCount">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Count of pins </p>
+<pre class="source">
+int get pinCount =&gt; _referenceCount;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="width">
+<button class="show-code">Code</button>
+final int         <strong>width</strong> <a class="anchor-link"
+            href="#width"
+            title="Permalink to RenderBuffer.width">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get width =&gt; _width;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="allocateStorage">
+<button class="show-code">Code</button>
+void <strong>allocateStorage</strong>(int width, int height, int format) <a class="anchor-link" href="#allocateStorage"
+              title="Permalink to RenderBuffer.allocateStorage">#</a></h4>
+<div class="doc">
+<p>Allocate storage for render buffer with 
+<span class="param">format</span> and
+
+<span class="param">width</span>x
+<span class="param">height</span> pixels.</p>
+<pre class="source">
+void allocateStorage(int width, int height, int format) {
+ _width = width;
+ _height = height;
+ _format = format;
+ WebGL.Renderbuffer oldBind = device.gl.getParameter(_target_param);
+ device.gl.bindRenderbuffer(_target, _buffer);
+ _allocateStorage(width, height, format);
+ device.gl.bindRenderbuffer(_target, oldBind);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="dispose">
+<button class="show-code">Code</button>
+void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to RenderBuffer.dispose">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Disposes of the object. If nothing else has this object pinned,
+the finalizer will be called. See <code>pin</code> for inverse. Throws
+an exception if the object is already disposed.</p>
+<pre class="source">
+void dispose() {
+ if (_disposed) {
+   throw new StateError('It is an error to dispose a disposed object.');
+   return;
+ }
+ _referenceCount--;
+ if (_referenceCount == 0) {
+   finalize();
+   _disposed = true;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="finalize">
+<button class="show-code">Code</button>
+void <strong>finalize</strong>() <a class="anchor-link" href="#finalize"
+              title="Permalink to RenderBuffer.finalize">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Clean up any object state here. </p>
+<div class="docs-inherited-from">docs inherited from <a href="../disposable/Disposable.html">Disposable</a> </div></div>
+<pre class="source">
+void finalize() {
+ super.finalize();
+ device.gl.deleteRenderbuffer(_buffer);
+ _buffer = null;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="fromJson">
+<button class="show-code">Code</button>
+void <strong>fromJson</strong>(a) <a class="anchor-link" href="#fromJson"
+              title="Permalink to RenderBuffer.fromJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+void fromJson(dynamic a) {
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="pin">
+<button class="show-code">Code</button>
+void <strong>pin</strong>() <a class="anchor-link" href="#pin"
+              title="Permalink to RenderBuffer.pin">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Pin the disposable object. See <code>dispose</code> for inverse.
+Throws an exception if this object is already disposed.</p>
+<pre class="source">
+void pin() {
+ if (_disposed) {
+   throw new StateError('It is an error to pin a disposed object.');
+   return;
+ }
+ _referenceCount++;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toJson">
+<button class="show-code">Code</button>
+dynamic <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to RenderBuffer.toJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+dynamic toJson() {
+ return '';
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to RenderBuffer.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() =&gt; name;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.801</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

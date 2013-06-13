@@ -1,0 +1,233 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Bone class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="Bone">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/Bone.html">Bone</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>Bone</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Bone.</p>
+<pre class="source">
+class Bone {
+ final String boneName;
+ final Float32List localTransform = new Float32List(16);
+ final Float32List offsetTransform = new Float32List(16);
+ Float32x4List localTransform4;
+ Float32x4List offsetTransform4;
+ final List&lt;Bone&gt; children = new List&lt;Bone&gt;();
+ Bone _parent;
+ int _boneIndex = -1;
+
+ Bone(this.boneName, List&lt;num&gt; local, List&lt;num&gt; offset) {
+   localTransform4 = new Float32x4List.view(localTransform.buffer);
+   offsetTransform4 = new Float32x4List.view(offsetTransform.buffer);
+   
+   if (local != null) {
+     for (int i = 0; i &lt; 16; i++) {
+       localTransform[i] = local[i].toDouble();
+     }
+   } else {
+     localTransform[0] = 1.0;
+     localTransform[5] = 1.0;
+     localTransform[10] = 1.0;
+     localTransform[15] = 1.0;
+   }
+   if (offset != null) {
+     for (int i = 0; i &lt; 16; i++) {
+       offsetTransform[i] = offset[i].toDouble();
+     }
+   } else {
+     offsetTransform[0] = 1.0;
+     offsetTransform[5] = 1.0;
+     offsetTransform[10] = 1.0;
+     offsetTransform[15] = 1.0;
+   }
+ }
+
+ int get boneIndex =&gt; _boneIndex;
+
+ /// Parent bone.
+ Bone get parent =&gt; _parent;
+ set parent(Bone parent) {
+   _parent = parent;
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="Bone">
+<button class="show-code">Code</button>
+new <strong>Bone</strong>(String boneName, List&lt;num&gt; local, List&lt;num&gt; offset) <a class="anchor-link" href="#Bone"
+              title="Permalink to Bone.Bone">#</a></h4>
+<div class="doc">
+<pre class="source">
+Bone(this.boneName, List&lt;num&gt; local, List&lt;num&gt; offset) {
+ localTransform4 = new Float32x4List.view(localTransform.buffer);
+ offsetTransform4 = new Float32x4List.view(offsetTransform.buffer);
+ 
+ if (local != null) {
+   for (int i = 0; i &lt; 16; i++) {
+     localTransform[i] = local[i].toDouble();
+   }
+ } else {
+   localTransform[0] = 1.0;
+   localTransform[5] = 1.0;
+   localTransform[10] = 1.0;
+   localTransform[15] = 1.0;
+ }
+ if (offset != null) {
+   for (int i = 0; i &lt; 16; i++) {
+     offsetTransform[i] = offset[i].toDouble();
+   }
+ } else {
+   offsetTransform[0] = 1.0;
+   offsetTransform[5] = 1.0;
+   offsetTransform[10] = 1.0;
+   offsetTransform[15] = 1.0;
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="boneIndex">
+<button class="show-code">Code</button>
+final int         <strong>boneIndex</strong> <a class="anchor-link"
+            href="#boneIndex"
+            title="Permalink to Bone.boneIndex">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get boneIndex =&gt; _boneIndex;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="boneName">
+<button class="show-code">Code</button>
+final String         <strong>boneName</strong> <a class="anchor-link"
+            href="#boneName"
+            title="Permalink to Bone.boneName">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String boneName
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="children">
+<button class="show-code">Code</button>
+final List&lt;<a href="../spectre/Bone.html">Bone</a>&gt;         <strong>children</strong> <a class="anchor-link"
+            href="#children"
+            title="Permalink to Bone.children">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final List&lt;Bone&gt; children = new List&lt;Bone&gt;()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="localTransform">
+<button class="show-code">Code</button>
+final Float32List         <strong>localTransform</strong> <a class="anchor-link"
+            href="#localTransform"
+            title="Permalink to Bone.localTransform">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Float32List localTransform = new Float32List(16)
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="localTransform4">
+<button class="show-code">Code</button>
+Float32x4List         <strong>localTransform4</strong> <a class="anchor-link"
+            href="#localTransform4"
+            title="Permalink to Bone.localTransform4">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32x4List localTransform4
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="offsetTransform">
+<button class="show-code">Code</button>
+final Float32List         <strong>offsetTransform</strong> <a class="anchor-link"
+            href="#offsetTransform"
+            title="Permalink to Bone.offsetTransform">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Float32List offsetTransform = new Float32List(16)
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="offsetTransform4">
+<button class="show-code">Code</button>
+Float32x4List         <strong>offsetTransform4</strong> <a class="anchor-link"
+            href="#offsetTransform4"
+            title="Permalink to Bone.offsetTransform4">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32x4List offsetTransform4
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="parent">
+<button class="show-code">Code</button>
+<a href="../spectre/Bone.html">Bone</a>         <strong>parent</strong> <a class="anchor-link"
+            href="#parent"
+            title="Permalink to Bone.parent">#</a>
+        </h4>
+        <div class="doc">
+<p>Parent bone.</p>
+<pre class="source">
+Bone get parent =&gt; _parent;
+</pre>
+<pre class="source">
+set parent(Bone parent) {
+ _parent = parent;
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.637</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

@@ -1,0 +1,168 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>AssetLoader abstract class / asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="asset_pack" data-type="AssetLoader">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../asset_pack.html">asset_pack</a> &rsaquo; <a href="../asset_pack/AssetLoader.html">AssetLoader</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>AssetLoader</strong>
+          abstract class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Interface of an <a class="crossref" href="../asset_pack/AssetLoader.html">AssetLoader</a>. An asset loader is responsible
+for loading an object from a url pointing to a network or filesystem.</p>
+<pre class="source">
+abstract class AssetLoader {
+
+ static Future&lt;dynamic&gt; httpLoad(
+     Asset asset,
+     String responseType,
+     dynamic extractResponse(HttpRequest),
+     AssetPackTrace tracer ) {
+   tracer.assetLoadStart(asset);
+   var completer = new Completer&lt;dynamic&gt;();
+
+   var xhr = new HttpRequest();
+   xhr.open('GET', asset.url, async: true);
+   xhr.responseType = responseType;
+   xhr.onLoad.listen((e) {
+     // Note: file:// URIs have status of 0.
+     if ((xhr.status &gt;= 200 &amp;&amp; xhr.status &lt; 300) ||
+         xhr.status == 0 || xhr.status == 304) {
+       tracer.assetLoadEnd(asset);
+       completer.complete(extractResponse(xhr));
+     } else {
+       tracer.assetLoadError(
+           asset,
+           "http status code rejected : ${xhr.status} : ${xhr.statusText}"
+       );
+       tracer.assetLoadEnd(asset);
+       completer.complete(null);
+     }
+   });
+
+   xhr.onError.listen((e) {
+     tracer.assetLoadError(
+         asset,
+         "http status code rejected : ${xhr.status} : ${xhr.statusText}"
+     );
+     tracer.assetLoadEnd(asset);
+     completer.complete(null);
+   });
+
+   xhr.send();
+   return completer.future;
+ }
+
+ /// Fetch [asset] Url.
+ Future&lt;dynamic&gt; load(Asset asset, AssetPackTrace tracer);
+ /// Delete fetched [arg].
+ void delete(dynamic arg);
+}
+</pre>
+</div>
+<h3>Subclasses</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../asset_pack/ArrayBufferLoader.html">ArrayBufferLoader</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../asset_pack/BlobLoader.html">BlobLoader</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../asset_pack/ImageLoader.html">ImageLoader</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../asset_pack/MapLoader.html">MapLoader</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../asset_pack/TextLoader.html">TextLoader</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../asset_pack/VideoLoader.html">VideoLoader</a></span></p>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="httpLoad">
+<button class="show-code">Code</button>
+Future&lt;dynamic&gt; <strong>httpLoad</strong>(<a href="../asset_pack/Asset.html">Asset</a> asset, String responseType, extractResponse(HttpRequest), <a href="../asset_pack/AssetPackTrace.html">AssetPackTrace</a> tracer) <a class="anchor-link" href="#httpLoad"
+              title="Permalink to AssetLoader.httpLoad">#</a></h4>
+<div class="doc">
+<pre class="source">
+static Future&lt;dynamic&gt; httpLoad(
+   Asset asset,
+   String responseType,
+   dynamic extractResponse(HttpRequest),
+   AssetPackTrace tracer ) {
+ tracer.assetLoadStart(asset);
+ var completer = new Completer&lt;dynamic&gt;();
+
+ var xhr = new HttpRequest();
+ xhr.open('GET', asset.url, async: true);
+ xhr.responseType = responseType;
+ xhr.onLoad.listen((e) {
+   // Note: file:// URIs have status of 0.
+   if ((xhr.status &gt;= 200 &amp;&amp; xhr.status &lt; 300) ||
+       xhr.status == 0 || xhr.status == 304) {
+     tracer.assetLoadEnd(asset);
+     completer.complete(extractResponse(xhr));
+   } else {
+     tracer.assetLoadError(
+         asset,
+         "http status code rejected : ${xhr.status} : ${xhr.statusText}"
+     );
+     tracer.assetLoadEnd(asset);
+     completer.complete(null);
+   }
+ });
+
+ xhr.onError.listen((e) {
+   tracer.assetLoadError(
+       asset,
+       "http status code rejected : ${xhr.status} : ${xhr.statusText}"
+   );
+   tracer.assetLoadEnd(asset);
+   completer.complete(null);
+ });
+
+ xhr.send();
+ return completer.future;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="delete">
+abstract void <strong>delete</strong>(arg) <a class="anchor-link" href="#delete"
+              title="Permalink to AssetLoader.delete">#</a></h4>
+<div class="doc">
+<p>Delete fetched 
+<span class="param">arg</span>.</p>
+</div>
+</div>
+<div class="method"><h4 id="load">
+abstract Future&lt;dynamic&gt; <strong>load</strong>(<a href="../asset_pack/Asset.html">Asset</a> asset, <a href="../asset_pack/AssetPackTrace.html">AssetPackTrace</a> tracer) <a class="anchor-link" href="#load"
+              title="Permalink to AssetLoader.load">#</a></h4>
+<div class="doc">
+<p>Fetch 
+<span class="param">asset</span> Url.</p>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.151</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

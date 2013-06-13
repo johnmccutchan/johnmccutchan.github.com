@@ -1,0 +1,705 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>DdsFile class / spectre_asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre_asset_pack" data-type="DdsFile">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre_asset_pack.html">spectre_asset_pack</a> &rsaquo; <a href="../spectre_asset_pack/DdsFile.html">DdsFile</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>DdsFile</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Wrapper around a Direct Draw Surface (.dds) file providing access to its contents.</p>
+<p>A DDS file is a container for texture data. It can contain texture data with many
+different formats, but the most common are DXT compressed formats. The use of DXT
+formats require the <a href="http://www.khronos.org/registry/webgl/extensions/WEBGL_compressed_texture_s3tc/">WEBGL<em>compressed</em>texture_s3tc</a>
+extension, whose availablility can be queried using <code>GraphicsDeviceCapabilities.hasCompressedTextureS3TC</code>.</p>
+<p>The format can hold one or more textures as well as mipmap levels for them. One
+use for holding multiple textures is for cube maps.</p>
+<pre class="source">
+class DdsFile {
+ //---------------------------------------------------------------------
+ // Class variables
+ //---------------------------------------------------------------------
+
+ /// Magic number for a DDS file
+ ///
+ /// Value is 0x20534444 which is 'DDS ' in ASCII.
+ static const int _magicNumber = 0x20534444;
+
+ //---------------------------------------------------------------------
+ // Member variables
+ //---------------------------------------------------------------------
+
+ /// The buffer holding the file contents.
+ Uint8List _buffer;
+ /// The offset to the data section of the file.
+ int _dataOffset = 0;
+ /// The [DdsResourceFormat] for the DDS file.
+ int _resourceFormat = DdsResourceFormat.Unknown;
+ /// The number of textures within the DDS file.
+ int _arraySize = 0;
+ /// The header for the DDS file.
+ DdsHeader _header;
+ /// The pixel format of the texture data contained within the DDS file.
+ DdsPixelFormat _pixelFormat;
+ /// The extended header for the DDS file.
+ DdsExtendedHeader _extendedHeader;
+
+ //---------------------------------------------------------------------
+ // Construction
+ //---------------------------------------------------------------------
+
+ /// Creates an instance of the [DdsFile] class.
+ ///
+ /// The contents of the DDS file in its entirery are within [buffer]. During
+ /// construction an [ArgumentError] will be thrown if the [buffer] does not contain
+ /// a valid DDS file.
+ DdsFile(Uint8List buffer) {
+   _buffer = buffer;
+
+   // The header, including magic number, is 128 bytes of data
+   if (_buffer.length &lt;= DdsExtendedHeader._byteOffset) {
+     throw new ArgumentError('Invalid DDS file');
+   }
+
+   Uint32List reader = new Uint32List.view(_buffer);
+
+   // Check the magic number
+   if (reader[0] != _magicNumber) {
+     throw new ArgumentError('Invalid DDS file');
+   }
+
+   _header = new DdsHeader._internal(_buffer);
+
+   // Check that the header size is 124 bytes
+   if (_header.size != DdsHeader._structSize) {
+     throw new ArgumentError('Invalid DDS file');
+   }
+
+   _pixelFormat = new DdsPixelFormat._internal(_buffer);
+
+   // Check that the pixel format size is 32 bytes
+   if (_pixelFormat.size != DdsPixelFormat._structSize) {
+     throw new ArgumentError('Invalid DDS file');
+   }
+
+   // See if the extended header is present
+   if (_pixelFormat.characterCode == DdsPixelFormat._dx10CharacterCode) {
+     if (_buffer.length &lt;=
+         DdsExtendedHeader._byteOffset + DdsExtendedHeader._structSize) {
+       throw new ArgumentError('Invalid DDS file');
+     }
+
+     _extendedHeader = new DdsExtendedHeader._internal(buffer);
+
+     _dataOffset = DdsExtendedHeader._byteOffset + DdsExtendedHeader._structSize;
+     _resourceFormat = _extendedHeader.resourceFormat;
+     _arraySize = _extendedHeader.arraySize;
+
+     // The format can hold an array of cubemaps so increase the size
+     if (isCubeMap) {
+       _arraySize *= 6;
+     }
+   } else {
+     _dataOffset = DdsExtendedHeader._byteOffset;
+     _resourceFormat = _pixelFormat.resourceFormat;
+
+     // Get the number of textures in the file
+     if (isCubeMap) {
+       int surfaceDetail = _header.surfaceDetail;
+
+       _arraySize  = ((surfaceDetail &amp; DdsHeader.hasCubeMapPositiveX) == DdsHeader.hasCubeMapPositiveX) ? 1 : 0;
+       _arraySize += ((surfaceDetail &amp; DdsHeader.hasCubeMapNegativeX) == DdsHeader.hasCubeMapNegativeX) ? 1 : 0;
+
+       _arraySize += ((surfaceDetail &amp; DdsHeader.hasCubeMapPositiveY) == DdsHeader.hasCubeMapPositiveY) ? 1 : 0;
+       _arraySize += ((surfaceDetail &amp; DdsHeader.hasCubeMapNegativeY) == DdsHeader.hasCubeMapNegativeY) ? 1 : 0;
+
+       _arraySize += ((surfaceDetail &amp; DdsHeader.hasCubeMapPositiveZ) == DdsHeader.hasCubeMapPositiveZ) ? 1 : 0;
+       _arraySize += ((surfaceDetail &amp; DdsHeader.hasCubeMapNegativeZ) == DdsHeader.hasCubeMapNegativeZ) ? 1 : 0;
+     } else {
+       _arraySize = 1;
+     }
+   }
+ }
+
+ //---------------------------------------------------------------------
+ // Properties
+ //---------------------------------------------------------------------
+
+ /// The width of the compressed texture(s).
+ int get width =&gt; _header.width;
+ /// The height of the compressed texture(s).
+ int get height =&gt; _header.height;
+ /// The depth of the compressed texture(s).
+ int get depth =&gt; _header.depth;
+ /// The number of mipmaps within the texture(s).
+ ///
+ /// The mipmap count includes the original texture. A mipmap count of
+ /// 1 means that there are no mipmaps actually present within the file.
+ int get mipMapCount =&gt; _header.mipMapCount;
+ /// The [DdsResourceFormat] for the DDS file.
+ int get resourceFormat =&gt; _resourceFormat;
+ /// The number of textures within the DDS file.
+ int get arraySize =&gt; _arraySize;
+ /// The header for the DDS file.
+ DdsHeader get header =&gt; _header;
+ /// The pixel format of the texture data contained within the DDS file.
+ DdsPixelFormat get pixelFormat =&gt; _pixelFormat;
+ /// The extended header for the DDS file.
+ DdsExtendedHeader get extendedHeader =&gt; _extendedHeader;
+
+ /// Whether the DDS file contains a cube map.
+ bool get isCubeMap {
+   if (_extendedHeader != null) {
+     return (_extendedHeader.flags &amp; DdsExtendedHeader.isCubeMap) == DdsExtendedHeader.isCubeMap;
+   }
+
+   return (_header.surfaceDetail &amp; DdsHeader.isCubeMap) == DdsHeader.isCubeMap;
+ }
+
+ /// Whether all faces within a cube map are present.
+ bool get hasAllCubeMapFaces {
+   if (_extendedHeader != null) {
+     // DX10 format always has all the cube map faces
+     return (_extendedHeader.flags &amp; DdsExtendedHeader.isCubeMap) == DdsExtendedHeader.isCubeMap;
+   }
+
+   return (_header.surfaceDetail &amp; DdsHeader.hasAllCubeMapFaces) == DdsHeader.hasAllCubeMapFaces;
+ }
+
+ /// Whether the DDS file contains a volume texture.
+ bool get isVolumeTexture {
+   if (_extendedHeader != null) {
+     return _extendedHeader.resourceFormat == DdsExtendedHeader.isTexture3d;
+   }
+
+   return (_header.surfaceDetail &amp; DdsHeader.isVolumeTexture) == DdsHeader.isVolumeTexture;
+ }
+
+ /// Whether the DDS file has an extended header.
+ bool get hasExtendedHeader =&gt; _extendedHeader != null;
+
+ //---------------------------------------------------------------------
+ // Public methods
+ //---------------------------------------------------------------------
+
+ /// Gets the pixel data from the texture at the given [index] with the requested mipmap [level].
+ Uint8List getPixelData(int index, int level) {
+   if (_resourceFormat == DdsResourceFormat.Unknown) {
+     throw new ArgumentError('File contains an unknown resource format');
+   }
+
+   if (index &gt;= _arraySize) {
+     throw new ArgumentError('File does not contain a texture at the given index');
+   }
+
+   if (level &gt;= _header.mipMapCount) {
+     throw new ArgumentError('File does not contain a texture at the given level');
+   }
+
+   int offset = _getImageOffset(index) + _getMipMapLevelOffset(level);
+
+   int divisor = Math.pow(2, level);
+   int currentWidth = Math.max(1, width ~/ divisor);
+   int currentHeight = Math.max(1, height ~/ divisor);
+   int currentDepth = Math.max(1, depth ~/ divisor);
+
+   if (DdsResourceFormat.isBlockCompressed(_resourceFormat)) {
+     int blockSize = (_resourceFormat == DdsResourceFormat.UnormBc1) || (_resourceFormat == DdsResourceFormat.SrgbUnormBc1) ? 8 : 16;
+
+     return _buffer.sublist(offset, offset + (currentDepth * _getCompressedSize(currentWidth, currentHeight, blockSize)));
+   } else {
+     int stride = _getStride(currentWidth, _resourceFormat);
+
+     // It's not clear what specifies whether the rows are 32-bit aligned or
+     // 8-bit aligned. It appears that MS tools are just byte aligned so the
+     // code to take this into account is turned off.
+     int padding = 0;//stride % 4;
+
+     int sliceSize = stride * currentHeight;
+
+     // Each row of the image has an expectation that it starts on a 32-bit boundary.
+     //
+     // If there is no padding the array can be sliced. Otherwise each individual
+     // row must be copied one at a time
+     if (padding == 0) {
+       return _buffer.sublist(offset, offset + (currentDepth * sliceSize));
+     } else {
+       Uint8List copyTo = new Uint8List(currentDepth * sliceSize);
+       Uint8List copyFrom = new Uint8List.view(_buffer, offset);
+       int toIndex = 0;
+       int fromIndex = 0;
+
+       // Update this code to copy more than one byte at a time if
+       // performance becomes an issue
+       for (int j = 0; j &lt; currentDepth; ++j) {
+         for (int i = 0; i &lt; stride; ++i) {
+           copyTo[toIndex] = copyFrom[fromIndex];
+
+           toIndex++;
+           fromIndex++;
+         }
+
+         fromIndex += padding;
+       }
+
+       return copyTo;
+     }
+   }
+ }
+
+ //---------------------------------------------------------------------
+ // Private methods
+ //---------------------------------------------------------------------
+
+ /// Get the offset to an image within the file.
+ int _getImageOffset(int index) {
+   return (index == 0) ? _dataOffset : (_getMipMapLevelOffset(mipMapCount) * index) + _dataOffset;
+ }
+
+ /// Get the offset to a mipmap level within the file.
+ int _getMipMapLevelOffset(int level) {
+   int offset = 0;
+   int currentWidth  = width;
+   int currentHeight = height;
+   int currentDepth  = depth;
+
+   for (int currentLevel = 0; currentLevel &lt; level; ++currentLevel) {
+     int sliceSize;
+
+     if (DdsResourceFormat.isBlockCompressed(_resourceFormat)) {
+       int blockSize = (_resourceFormat == DdsResourceFormat.UnormBc1) || (_resourceFormat == DdsResourceFormat.SrgbUnormBc1) ? 8 : 16;
+
+       sliceSize = _getCompressedSize(currentWidth, currentHeight, blockSize);
+     } else {
+       int stride = _getStride(currentWidth, _resourceFormat);
+
+       // It's not clear what specifies whether the rows are 32-bit aligned or
+       // 8-bit aligned. It appears that MS tools are just byte aligned so the
+       // code to take this into account is turned off.
+       int padding = 0;//stride % 4;
+
+       sliceSize = (stride + padding) * currentHeight;
+     }
+
+     offset += sliceSize * currentDepth;
+
+     // Next mipmap level is half of the current
+     currentWidth  = Math.max(1, currentWidth  ~/ 2);
+     currentHeight = Math.max(1, currentHeight ~/ 2);
+     currentDepth  = Math.max(1, currentDepth  ~/ 2);
+   }
+
+   return offset;
+ }
+
+ /// Computes the size of a compressed texture.
+ static int _getCompressedSize(int width, int height, int blockSize) {
+   return Math.max(1, width ~/ 4) * Math.max(1, height ~/ 4) * blockSize;
+ }
+
+ /// Computes the stride of an image given its [width] and [format].
+ ///
+ /// The computed stride is not always at a 32-bit boundary. If this is the case
+ /// the image will require padding.
+ static int _getStride(int width, int format) {
+   if ((format == DdsResourceFormat.UnormR8G8B8G8) || (format == DdsResourceFormat.UnormG8R8G8B8)) {
+     return ((width + 1) &gt;&gt; 1) * 4;
+   } else {
+     int bitsPerPixel = DdsResourceFormat.getBitsPerPixel(format);
+
+     return ((width * bitsPerPixel) + 7) ~/ 8;
+   }
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="DdsFile">
+<button class="show-code">Code</button>
+new <strong>DdsFile</strong>(Uint8List buffer) <a class="anchor-link" href="#DdsFile"
+              title="Permalink to DdsFile.DdsFile">#</a></h4>
+<div class="doc">
+<p>Creates an instance of the <a class="crossref" href="../spectre_asset_pack/DdsFile.html#DdsFile">DdsFile</a> class.</p>
+<p>The contents of the DDS file in its entirery are within 
+<span class="param">buffer</span>. During
+construction an <code>ArgumentError</code> will be thrown if the 
+<span class="param">buffer</span> does not contain
+a valid DDS file.</p>
+<pre class="source">
+DdsFile(Uint8List buffer) {
+ _buffer = buffer;
+
+ // The header, including magic number, is 128 bytes of data
+ if (_buffer.length &lt;= DdsExtendedHeader._byteOffset) {
+   throw new ArgumentError('Invalid DDS file');
+ }
+
+ Uint32List reader = new Uint32List.view(_buffer);
+
+ // Check the magic number
+ if (reader[0] != _magicNumber) {
+   throw new ArgumentError('Invalid DDS file');
+ }
+
+ _header = new DdsHeader._internal(_buffer);
+
+ // Check that the header size is 124 bytes
+ if (_header.size != DdsHeader._structSize) {
+   throw new ArgumentError('Invalid DDS file');
+ }
+
+ _pixelFormat = new DdsPixelFormat._internal(_buffer);
+
+ // Check that the pixel format size is 32 bytes
+ if (_pixelFormat.size != DdsPixelFormat._structSize) {
+   throw new ArgumentError('Invalid DDS file');
+ }
+
+ // See if the extended header is present
+ if (_pixelFormat.characterCode == DdsPixelFormat._dx10CharacterCode) {
+   if (_buffer.length &lt;=
+       DdsExtendedHeader._byteOffset + DdsExtendedHeader._structSize) {
+     throw new ArgumentError('Invalid DDS file');
+   }
+
+   _extendedHeader = new DdsExtendedHeader._internal(buffer);
+
+   _dataOffset = DdsExtendedHeader._byteOffset + DdsExtendedHeader._structSize;
+   _resourceFormat = _extendedHeader.resourceFormat;
+   _arraySize = _extendedHeader.arraySize;
+
+   // The format can hold an array of cubemaps so increase the size
+   if (isCubeMap) {
+     _arraySize *= 6;
+   }
+ } else {
+   _dataOffset = DdsExtendedHeader._byteOffset;
+   _resourceFormat = _pixelFormat.resourceFormat;
+
+   // Get the number of textures in the file
+   if (isCubeMap) {
+     int surfaceDetail = _header.surfaceDetail;
+
+     _arraySize  = ((surfaceDetail &amp; DdsHeader.hasCubeMapPositiveX) == DdsHeader.hasCubeMapPositiveX) ? 1 : 0;
+     _arraySize += ((surfaceDetail &amp; DdsHeader.hasCubeMapNegativeX) == DdsHeader.hasCubeMapNegativeX) ? 1 : 0;
+
+     _arraySize += ((surfaceDetail &amp; DdsHeader.hasCubeMapPositiveY) == DdsHeader.hasCubeMapPositiveY) ? 1 : 0;
+     _arraySize += ((surfaceDetail &amp; DdsHeader.hasCubeMapNegativeY) == DdsHeader.hasCubeMapNegativeY) ? 1 : 0;
+
+     _arraySize += ((surfaceDetail &amp; DdsHeader.hasCubeMapPositiveZ) == DdsHeader.hasCubeMapPositiveZ) ? 1 : 0;
+     _arraySize += ((surfaceDetail &amp; DdsHeader.hasCubeMapNegativeZ) == DdsHeader.hasCubeMapNegativeZ) ? 1 : 0;
+   } else {
+     _arraySize = 1;
+   }
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="arraySize">
+<button class="show-code">Code</button>
+final int         <strong>arraySize</strong> <a class="anchor-link"
+            href="#arraySize"
+            title="Permalink to DdsFile.arraySize">#</a>
+        </h4>
+        <div class="doc">
+<p>The number of textures within the DDS file.</p>
+<pre class="source">
+int get arraySize =&gt; _arraySize;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="depth">
+<button class="show-code">Code</button>
+final int         <strong>depth</strong> <a class="anchor-link"
+            href="#depth"
+            title="Permalink to DdsFile.depth">#</a>
+        </h4>
+        <div class="doc">
+<p>The depth of the compressed texture(s).</p>
+<pre class="source">
+int get depth =&gt; _header.depth;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="extendedHeader">
+<button class="show-code">Code</button>
+final <a href="../spectre_asset_pack/DdsExtendedHeader.html">DdsExtendedHeader</a>         <strong>extendedHeader</strong> <a class="anchor-link"
+            href="#extendedHeader"
+            title="Permalink to DdsFile.extendedHeader">#</a>
+        </h4>
+        <div class="doc">
+<p>The extended header for the DDS file.</p>
+<pre class="source">
+DdsExtendedHeader get extendedHeader =&gt; _extendedHeader;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasAllCubeMapFaces">
+<button class="show-code">Code</button>
+final bool         <strong>hasAllCubeMapFaces</strong> <a class="anchor-link"
+            href="#hasAllCubeMapFaces"
+            title="Permalink to DdsFile.hasAllCubeMapFaces">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether all faces within a cube map are present.</p>
+<pre class="source">
+bool get hasAllCubeMapFaces {
+ if (_extendedHeader != null) {
+   // DX10 format always has all the cube map faces
+   return (_extendedHeader.flags &amp; DdsExtendedHeader.isCubeMap) == DdsExtendedHeader.isCubeMap;
+ }
+
+ return (_header.surfaceDetail &amp; DdsHeader.hasAllCubeMapFaces) == DdsHeader.hasAllCubeMapFaces;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasExtendedHeader">
+<button class="show-code">Code</button>
+final bool         <strong>hasExtendedHeader</strong> <a class="anchor-link"
+            href="#hasExtendedHeader"
+            title="Permalink to DdsFile.hasExtendedHeader">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether the DDS file has an extended header.</p>
+<pre class="source">
+bool get hasExtendedHeader =&gt; _extendedHeader != null;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="header">
+<button class="show-code">Code</button>
+final <a href="../spectre_asset_pack/DdsHeader.html">DdsHeader</a>         <strong>header</strong> <a class="anchor-link"
+            href="#header"
+            title="Permalink to DdsFile.header">#</a>
+        </h4>
+        <div class="doc">
+<p>The header for the DDS file.</p>
+<pre class="source">
+DdsHeader get header =&gt; _header;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="height">
+<button class="show-code">Code</button>
+final int         <strong>height</strong> <a class="anchor-link"
+            href="#height"
+            title="Permalink to DdsFile.height">#</a>
+        </h4>
+        <div class="doc">
+<p>The height of the compressed texture(s).</p>
+<pre class="source">
+int get height =&gt; _header.height;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isCubeMap">
+<button class="show-code">Code</button>
+final bool         <strong>isCubeMap</strong> <a class="anchor-link"
+            href="#isCubeMap"
+            title="Permalink to DdsFile.isCubeMap">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether the DDS file contains a cube map.</p>
+<pre class="source">
+bool get isCubeMap {
+ if (_extendedHeader != null) {
+   return (_extendedHeader.flags &amp; DdsExtendedHeader.isCubeMap) == DdsExtendedHeader.isCubeMap;
+ }
+
+ return (_header.surfaceDetail &amp; DdsHeader.isCubeMap) == DdsHeader.isCubeMap;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isVolumeTexture">
+<button class="show-code">Code</button>
+final bool         <strong>isVolumeTexture</strong> <a class="anchor-link"
+            href="#isVolumeTexture"
+            title="Permalink to DdsFile.isVolumeTexture">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether the DDS file contains a volume texture.</p>
+<pre class="source">
+bool get isVolumeTexture {
+ if (_extendedHeader != null) {
+   return _extendedHeader.resourceFormat == DdsExtendedHeader.isTexture3d;
+ }
+
+ return (_header.surfaceDetail &amp; DdsHeader.isVolumeTexture) == DdsHeader.isVolumeTexture;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="mipMapCount">
+<button class="show-code">Code</button>
+final int         <strong>mipMapCount</strong> <a class="anchor-link"
+            href="#mipMapCount"
+            title="Permalink to DdsFile.mipMapCount">#</a>
+        </h4>
+        <div class="doc">
+<p>The number of mipmaps within the texture(s).</p>
+<p>The mipmap count includes the original texture. A mipmap count of
+1 means that there are no mipmaps actually present within the file.</p>
+<pre class="source">
+int get mipMapCount =&gt; _header.mipMapCount;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="pixelFormat">
+<button class="show-code">Code</button>
+final <a href="../spectre_asset_pack/DdsPixelFormat.html">DdsPixelFormat</a>         <strong>pixelFormat</strong> <a class="anchor-link"
+            href="#pixelFormat"
+            title="Permalink to DdsFile.pixelFormat">#</a>
+        </h4>
+        <div class="doc">
+<p>The pixel format of the texture data contained within the DDS file.</p>
+<pre class="source">
+DdsPixelFormat get pixelFormat =&gt; _pixelFormat;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="resourceFormat">
+<button class="show-code">Code</button>
+final int         <strong>resourceFormat</strong> <a class="anchor-link"
+            href="#resourceFormat"
+            title="Permalink to DdsFile.resourceFormat">#</a>
+        </h4>
+        <div class="doc">
+<p>The <a class="crossref" href="../spectre_asset_pack/DdsResourceFormat.html">DdsResourceFormat</a> for the DDS file.</p>
+<pre class="source">
+int get resourceFormat =&gt; _resourceFormat;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="width">
+<button class="show-code">Code</button>
+final int         <strong>width</strong> <a class="anchor-link"
+            href="#width"
+            title="Permalink to DdsFile.width">#</a>
+        </h4>
+        <div class="doc">
+<p>The width of the compressed texture(s).</p>
+<pre class="source">
+int get width =&gt; _header.width;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="getPixelData">
+<button class="show-code">Code</button>
+Uint8List <strong>getPixelData</strong>(int index, int level) <a class="anchor-link" href="#getPixelData"
+              title="Permalink to DdsFile.getPixelData">#</a></h4>
+<div class="doc">
+<p>Gets the pixel data from the texture at the given 
+<span class="param">index</span> with the requested mipmap 
+<span class="param">level</span>.</p>
+<pre class="source">
+Uint8List getPixelData(int index, int level) {
+ if (_resourceFormat == DdsResourceFormat.Unknown) {
+   throw new ArgumentError('File contains an unknown resource format');
+ }
+
+ if (index &gt;= _arraySize) {
+   throw new ArgumentError('File does not contain a texture at the given index');
+ }
+
+ if (level &gt;= _header.mipMapCount) {
+   throw new ArgumentError('File does not contain a texture at the given level');
+ }
+
+ int offset = _getImageOffset(index) + _getMipMapLevelOffset(level);
+
+ int divisor = Math.pow(2, level);
+ int currentWidth = Math.max(1, width ~/ divisor);
+ int currentHeight = Math.max(1, height ~/ divisor);
+ int currentDepth = Math.max(1, depth ~/ divisor);
+
+ if (DdsResourceFormat.isBlockCompressed(_resourceFormat)) {
+   int blockSize = (_resourceFormat == DdsResourceFormat.UnormBc1) || (_resourceFormat == DdsResourceFormat.SrgbUnormBc1) ? 8 : 16;
+
+   return _buffer.sublist(offset, offset + (currentDepth * _getCompressedSize(currentWidth, currentHeight, blockSize)));
+ } else {
+   int stride = _getStride(currentWidth, _resourceFormat);
+
+   // It's not clear what specifies whether the rows are 32-bit aligned or
+   // 8-bit aligned. It appears that MS tools are just byte aligned so the
+   // code to take this into account is turned off.
+   int padding = 0;//stride % 4;
+
+   int sliceSize = stride * currentHeight;
+
+   // Each row of the image has an expectation that it starts on a 32-bit boundary.
+   //
+   // If there is no padding the array can be sliced. Otherwise each individual
+   // row must be copied one at a time
+   if (padding == 0) {
+     return _buffer.sublist(offset, offset + (currentDepth * sliceSize));
+   } else {
+     Uint8List copyTo = new Uint8List(currentDepth * sliceSize);
+     Uint8List copyFrom = new Uint8List.view(_buffer, offset);
+     int toIndex = 0;
+     int fromIndex = 0;
+
+     // Update this code to copy more than one byte at a time if
+     // performance becomes an issue
+     for (int j = 0; j &lt; currentDepth; ++j) {
+       for (int i = 0; i &lt; stride; ++i) {
+         copyTo[toIndex] = copyFrom[fromIndex];
+
+         toIndex++;
+         fromIndex++;
+       }
+
+       fromIndex += padding;
+     }
+
+     return copyTo;
+   }
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:33.048</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

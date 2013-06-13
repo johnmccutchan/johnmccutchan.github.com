@@ -1,0 +1,629 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>AssetPack class / asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="asset_pack" data-type="AssetPack">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../asset_pack.html">asset_pack</a> &rsaquo; <a href="../asset_pack/AssetPack.html">AssetPack</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>AssetPack</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>A set of assets. The importer property of an asset can be accessed as if
+it were a property on the pack with the name of the asset. Metadata for
+an asset can be accessed via the <a class="crossref" href="../asset_pack/AssetPack.html#assets">assets</a> map. That means that the
+following is true:</p>
+<p>pack.assets<code>"assetName"</code>.imported == pack.assetName</p>
+<p>Asset packs can contain other asset packs.</p>
+<p>You can determine the path of an asset pack by getting it's path variable.</p>
+<pre class="source">
+class AssetPack {
+ final AssetManager manager;
+ final String name;
+ final Map&lt;String, Asset&gt; assets = new Map&lt;String, Asset&gt;();
+
+ AssetPack _parent;
+ /// Parent pack or null.
+ AssetPack get parent =&gt; _parent;
+
+ /// Path to this pack.
+ String get path {
+   if (parent == null) {
+     return '';
+   }
+   String parentPath = parent.path;
+   if (parentPath == '') {
+     return name;
+   } else {
+     return '$parentPath.$name';
+   }
+ }
+
+ AssetPack(this.manager, this.name);
+
+ /// Returns the type of [assetName].
+ String type(String assetName) {
+   Asset asset = assets[assetName];
+   if (asset != null) {
+     return asset.type;
+   }
+   return null;
+ }
+
+ /// Returns the url of [assetName].
+ String url(String assetName) {
+   Asset asset = assets[assetName];
+   if (asset != null) {
+     return asset.url;
+   }
+   return null;
+ }
+
+ /// Add asset to this pack.
+ Asset registerAsset(String name, String type, String url,
+                     Map loaderArguments, Map importerArguments) {
+   if (AssetPackFile.validAssetName(name) == false) {
+     throw new ArgumentError('$name is an invalid name.');
+   }
+   Asset asset = assets[name];
+   if (asset != null) {
+     throw new ArgumentError('$name already exists.');
+   }
+   var loader = manager.loaders[type];
+   var importer = manager.importers[type];
+   // Create asset.
+   asset = new Asset(this, name, url, type, loader,
+                     loaderArguments, importer, loaderArguments);
+   if (importer != null) {
+     importer.initialize(asset);
+   }
+   if (importer == null) {
+     asset._status = 'No importer available.';
+   } else if (loader == null) {
+     asset._status = 'No loader available.';
+   } else {
+     asset._status = 'OK';
+   }
+   // Register asset in pack.
+   assets[name] = asset;
+   return asset;
+ }
+
+ /// Adds and loads an [Asset] to this pack.
+ Future&lt;Asset&gt; loadAndRegisterAsset(String name, String type, String url,
+                                    Map loaderArguments,
+                                    Map importerArguments) {
+   Asset asset = registerAsset(name, type, url, loaderArguments,
+                               importerArguments);
+   return manager._loadAndImport(asset);
+ }
+
+ /// Remove an asset from this pack.
+ void deregisterAsset(String name) {
+   final asset = assets[name];
+   if (asset == null) {
+     throw new ArgumentError('$name does not exist.');
+   }
+   // Unregister asset in pack.
+   assets.remove(name);
+ }
+
+ /// Get asset's imported property at [path].
+ dynamic getImportedAtPath(String path) {
+   List&lt;String&gt; splitPath = path.split(".");
+   Asset asset = _getAssetAtPath(path, splitPath, false);
+   if (asset != null) {
+     return asset.imported;
+   }
+   return null;
+ }
+
+ /// Get asset metadata at [path]. Returns the [Asset] not the imported value
+ Asset getAssetAtPath(String path) {
+   List&lt;String&gt; splitPath = path.split(".");
+   return _getAssetAtPath(path, splitPath, true);
+ }
+
+ /// Forwarded to [getImportedAtPath].
+ dynamic operator[](String path) =&gt; getImportedAtPath(path);
+
+ Asset _getAssetAtPath(String fullAssetPath, List&lt;String&gt; assetPath,
+                       bool throwOnNotFound) {
+   if (assetPath.length == 0) {
+     if (throwOnNotFound == false) {
+       return null;
+     }
+     throw new ArgumentError('$fullAssetPath does not exist.');
+   }
+   String name = assetPath.removeAt(0);
+   Asset asset = assets[name];
+   if (asset == null) {
+     if (throwOnNotFound == false) {
+       return null;
+     }
+     throw new ArgumentError('$fullAssetPath does not exist.');
+   }
+   if (asset.isPack &amp;&amp; assetPath.length &gt; 0) {
+     AssetPack pack = asset.imported;
+     return pack._getAssetAtPath(fullAssetPath, assetPath, throwOnNotFound);
+   }
+   if (assetPath.length &gt; 0) {
+     if (throwOnNotFound == false) {
+       return null;
+     }
+     throw new ArgumentError('$fullAssetPath does not exist.');
+   }
+   return asset;
+ }
+
+ /// Add a child asset pack to this asset pack.
+ AssetPack registerPack(String name, String url) {
+   Asset asset = registerAsset(name, 'pack', url, {}, {});
+   asset.imported._parent = this;
+   return asset.imported;
+ }
+
+ /// Remove a child pack from this asset pack.
+ void deregisterPack(String name) {
+   Asset asset = assets[name];
+   if (asset == null) {
+     throw new ArgumentError('$name does not exist.');
+   }
+   if (asset.isPack == false) {
+     throw new ArgumentError('$name is not an asset pack.');
+   }
+   AssetPack pack = asset.imported;
+   pack._parent = null;
+   deregisterAsset(name);
+   pack._delete();
+ }
+
+ /// Load the pack at [url] and add it as a child pack named [name].
+ Future&lt;AssetPack&gt; loadPack(String name, String url) {
+   Asset asset = registerAsset(name, 'pack', url, {}, {});
+   asset.imported._parent = this;
+   return manager._loadAndImport(asset).then((_) =&gt;
+       new Future.value(asset.imported));
+ }
+
+ /// Load many packs, adding each one as a child pack.
+ /// [['packName', 'packUrl'], ['packName2', 'packUrl2']]
+ Future loadPacks(List&lt;List&lt;String&gt;&gt; packs) {
+   if (packs == null) {
+     return new Future.value(null);
+   }
+   var futurePacks = new List&lt;Future&lt;AssetPack&gt;&gt;();
+   packs.forEach((pack) {
+     String name = pack[0];
+     String url = pack[1];
+     var futurePack = loadPack(name, url);
+     futurePacks.add(futurePack);
+   });
+   return Future.wait(futurePacks);
+ }
+
+ /// Number of assets in pack.
+ int get length =&gt; assets.length;
+
+ /// Clear all assets from this pack.
+ void clear() {
+   _delete();
+ }
+
+ void _delete() {
+   assets.forEach((name, asset) {
+     asset._delete();
+   });
+   assets.clear();
+ }
+
+ /// Reloads all assets in the pack. Does not reload the .pack file.
+ void reload() {
+   assets.forEach((name, asset) {
+     asset.reload();
+   });
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="AssetPack">
+<button class="show-code">Code</button>
+new <strong>AssetPack</strong>(<a href="../asset_pack/AssetManager.html">AssetManager</a> manager, String name) <a class="anchor-link" href="#AssetPack"
+              title="Permalink to AssetPack.AssetPack">#</a></h4>
+<div class="doc">
+<pre class="source">
+AssetPack(this.manager, this.name);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="assets">
+<button class="show-code">Code</button>
+final Map&lt;String, <a href="../asset_pack/Asset.html">Asset</a>&gt;         <strong>assets</strong> <a class="anchor-link"
+            href="#assets"
+            title="Permalink to AssetPack.assets">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Map&lt;String, Asset&gt; assets = new Map&lt;String, Asset&gt;()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="length">
+<button class="show-code">Code</button>
+final int         <strong>length</strong> <a class="anchor-link"
+            href="#length"
+            title="Permalink to AssetPack.length">#</a>
+        </h4>
+        <div class="doc">
+<p>Number of assets in pack.</p>
+<pre class="source">
+int get length =&gt; assets.length;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="manager">
+<button class="show-code">Code</button>
+final <a href="../asset_pack/AssetManager.html">AssetManager</a>         <strong>manager</strong> <a class="anchor-link"
+            href="#manager"
+            title="Permalink to AssetPack.manager">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final AssetManager manager
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to AssetPack.name">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="parent">
+<button class="show-code">Code</button>
+final <a href="../asset_pack/AssetPack.html">AssetPack</a>         <strong>parent</strong> <a class="anchor-link"
+            href="#parent"
+            title="Permalink to AssetPack.parent">#</a>
+        </h4>
+        <div class="doc">
+<p>Parent pack or null.</p>
+<pre class="source">
+AssetPack get parent =&gt; _parent;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="path">
+<button class="show-code">Code</button>
+final String         <strong>path</strong> <a class="anchor-link"
+            href="#path"
+            title="Permalink to AssetPack.path">#</a>
+        </h4>
+        <div class="doc">
+<p>Path to this pack.</p>
+<pre class="source">
+String get path {
+ if (parent == null) {
+   return '';
+ }
+ String parentPath = parent.path;
+ if (parentPath == '') {
+   return name;
+ } else {
+   return '$parentPath.$name';
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Operators</h3>
+<div class="method"><h4 id="[]">
+<button class="show-code">Code</button>
+dynamic <strong>operator []</strong>(String path) <a class="anchor-link" href="#[]"
+              title="Permalink to AssetPack.operator []">#</a></h4>
+<div class="doc">
+<p>Forwarded to <a class="crossref" href="../asset_pack/AssetPack.html#getImportedAtPath">getImportedAtPath</a>.</p>
+<pre class="source">
+dynamic operator[](String path) =&gt; getImportedAtPath(path);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="clear">
+<button class="show-code">Code</button>
+void <strong>clear</strong>() <a class="anchor-link" href="#clear"
+              title="Permalink to AssetPack.clear">#</a></h4>
+<div class="doc">
+<p>Clear all assets from this pack.</p>
+<pre class="source">
+void clear() {
+ _delete();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="deregisterAsset">
+<button class="show-code">Code</button>
+void <strong>deregisterAsset</strong>(String name) <a class="anchor-link" href="#deregisterAsset"
+              title="Permalink to AssetPack.deregisterAsset">#</a></h4>
+<div class="doc">
+<p>Remove an asset from this pack.</p>
+<pre class="source">
+void deregisterAsset(String name) {
+ final asset = assets[name];
+ if (asset == null) {
+   throw new ArgumentError('$name does not exist.');
+ }
+ // Unregister asset in pack.
+ assets.remove(name);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="deregisterPack">
+<button class="show-code">Code</button>
+void <strong>deregisterPack</strong>(String name) <a class="anchor-link" href="#deregisterPack"
+              title="Permalink to AssetPack.deregisterPack">#</a></h4>
+<div class="doc">
+<p>Remove a child pack from this asset pack.</p>
+<pre class="source">
+void deregisterPack(String name) {
+ Asset asset = assets[name];
+ if (asset == null) {
+   throw new ArgumentError('$name does not exist.');
+ }
+ if (asset.isPack == false) {
+   throw new ArgumentError('$name is not an asset pack.');
+ }
+ AssetPack pack = asset.imported;
+ pack._parent = null;
+ deregisterAsset(name);
+ pack._delete();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="getAssetAtPath">
+<button class="show-code">Code</button>
+<a href="../asset_pack/Asset.html">Asset</a> <strong>getAssetAtPath</strong>(String path) <a class="anchor-link" href="#getAssetAtPath"
+              title="Permalink to AssetPack.getAssetAtPath">#</a></h4>
+<div class="doc">
+<p>Get asset metadata at 
+<span class="param">path</span>. Returns the <a class="crossref" href="../asset_pack/Asset.html">Asset</a> not the imported value</p>
+<pre class="source">
+Asset getAssetAtPath(String path) {
+ List&lt;String&gt; splitPath = path.split(".");
+ return _getAssetAtPath(path, splitPath, true);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="getImportedAtPath">
+<button class="show-code">Code</button>
+dynamic <strong>getImportedAtPath</strong>(String path) <a class="anchor-link" href="#getImportedAtPath"
+              title="Permalink to AssetPack.getImportedAtPath">#</a></h4>
+<div class="doc">
+<p>Get asset's imported property at 
+<span class="param">path</span>.</p>
+<pre class="source">
+dynamic getImportedAtPath(String path) {
+ List&lt;String&gt; splitPath = path.split(".");
+ Asset asset = _getAssetAtPath(path, splitPath, false);
+ if (asset != null) {
+   return asset.imported;
+ }
+ return null;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="loadAndRegisterAsset">
+<button class="show-code">Code</button>
+Future&lt;<a href="../asset_pack/Asset.html">Asset</a>&gt; <strong>loadAndRegisterAsset</strong>(String name, String type, String url, Map loaderArguments, Map importerArguments) <a class="anchor-link" href="#loadAndRegisterAsset"
+              title="Permalink to AssetPack.loadAndRegisterAsset">#</a></h4>
+<div class="doc">
+<p>Adds and loads an <a class="crossref" href="../asset_pack/Asset.html">Asset</a> to this pack.</p>
+<pre class="source">
+Future&lt;Asset&gt; loadAndRegisterAsset(String name, String type, String url,
+                                  Map loaderArguments,
+                                  Map importerArguments) {
+ Asset asset = registerAsset(name, type, url, loaderArguments,
+                             importerArguments);
+ return manager._loadAndImport(asset);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="loadPack">
+<button class="show-code">Code</button>
+Future&lt;<a href="../asset_pack/AssetPack.html">AssetPack</a>&gt; <strong>loadPack</strong>(String name, String url) <a class="anchor-link" href="#loadPack"
+              title="Permalink to AssetPack.loadPack">#</a></h4>
+<div class="doc">
+<p>Load the pack at 
+<span class="param">url</span> and add it as a child pack named 
+<span class="param">name</span>.</p>
+<pre class="source">
+Future&lt;AssetPack&gt; loadPack(String name, String url) {
+ Asset asset = registerAsset(name, 'pack', url, {}, {});
+ asset.imported._parent = this;
+ return manager._loadAndImport(asset).then((_) =&gt;
+     new Future.value(asset.imported));
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="loadPacks">
+<button class="show-code">Code</button>
+Future <strong>loadPacks</strong>(List&lt;List&lt;String&gt;&gt; packs) <a class="anchor-link" href="#loadPacks"
+              title="Permalink to AssetPack.loadPacks">#</a></h4>
+<div class="doc">
+<p>Load many packs, adding each one as a child pack.
+[['packName', 'packUrl'], ['packName2', 'packUrl2']]</p>
+<pre class="source">
+Future loadPacks(List&lt;List&lt;String&gt;&gt; packs) {
+ if (packs == null) {
+   return new Future.value(null);
+ }
+ var futurePacks = new List&lt;Future&lt;AssetPack&gt;&gt;();
+ packs.forEach((pack) {
+   String name = pack[0];
+   String url = pack[1];
+   var futurePack = loadPack(name, url);
+   futurePacks.add(futurePack);
+ });
+ return Future.wait(futurePacks);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="registerAsset">
+<button class="show-code">Code</button>
+<a href="../asset_pack/Asset.html">Asset</a> <strong>registerAsset</strong>(String name, String type, String url, Map loaderArguments, Map importerArguments) <a class="anchor-link" href="#registerAsset"
+              title="Permalink to AssetPack.registerAsset">#</a></h4>
+<div class="doc">
+<p>Add asset to this pack.</p>
+<pre class="source">
+Asset registerAsset(String name, String type, String url,
+                   Map loaderArguments, Map importerArguments) {
+ if (AssetPackFile.validAssetName(name) == false) {
+   throw new ArgumentError('$name is an invalid name.');
+ }
+ Asset asset = assets[name];
+ if (asset != null) {
+   throw new ArgumentError('$name already exists.');
+ }
+ var loader = manager.loaders[type];
+ var importer = manager.importers[type];
+ // Create asset.
+ asset = new Asset(this, name, url, type, loader,
+                   loaderArguments, importer, loaderArguments);
+ if (importer != null) {
+   importer.initialize(asset);
+ }
+ if (importer == null) {
+   asset._status = 'No importer available.';
+ } else if (loader == null) {
+   asset._status = 'No loader available.';
+ } else {
+   asset._status = 'OK';
+ }
+ // Register asset in pack.
+ assets[name] = asset;
+ return asset;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="registerPack">
+<button class="show-code">Code</button>
+<a href="../asset_pack/AssetPack.html">AssetPack</a> <strong>registerPack</strong>(String name, String url) <a class="anchor-link" href="#registerPack"
+              title="Permalink to AssetPack.registerPack">#</a></h4>
+<div class="doc">
+<p>Add a child asset pack to this asset pack.</p>
+<pre class="source">
+AssetPack registerPack(String name, String url) {
+ Asset asset = registerAsset(name, 'pack', url, {}, {});
+ asset.imported._parent = this;
+ return asset.imported;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="reload">
+<button class="show-code">Code</button>
+void <strong>reload</strong>() <a class="anchor-link" href="#reload"
+              title="Permalink to AssetPack.reload">#</a></h4>
+<div class="doc">
+<p>Reloads all assets in the pack. Does not reload the .pack file.</p>
+<pre class="source">
+void reload() {
+ assets.forEach((name, asset) {
+   asset.reload();
+ });
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="type">
+<button class="show-code">Code</button>
+String <strong>type</strong>(String assetName) <a class="anchor-link" href="#type"
+              title="Permalink to AssetPack.type">#</a></h4>
+<div class="doc">
+<p>Returns the type of 
+<span class="param">assetName</span>.</p>
+<pre class="source">
+String type(String assetName) {
+ Asset asset = assets[assetName];
+ if (asset != null) {
+   return asset.type;
+ }
+ return null;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="url">
+<button class="show-code">Code</button>
+String <strong>url</strong>(String assetName) <a class="anchor-link" href="#url"
+              title="Permalink to AssetPack.url">#</a></h4>
+<div class="doc">
+<p>Returns the url of 
+<span class="param">assetName</span>.</p>
+<pre class="source">
+String url(String assetName) {
+ Asset asset = assets[assetName];
+ if (asset != null) {
+   return asset.url;
+ }
+ return null;
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.193</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

@@ -1,0 +1,324 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>AssetManager class / asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="asset_pack" data-type="AssetManager">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../asset_pack.html">asset_pack</a> &rsaquo; <a href="../asset_pack/AssetManager.html">AssetManager</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>AssetManager</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class AssetManager {
+ /** A map from asset type to importers. Add your own importers. */
+ final Map&lt;String, AssetImporter&gt; importers = new Map&lt;String, AssetImporter&gt;();
+ /** A map from asset type to loader. Add your own loaders. */
+ final Map&lt;String, AssetLoader&gt; loaders = new Map&lt;String, AssetLoader&gt;();
+
+ final AssetPackTrace tracer;
+
+ AssetManager([tracer0]) :
+   tracer = (tracer0 == null) ? new NullAssetPackTrace() : tracer0 {
+   _root = new AssetPack(this, 'root');
+   importers['json'] = new JsonImporter();
+   importers['text'] = new TextImporter();
+   importers['pack'] = new PackImporter(this);
+   importers['textmap'] = new NoopImporter();
+   importers['imagemap'] = new NoopImporter();
+   loaders['textmap'] = new MapLoader(new TextLoader());
+   loaders['imagemap'] = new MapLoader(new ImageLoader());
+   loaders['json'] = new TextLoader();
+   loaders['text'] = loaders['json'];
+   loaders['pack'] = loaders['json'];
+ }
+
+ void _supportedTypeCheck(String type) {
+   AssetImporter importer = importers[type];
+   if (importer == null) {
+     throw new ArgumentError('Cannot find importer for ${type}.');
+   }
+   AssetLoader loader = loaders[type];
+   if (loader == null) {
+     throw new ArgumentError('Cannot find loader for ${type}.');
+   }
+ }
+
+ AssetPack _root;
+ /// The root pack.
+ AssetPack get root =&gt; _root;
+
+ /// Forwarded to root.
+ dynamic getImportedAtPath(String path) =&gt; root.getImportedAtPath(path);
+
+ /// Forwarded to [getImportedAtPath].
+ dynamic operator[](String path) =&gt; getImportedAtPath(path);
+
+ /// Forwarded to root.
+ Asset getAssetAtPath(String assetPath) =&gt; root.getAssetAtPath(assetPath);
+
+ /// Forwarded to root. See [AssetPack] for method documentation.
+ Future&lt;Asset&gt; loadAndRegisterAsset(String name, String type, String url,
+                                    Map loaderArguments,
+                                    Map importerArguments) {
+   return root.loadAndRegisterAsset(name, type, url, loaderArguments,
+                                    importerArguments);
+ }
+
+ /// Forwarded to root. See [AssetPack] for method documentation.
+ AssetPack registerPack(String assetPackName, String url) {
+   return _root.registerPack(assetPackName, url);
+ }
+
+ /// Forwared to root. See [AssetPack] for method documentation.
+ void deregisterPack(String name) {
+   return _root.deregisterPack(name);
+ }
+
+ /// Forwarded to root. See [AssetPack] for method documentation.
+ Future&lt;AssetPack&gt; loadPack(String name, String url) {
+   return _root.loadPack(name, url);
+ }
+
+ /// Forwarded to root. See [AssetPack] for method documentation.
+ Future loadPacks(List&lt;List&lt;String&gt;&gt; packs) {
+   return _root.loadPacks(packs);
+ }
+
+ Future&lt;Asset&gt; _loadAndImport(Asset asset) {
+   if (asset.loader == null) {
+     tracer.assetLoadError(asset, 'no loader registered for ${asset.type}');
+     return new Future.value(asset);
+   }
+   if (asset.importer == null) {
+     tracer.assetLoadError(asset, 'no importer registered for ${asset.type}');
+     return new Future.value(asset);
+   }
+   asset._status = 'Loading';
+   return asset.loader.load(asset, tracer).then((payload) {
+     asset._status = 'Importing';
+     return asset.importer.import(payload, asset, tracer);
+   });
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="AssetManager">
+<button class="show-code">Code</button>
+new <strong>AssetManager</strong>([tracer0]) <a class="anchor-link" href="#AssetManager"
+              title="Permalink to AssetManager.AssetManager">#</a></h4>
+<div class="doc">
+<pre class="source">
+AssetManager([tracer0]) :
+ tracer = (tracer0 == null) ? new NullAssetPackTrace() : tracer0 {
+ _root = new AssetPack(this, 'root');
+ importers['json'] = new JsonImporter();
+ importers['text'] = new TextImporter();
+ importers['pack'] = new PackImporter(this);
+ importers['textmap'] = new NoopImporter();
+ importers['imagemap'] = new NoopImporter();
+ loaders['textmap'] = new MapLoader(new TextLoader());
+ loaders['imagemap'] = new MapLoader(new ImageLoader());
+ loaders['json'] = new TextLoader();
+ loaders['text'] = loaders['json'];
+ loaders['pack'] = loaders['json'];
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="importers">
+<button class="show-code">Code</button>
+final Map&lt;String, <a href="../asset_pack/AssetImporter.html">AssetImporter</a>&gt;         <strong>importers</strong> <a class="anchor-link"
+            href="#importers"
+            title="Permalink to AssetManager.importers">#</a>
+        </h4>
+        <div class="doc">
+<p>A map from asset type to importers. Add your own importers. </p>
+<pre class="source">
+final Map&lt;String, AssetImporter&gt; importers = new Map&lt;String, AssetImporter&gt;()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="loaders">
+<button class="show-code">Code</button>
+final Map&lt;String, <a href="../asset_pack/AssetLoader.html">AssetLoader</a>&gt;         <strong>loaders</strong> <a class="anchor-link"
+            href="#loaders"
+            title="Permalink to AssetManager.loaders">#</a>
+        </h4>
+        <div class="doc">
+<p>A map from asset type to loader. Add your own loaders. </p>
+<pre class="source">
+final Map&lt;String, AssetLoader&gt; loaders = new Map&lt;String, AssetLoader&gt;()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="root">
+<button class="show-code">Code</button>
+final <a href="../asset_pack/AssetPack.html">AssetPack</a>         <strong>root</strong> <a class="anchor-link"
+            href="#root"
+            title="Permalink to AssetManager.root">#</a>
+        </h4>
+        <div class="doc">
+<p>The root pack.</p>
+<pre class="source">
+AssetPack get root =&gt; _root;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="tracer">
+<button class="show-code">Code</button>
+final <a href="../asset_pack/AssetPackTrace.html">AssetPackTrace</a>         <strong>tracer</strong> <a class="anchor-link"
+            href="#tracer"
+            title="Permalink to AssetManager.tracer">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final AssetPackTrace tracer
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Operators</h3>
+<div class="method"><h4 id="[]">
+<button class="show-code">Code</button>
+dynamic <strong>operator []</strong>(String path) <a class="anchor-link" href="#[]"
+              title="Permalink to AssetManager.operator []">#</a></h4>
+<div class="doc">
+<p>Forwarded to <a class="crossref" href="../asset_pack/AssetManager.html#getImportedAtPath">getImportedAtPath</a>.</p>
+<pre class="source">
+dynamic operator[](String path) =&gt; getImportedAtPath(path);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="deregisterPack">
+<button class="show-code">Code</button>
+void <strong>deregisterPack</strong>(String name) <a class="anchor-link" href="#deregisterPack"
+              title="Permalink to AssetManager.deregisterPack">#</a></h4>
+<div class="doc">
+<p>Forwared to root. See <a class="crossref" href="../asset_pack/AssetPack.html">AssetPack</a> for method documentation.</p>
+<pre class="source">
+void deregisterPack(String name) {
+ return _root.deregisterPack(name);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="getAssetAtPath">
+<button class="show-code">Code</button>
+<a href="../asset_pack/Asset.html">Asset</a> <strong>getAssetAtPath</strong>(String assetPath) <a class="anchor-link" href="#getAssetAtPath"
+              title="Permalink to AssetManager.getAssetAtPath">#</a></h4>
+<div class="doc">
+<p>Forwarded to root.</p>
+<pre class="source">
+Asset getAssetAtPath(String assetPath) =&gt; root.getAssetAtPath(assetPath);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="getImportedAtPath">
+<button class="show-code">Code</button>
+dynamic <strong>getImportedAtPath</strong>(String path) <a class="anchor-link" href="#getImportedAtPath"
+              title="Permalink to AssetManager.getImportedAtPath">#</a></h4>
+<div class="doc">
+<p>Forwarded to root.</p>
+<pre class="source">
+dynamic getImportedAtPath(String path) =&gt; root.getImportedAtPath(path);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="loadAndRegisterAsset">
+<button class="show-code">Code</button>
+Future&lt;<a href="../asset_pack/Asset.html">Asset</a>&gt; <strong>loadAndRegisterAsset</strong>(String name, String type, String url, Map loaderArguments, Map importerArguments) <a class="anchor-link" href="#loadAndRegisterAsset"
+              title="Permalink to AssetManager.loadAndRegisterAsset">#</a></h4>
+<div class="doc">
+<p>Forwarded to root. See <a class="crossref" href="../asset_pack/AssetPack.html">AssetPack</a> for method documentation.</p>
+<pre class="source">
+Future&lt;Asset&gt; loadAndRegisterAsset(String name, String type, String url,
+                                  Map loaderArguments,
+                                  Map importerArguments) {
+ return root.loadAndRegisterAsset(name, type, url, loaderArguments,
+                                  importerArguments);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="loadPack">
+<button class="show-code">Code</button>
+Future&lt;<a href="../asset_pack/AssetPack.html">AssetPack</a>&gt; <strong>loadPack</strong>(String name, String url) <a class="anchor-link" href="#loadPack"
+              title="Permalink to AssetManager.loadPack">#</a></h4>
+<div class="doc">
+<p>Forwarded to root. See <a class="crossref" href="../asset_pack/AssetPack.html">AssetPack</a> for method documentation.</p>
+<pre class="source">
+Future&lt;AssetPack&gt; loadPack(String name, String url) {
+ return _root.loadPack(name, url);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="loadPacks">
+<button class="show-code">Code</button>
+Future <strong>loadPacks</strong>(List&lt;List&lt;String&gt;&gt; packs) <a class="anchor-link" href="#loadPacks"
+              title="Permalink to AssetManager.loadPacks">#</a></h4>
+<div class="doc">
+<p>Forwarded to root. See <a class="crossref" href="../asset_pack/AssetPack.html">AssetPack</a> for method documentation.</p>
+<pre class="source">
+Future loadPacks(List&lt;List&lt;String&gt;&gt; packs) {
+ return _root.loadPacks(packs);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="registerPack">
+<button class="show-code">Code</button>
+<a href="../asset_pack/AssetPack.html">AssetPack</a> <strong>registerPack</strong>(String assetPackName, String url) <a class="anchor-link" href="#registerPack"
+              title="Permalink to AssetManager.registerPack">#</a></h4>
+<div class="doc">
+<p>Forwarded to root. See <a class="crossref" href="../asset_pack/AssetPack.html">AssetPack</a> for method documentation.</p>
+<pre class="source">
+AssetPack registerPack(String assetPackName, String url) {
+ return _root.registerPack(assetPackName, url);
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.204</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

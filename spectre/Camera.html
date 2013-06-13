@@ -1,0 +1,439 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Camera class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="Camera">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/Camera.html">Camera</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>Camera</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class Camera {
+ Vector3 position;
+ Vector3 upDirection;
+ Vector3 focusPosition;
+ num zNear;
+ num zFar;
+ num aspectRatio;
+ num FOV;
+
+ String toString() {
+   return '$position -&gt; $focusPosition';
+ }
+
+ Camera() {
+   position = new Vector3(0.0, 0.0, 0.0);
+   focusPosition = new Vector3(0.0, 0.0, -1.0);
+   upDirection = new Vector3(0.0, 1.0, 0.0);
+
+   FOV = 0.785398163; // 2*45 degrees
+   zNear = 1.0;
+   zFar = 1000.0;
+   aspectRatio = 1.7777778;
+ }
+
+ num get yaw {
+   Vector3 z = new Vector3(0.0, 0.0, 1.0);
+   Vector3 forward = frontDirection;
+   forward.normalize();
+   num d = degrees(acos(forward.dot(z)));
+   return d;
+ }
+
+ num get pitch {
+   Vector3 y = new Vector3(0.0, 1.0, 0.0);
+   Vector3 forward = frontDirection;
+   forward.normalize();
+   num d = degrees(acos(forward.dot(y)));
+   return d;
+ }
+
+ Matrix4 get projectionMatrix {
+   return makePerspectiveMatrix(FOV, aspectRatio, zNear, zFar);
+ }
+
+ Matrix4 get viewMatrix {
+   return makeViewMatrix(position, focusPosition, upDirection);
+ }
+
+ void copyProjectionMatrixIntoArray(Float32List pm) {
+   Matrix4 m = makePerspectiveMatrix(FOV, aspectRatio, zNear, zFar);
+   m.copyIntoArray(pm);
+ }
+
+ void copyViewMatrixIntoArray(Float32List vm) {
+   Matrix4 m = makeViewMatrix(position, focusPosition, upDirection);
+   m.copyIntoArray(vm);
+ }
+
+ void copyNormalMatrixIntoArray(Float32List nm) {
+   Matrix4 m = makeViewMatrix(position, focusPosition, upDirection);
+   m.copyIntoArray(nm);
+ }
+
+ void copyProjectionMatrix(Matrix4 pm) {
+   Matrix4 m = makePerspectiveMatrix(FOV, aspectRatio, zNear, zFar);
+   m.copyInto(pm);
+ }
+
+ void copyViewMatrix(Matrix4 vm) {
+   Matrix4 m = makeViewMatrix(position, focusPosition, upDirection);
+   m.copyInto(vm);
+ }
+
+ void copyNormalMatrix(Matrix4 nm) {
+   Matrix4 m = makeViewMatrix(position, focusPosition, upDirection);
+   m.copyInto(nm);
+ }
+
+ void copyEyePosition(Vector3 ep) {
+   position.copyInto(ep);
+ }
+
+ void copyLookAtPosition(Vector3 lap) {
+   focusPosition.copyInto(lap);
+ }
+
+ Vector3 get frontDirection =&gt;  (focusPosition-position).normalize();
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="Camera">
+<button class="show-code">Code</button>
+new <strong>Camera</strong>() <a class="anchor-link" href="#Camera"
+              title="Permalink to Camera.Camera">#</a></h4>
+<div class="doc">
+<pre class="source">
+Camera() {
+ position = new Vector3(0.0, 0.0, 0.0);
+ focusPosition = new Vector3(0.0, 0.0, -1.0);
+ upDirection = new Vector3(0.0, 1.0, 0.0);
+
+ FOV = 0.785398163; // 2*45 degrees
+ zNear = 1.0;
+ zFar = 1000.0;
+ aspectRatio = 1.7777778;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="aspectRatio">
+<button class="show-code">Code</button>
+num         <strong>aspectRatio</strong> <a class="anchor-link"
+            href="#aspectRatio"
+            title="Permalink to Camera.aspectRatio">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+num aspectRatio
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="focusPosition">
+<button class="show-code">Code</button>
+<a href="../vector_math/Vector3.html">Vector3</a>         <strong>focusPosition</strong> <a class="anchor-link"
+            href="#focusPosition"
+            title="Permalink to Camera.focusPosition">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Vector3 focusPosition
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="FOV">
+<button class="show-code">Code</button>
+num         <strong>FOV</strong> <a class="anchor-link"
+            href="#FOV"
+            title="Permalink to Camera.FOV">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+num FOV
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="frontDirection">
+<button class="show-code">Code</button>
+final <a href="../vector_math/Vector3.html">Vector3</a>         <strong>frontDirection</strong> <a class="anchor-link"
+            href="#frontDirection"
+            title="Permalink to Camera.frontDirection">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Vector3 get frontDirection =&gt;  (focusPosition-position).normalize();
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="pitch">
+<button class="show-code">Code</button>
+final num         <strong>pitch</strong> <a class="anchor-link"
+            href="#pitch"
+            title="Permalink to Camera.pitch">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+num get pitch {
+ Vector3 y = new Vector3(0.0, 1.0, 0.0);
+ Vector3 forward = frontDirection;
+ forward.normalize();
+ num d = degrees(acos(forward.dot(y)));
+ return d;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="position">
+<button class="show-code">Code</button>
+<a href="../vector_math/Vector3.html">Vector3</a>         <strong>position</strong> <a class="anchor-link"
+            href="#position"
+            title="Permalink to Camera.position">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Vector3 position
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="projectionMatrix">
+<button class="show-code">Code</button>
+final <a href="../vector_math/Matrix4.html">Matrix4</a>         <strong>projectionMatrix</strong> <a class="anchor-link"
+            href="#projectionMatrix"
+            title="Permalink to Camera.projectionMatrix">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Matrix4 get projectionMatrix {
+ return makePerspectiveMatrix(FOV, aspectRatio, zNear, zFar);
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="upDirection">
+<button class="show-code">Code</button>
+<a href="../vector_math/Vector3.html">Vector3</a>         <strong>upDirection</strong> <a class="anchor-link"
+            href="#upDirection"
+            title="Permalink to Camera.upDirection">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Vector3 upDirection
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="viewMatrix">
+<button class="show-code">Code</button>
+final <a href="../vector_math/Matrix4.html">Matrix4</a>         <strong>viewMatrix</strong> <a class="anchor-link"
+            href="#viewMatrix"
+            title="Permalink to Camera.viewMatrix">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Matrix4 get viewMatrix {
+ return makeViewMatrix(position, focusPosition, upDirection);
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="yaw">
+<button class="show-code">Code</button>
+final num         <strong>yaw</strong> <a class="anchor-link"
+            href="#yaw"
+            title="Permalink to Camera.yaw">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+num get yaw {
+ Vector3 z = new Vector3(0.0, 0.0, 1.0);
+ Vector3 forward = frontDirection;
+ forward.normalize();
+ num d = degrees(acos(forward.dot(z)));
+ return d;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="zFar">
+<button class="show-code">Code</button>
+num         <strong>zFar</strong> <a class="anchor-link"
+            href="#zFar"
+            title="Permalink to Camera.zFar">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+num zFar
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="zNear">
+<button class="show-code">Code</button>
+num         <strong>zNear</strong> <a class="anchor-link"
+            href="#zNear"
+            title="Permalink to Camera.zNear">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+num zNear
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="copyEyePosition">
+<button class="show-code">Code</button>
+void <strong>copyEyePosition</strong>(<a href="../vector_math/Vector3.html">Vector3</a> ep) <a class="anchor-link" href="#copyEyePosition"
+              title="Permalink to Camera.copyEyePosition">#</a></h4>
+<div class="doc">
+<pre class="source">
+void copyEyePosition(Vector3 ep) {
+ position.copyInto(ep);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="copyLookAtPosition">
+<button class="show-code">Code</button>
+void <strong>copyLookAtPosition</strong>(<a href="../vector_math/Vector3.html">Vector3</a> lap) <a class="anchor-link" href="#copyLookAtPosition"
+              title="Permalink to Camera.copyLookAtPosition">#</a></h4>
+<div class="doc">
+<pre class="source">
+void copyLookAtPosition(Vector3 lap) {
+ focusPosition.copyInto(lap);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="copyNormalMatrix">
+<button class="show-code">Code</button>
+void <strong>copyNormalMatrix</strong>(<a href="../vector_math/Matrix4.html">Matrix4</a> nm) <a class="anchor-link" href="#copyNormalMatrix"
+              title="Permalink to Camera.copyNormalMatrix">#</a></h4>
+<div class="doc">
+<pre class="source">
+void copyNormalMatrix(Matrix4 nm) {
+ Matrix4 m = makeViewMatrix(position, focusPosition, upDirection);
+ m.copyInto(nm);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="copyNormalMatrixIntoArray">
+<button class="show-code">Code</button>
+void <strong>copyNormalMatrixIntoArray</strong>(Float32List nm) <a class="anchor-link" href="#copyNormalMatrixIntoArray"
+              title="Permalink to Camera.copyNormalMatrixIntoArray">#</a></h4>
+<div class="doc">
+<pre class="source">
+void copyNormalMatrixIntoArray(Float32List nm) {
+ Matrix4 m = makeViewMatrix(position, focusPosition, upDirection);
+ m.copyIntoArray(nm);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="copyProjectionMatrix">
+<button class="show-code">Code</button>
+void <strong>copyProjectionMatrix</strong>(<a href="../vector_math/Matrix4.html">Matrix4</a> pm) <a class="anchor-link" href="#copyProjectionMatrix"
+              title="Permalink to Camera.copyProjectionMatrix">#</a></h4>
+<div class="doc">
+<pre class="source">
+void copyProjectionMatrix(Matrix4 pm) {
+ Matrix4 m = makePerspectiveMatrix(FOV, aspectRatio, zNear, zFar);
+ m.copyInto(pm);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="copyProjectionMatrixIntoArray">
+<button class="show-code">Code</button>
+void <strong>copyProjectionMatrixIntoArray</strong>(Float32List pm) <a class="anchor-link" href="#copyProjectionMatrixIntoArray"
+              title="Permalink to Camera.copyProjectionMatrixIntoArray">#</a></h4>
+<div class="doc">
+<pre class="source">
+void copyProjectionMatrixIntoArray(Float32List pm) {
+ Matrix4 m = makePerspectiveMatrix(FOV, aspectRatio, zNear, zFar);
+ m.copyIntoArray(pm);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="copyViewMatrix">
+<button class="show-code">Code</button>
+void <strong>copyViewMatrix</strong>(<a href="../vector_math/Matrix4.html">Matrix4</a> vm) <a class="anchor-link" href="#copyViewMatrix"
+              title="Permalink to Camera.copyViewMatrix">#</a></h4>
+<div class="doc">
+<pre class="source">
+void copyViewMatrix(Matrix4 vm) {
+ Matrix4 m = makeViewMatrix(position, focusPosition, upDirection);
+ m.copyInto(vm);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="copyViewMatrixIntoArray">
+<button class="show-code">Code</button>
+void <strong>copyViewMatrixIntoArray</strong>(Float32List vm) <a class="anchor-link" href="#copyViewMatrixIntoArray"
+              title="Permalink to Camera.copyViewMatrixIntoArray">#</a></h4>
+<div class="doc">
+<pre class="source">
+void copyViewMatrixIntoArray(Float32List vm) {
+ Matrix4 m = makeViewMatrix(position, focusPosition, upDirection);
+ m.copyIntoArray(vm);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to Camera.toString">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() {
+ return '$position -&gt; $focusPosition';
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.903</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

@@ -1,0 +1,166 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>BlendOperation class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="BlendOperation">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/BlendOperation.html">BlendOperation</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>BlendOperation</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class BlendOperation extends Enum {
+ /// The result is the destination added to the source.
+ ///
+ ///     Result = (Source Color * Source Blend) +
+ ///              (Destination Color * Destination Blend)
+ static const int Add = WebGL.FUNC_ADD;
+ /// The result is the source subtracted from the destination.
+ ///
+ ///     Result = (Destination Color * Destination Blend) -
+ ///              (Source Color * Source Blend)
+ static const int ReverseSubtract = WebGL.FUNC_REVERSE_SUBTRACT;
+ /// The result is the destination subtracted from the source.
+ ///
+ ///     Result = (Source Color * Source Blend) -
+ ///              (Destination Color * Destination Blend)
+ static const int Subtract = WebGL.FUNC_SUBTRACT;
+
+ static Map&lt;String, int&gt; _values = {
+   'BlendOperation.Add' : Add,
+   'BlendOperation.ReverseSubtract' : ReverseSubtract,
+   'BlendOperation.Subtract' : Subtract
+ };
+
+ /// Convert a [String] to a [BlendOperation].
+ static int parse(String name) =&gt; Enum._parse(_values, name);
+ /// Convert a [BlendOperation] to a [String].
+ static String stringify(int value) =&gt; Enum._stringify(_values, value);
+ /// Checks whether the value is a valid enumeration.
+ static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../spectre/Enum.html">Enum</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>BlendOperation</strong></span></p>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="Add">
+<button class="show-code">Code</button>
+const int         <strong>Add</strong> <a class="anchor-link"
+            href="#Add"
+            title="Permalink to BlendOperation.Add">#</a>
+        </h4>
+        <div class="doc">
+<p>The result is the destination added to the source.</p>
+<pre><code>Result = (Source Color * Source Blend) +
+         (Destination Color * Destination Blend)
+</code></pre>
+<pre class="source">
+static const int Add = WebGL.FUNC_ADD
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="ReverseSubtract">
+<button class="show-code">Code</button>
+const int         <strong>ReverseSubtract</strong> <a class="anchor-link"
+            href="#ReverseSubtract"
+            title="Permalink to BlendOperation.ReverseSubtract">#</a>
+        </h4>
+        <div class="doc">
+<p>The result is the source subtracted from the destination.</p>
+<pre><code>Result = (Destination Color * Destination Blend) -
+         (Source Color * Source Blend)
+</code></pre>
+<pre class="source">
+static const int ReverseSubtract = WebGL.FUNC_REVERSE_SUBTRACT
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Subtract">
+<button class="show-code">Code</button>
+const int         <strong>Subtract</strong> <a class="anchor-link"
+            href="#Subtract"
+            title="Permalink to BlendOperation.Subtract">#</a>
+        </h4>
+        <div class="doc">
+<p>The result is the destination subtracted from the source.</p>
+<pre><code>Result = (Source Color * Source Blend) -
+         (Destination Color * Destination Blend)
+</code></pre>
+<pre class="source">
+static const int Subtract = WebGL.FUNC_SUBTRACT
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="parse">
+<button class="show-code">Code</button>
+int <strong>parse</strong>(String name) <a class="anchor-link" href="#parse"
+              title="Permalink to BlendOperation.parse">#</a></h4>
+<div class="doc">
+<p>Convert a <code>String</code> to a <a class="crossref" href="../spectre/BlendOperation.html">BlendOperation</a>.</p>
+<pre class="source">
+static int parse(String name) =&gt; Enum._parse(_values, name);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="stringify">
+<button class="show-code">Code</button>
+String <strong>stringify</strong>(int value) <a class="anchor-link" href="#stringify"
+              title="Permalink to BlendOperation.stringify">#</a></h4>
+<div class="doc">
+<p>Convert a <a class="crossref" href="../spectre/BlendOperation.html">BlendOperation</a> to a <code>String</code>.</p>
+<pre class="source">
+static String stringify(int value) =&gt; Enum._stringify(_values, value);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="isValid">
+<button class="show-code">Code</button>
+bool <strong>isValid</strong>(int value) <a class="anchor-link" href="#isValid"
+              title="Permalink to BlendOperation.isValid">#</a></h4>
+<div class="doc">
+<p>Checks whether the value is a valid enumeration.</p>
+<pre class="source">
+static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.923</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

@@ -1,0 +1,713 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>SkinnedMesh class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="SkinnedMesh">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/SkinnedMesh.html">SkinnedMesh</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>SkinnedMesh</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class SkinnedMesh extends SpectreMesh {
+ VertexBuffer _deviceVertexBuffer;
+ IndexBuffer _deviceIndexBuffer;
+ IndexBuffer get indexArray =&gt; _deviceIndexBuffer;
+ VertexBuffer get vertexArray =&gt; _deviceVertexBuffer;
+ final List&lt;Map&gt; meshes = new List&lt;Map&gt;();
+
+ SkinnedMesh(String name, GraphicsDevice device) :
+     super(name, device) {
+   _deviceVertexBuffer = new VertexBuffer(name, device);
+   _deviceIndexBuffer = new IndexBuffer(name, device);
+   _deviceSkinningBuffer = new VertexBuffer('${name}_skinning', device);
+   animations['null'] = new SkeletonAnimation('null', 0);
+   currentAnimation = 'null';
+ }
+
+ void finalize() {
+   _deviceVertexBuffer.dispose();
+   _deviceIndexBuffer.dispose();
+   _deviceSkinningBuffer.dispose();
+   _deviceVertexBuffer = null;
+   _deviceIndexBuffer = null;
+   _deviceSkinningBuffer = null;
+   count = 0;
+ }
+
+ Float32List baseVertexData; // The unanimated reference data.
+ Float32List vertexData; // The animated vertex data.
+ Float32x4List baseVertexData4;
+ Float32x4List vertexData4;
+ int _floatsPerVertex;
+ final Float32List globalInverseTransform = new Float32List(16);
+
+ // These are indexed together
+ Float32List weightData;
+ Int32List boneData;
+ Float32List skinningData;
+
+ VertexBuffer _deviceSkinningBuffer;
+ VertexBuffer get skinningArray =&gt; _deviceSkinningBuffer;
+
+ Skeleton skeleton;
+
+ // current time.
+ double _currentTime = 0.0;
+
+ final Map&lt;String, SkeletonAnimation&gt; animations =
+     new Map&lt;String,SkeletonAnimation&gt;();
+ SkeletonAnimation _currentAnimation;
+ String get currentAnimation =&gt; _currentAnimation.name;
+ set currentAnimation(String name) {
+   _currentAnimation = animations[name];
+ }
+
+ SkeletonPoser skeletonPoser = new SimpleSkeletonPoser();
+ SkeletonPoser skeletonPoserSIMD = new SIMDSkeletonPoser();
+
+ void skin(PosedSkeleton pose, bool useSimdSkinning) {
+   if (useSimdSkinning) {
+     _updateVerticesSIMD(pose);
+   } else {
+     _updateVertices(pose);
+   }
+ }
+
+ final Stopwatch sw = new Stopwatch();
+
+ final Float32List m = new Float32List(16);
+ final Float32List vertex = new Float32List(12);
+ // Transform baseVertexData into vertexData based on bone hierarchy.
+ void _updateVertices(PosedSkeleton pose) {
+   int numVertices = baseVertexData.length~/_floatsPerVertex;
+   int vertexBase = 0;
+   sw.reset();
+   sw.start();
+   for (int v = 0; v &lt; numVertices; v++) {
+     // Zero vertices.
+     vertex[0] = 0.0;
+     vertex[1] = 0.0;
+     vertex[2] = 0.0;
+     vertex[3] = 0.0;
+     for (int i = 4; i &lt; _floatsPerVertex; i++) {
+       vertexData[i] = baseVertexData[vertexBase+i];
+     }
+     int skinningDataOffset = v*4;
+     Matrix44Operations.zero(m, 0);
+     for (int i = 0; i &lt; 4; ++i) {
+       final int boneId = boneData[skinningDataOffset];
+       final double weight = weightData[skinningDataOffset];
+       Float32ListHelpers.addScale44(m, pose.skinningTransforms[boneId],
+                                     weight);
+       skinningDataOffset++;
+     }
+     Matrix44Operations.transform4(vertex, 0, m, 0, baseVertexData,
+                                   vertexBase);
+     for (int i = 0; i &lt; 4; i++) {
+       vertexData[vertexBase+i] = vertex[i];
+     }
+     vertexBase += _floatsPerVertex;
+   }
+   sw.stop();
+   vertexArray.uploadSubData(0, vertexData);
+ }
+
+ // Transform baseVertexData into vertexData based on bone hierarchy.
+ final Float32x4List m4 = new Float32x4List(4);
+ final Float32x4List vertex4 = new Float32x4List(3);
+ void _updateVerticesSIMD(PosedSkeleton pose) {
+   int numVertices = baseVertexData.length~/_floatsPerVertex;
+   int vertexBase = 0;
+   sw.reset();
+   sw.start();
+   for (int v = 0; v &lt; numVertices; v++) {
+     vertexData4[1] = baseVertexData4[vertexBase+1];
+     vertexData4[2] = baseVertexData4[vertexBase+2];
+     int skinningDataOffset = v*4;
+     Matrix44SIMDOperations.zero(m4, 0);
+     for (int i = 0; i &lt; 4; ++i) {
+       final int boneId = boneData[skinningDataOffset];
+       final double weight = weightData[skinningDataOffset];
+       Float32x4 weight4 = new Float32x4.splat(weight);
+       Float32x4List boneMatrix = pose.skinningTransforms4[boneId];
+       m4[0] += boneMatrix[0] * weight4;
+       m4[1] += boneMatrix[1] * weight4;
+       m4[2] += boneMatrix[2] * weight4;
+       m4[3] += boneMatrix[3] * weight4;
+       skinningDataOffset++;
+     }
+     Matrix44SIMDOperations.transform4(vertex4, 0, m4, 0, baseVertexData4,
+                                       vertexBase);
+     vertexData4[vertexBase] = vertex4[0];
+     vertexBase += _floatsPerVertex ~/ 4;
+   }
+   sw.stop();
+   vertexArray.uploadSubData(0, vertexData);
+ }
+
+ // Set the vertices to the bind pose.
+ // This resets a skinned mesh for GPU skinning
+ void resetToBindPose() {
+   int numVertices = baseVertexData.length~/_floatsPerVertex;
+   int vertexBase = 0;
+   for (int v = 0; v &lt; numVertices; v++) {
+     vertexData4[vertexBase] = baseVertexData4[vertexBase];
+     vertexBase += _floatsPerVertex ~/ 4;
+   }
+   vertexArray.uploadSubData(0, vertexData);
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../disposable/Disposable.html">Disposable</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../spectre/DeviceChild.html">DeviceChild</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../spectre/SpectreMesh.html">SpectreMesh</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>SkinnedMesh</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="SkinnedMesh">
+<button class="show-code">Code</button>
+new <strong>SkinnedMesh</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#SkinnedMesh"
+              title="Permalink to SkinnedMesh.SkinnedMesh">#</a></h4>
+<div class="doc">
+<pre class="source">
+SkinnedMesh(String name, GraphicsDevice device) :
+   super(name, device) {
+ _deviceVertexBuffer = new VertexBuffer(name, device);
+ _deviceIndexBuffer = new IndexBuffer(name, device);
+ _deviceSkinningBuffer = new VertexBuffer('${name}_skinning', device);
+ animations['null'] = new SkeletonAnimation('null', 0);
+ currentAnimation = 'null';
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="animations">
+<button class="show-code">Code</button>
+final Map&lt;String, <a href="../spectre/SkeletonAnimation.html">SkeletonAnimation</a>&gt;         <strong>animations</strong> <a class="anchor-link"
+            href="#animations"
+            title="Permalink to SkinnedMesh.animations">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Map&lt;String, SkeletonAnimation&gt; animations =
+   new Map&lt;String,SkeletonAnimation&gt;()
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="attributes">
+<button class="show-code">Code</button>
+final Map&lt;String, <a href="../spectre/SpectreMeshAttribute.html">SpectreMeshAttribute</a>&gt;         <strong>attributes</strong> <a class="anchor-link"
+            href="#attributes"
+            title="Permalink to SkinnedMesh.attributes">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/SpectreMesh.html">SpectreMesh</a> </div><div class="doc">
+<pre class="source">
+final Map&lt;String, SpectreMeshAttribute&gt; attributes =
+   new Map&lt;String, SpectreMeshAttribute&gt;()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="baseVertexData">
+<button class="show-code">Code</button>
+Float32List         <strong>baseVertexData</strong> <a class="anchor-link"
+            href="#baseVertexData"
+            title="Permalink to SkinnedMesh.baseVertexData">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32List baseVertexData
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="baseVertexData4">
+<button class="show-code">Code</button>
+Float32x4List         <strong>baseVertexData4</strong> <a class="anchor-link"
+            href="#baseVertexData4"
+            title="Permalink to SkinnedMesh.baseVertexData4">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32x4List baseVertexData4
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="boneData">
+<button class="show-code">Code</button>
+Int32List         <strong>boneData</strong> <a class="anchor-link"
+            href="#boneData"
+            title="Permalink to SkinnedMesh.boneData">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Int32List boneData
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="count">
+<button class="show-code">Code</button>
+int         <strong>count</strong> <a class="anchor-link"
+            href="#count"
+            title="Permalink to SkinnedMesh.count">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/SpectreMesh.html">SpectreMesh</a> </div><div class="doc">
+<pre class="source">
+int count = 0
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="currentAnimation">
+<button class="show-code">Code</button>
+String         <strong>currentAnimation</strong> <a class="anchor-link"
+            href="#currentAnimation"
+            title="Permalink to SkinnedMesh.currentAnimation">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+String get currentAnimation =&gt; _currentAnimation.name;
+</pre>
+<pre class="source">
+set currentAnimation(String name) {
+ _currentAnimation = animations[name];
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="device">
+<button class="show-code">Code</button>
+final <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a>         <strong>device</strong> <a class="anchor-link"
+            href="#device"
+            title="Permalink to SkinnedMesh.device">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final GraphicsDevice device
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="globalInverseTransform">
+<button class="show-code">Code</button>
+final Float32List         <strong>globalInverseTransform</strong> <a class="anchor-link"
+            href="#globalInverseTransform"
+            title="Permalink to SkinnedMesh.globalInverseTransform">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Float32List globalInverseTransform = new Float32List(16)
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="indexArray">
+<button class="show-code">Code</button>
+final <a href="../spectre/IndexBuffer.html">IndexBuffer</a>         <strong>indexArray</strong> <a class="anchor-link"
+            href="#indexArray"
+            title="Permalink to SkinnedMesh.indexArray">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+IndexBuffer get indexArray =&gt; _deviceIndexBuffer;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isDisposed">
+<button class="show-code">Code</button>
+final bool         <strong>isDisposed</strong> <a class="anchor-link"
+            href="#isDisposed"
+            title="Permalink to SkinnedMesh.isDisposed">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>This object has been disposed. </p>
+<pre class="source">
+bool get isDisposed =&gt; _disposed;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="m">
+<button class="show-code">Code</button>
+final Float32List         <strong>m</strong> <a class="anchor-link"
+            href="#m"
+            title="Permalink to SkinnedMesh.m">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Float32List m = new Float32List(16)
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="m4">
+<button class="show-code">Code</button>
+final Float32x4List         <strong>m4</strong> <a class="anchor-link"
+            href="#m4"
+            title="Permalink to SkinnedMesh.m4">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Float32x4List m4 = new Float32x4List(4)
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="meshes">
+<button class="show-code">Code</button>
+final List&lt;Map&gt;         <strong>meshes</strong> <a class="anchor-link"
+            href="#meshes"
+            title="Permalink to SkinnedMesh.meshes">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final List&lt;Map&gt; meshes = new List&lt;Map&gt;()
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to SkinnedMesh.name">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="pinCount">
+<button class="show-code">Code</button>
+final int         <strong>pinCount</strong> <a class="anchor-link"
+            href="#pinCount"
+            title="Permalink to SkinnedMesh.pinCount">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Count of pins </p>
+<pre class="source">
+int get pinCount =&gt; _referenceCount;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="primitiveTopology">
+<button class="show-code">Code</button>
+int         <strong>primitiveTopology</strong> <a class="anchor-link"
+            href="#primitiveTopology"
+            title="Permalink to SkinnedMesh.primitiveTopology">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/SpectreMesh.html">SpectreMesh</a> </div><div class="doc">
+<pre class="source">
+int primitiveTopology = PrimitiveTopology.Triangles
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="skeleton">
+<button class="show-code">Code</button>
+<a href="../spectre/Skeleton.html">Skeleton</a>         <strong>skeleton</strong> <a class="anchor-link"
+            href="#skeleton"
+            title="Permalink to SkinnedMesh.skeleton">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Skeleton skeleton
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="skeletonPoser">
+<button class="show-code">Code</button>
+<a href="../spectre/SkeletonPoser.html">SkeletonPoser</a>         <strong>skeletonPoser</strong> <a class="anchor-link"
+            href="#skeletonPoser"
+            title="Permalink to SkinnedMesh.skeletonPoser">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+SkeletonPoser skeletonPoser = new SimpleSkeletonPoser()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="skeletonPoserSIMD">
+<button class="show-code">Code</button>
+<a href="../spectre/SkeletonPoser.html">SkeletonPoser</a>         <strong>skeletonPoserSIMD</strong> <a class="anchor-link"
+            href="#skeletonPoserSIMD"
+            title="Permalink to SkinnedMesh.skeletonPoserSIMD">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+SkeletonPoser skeletonPoserSIMD = new SIMDSkeletonPoser()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="skinningArray">
+<button class="show-code">Code</button>
+final <a href="../spectre/VertexBuffer.html">VertexBuffer</a>         <strong>skinningArray</strong> <a class="anchor-link"
+            href="#skinningArray"
+            title="Permalink to SkinnedMesh.skinningArray">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+VertexBuffer get skinningArray =&gt; _deviceSkinningBuffer;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="skinningData">
+<button class="show-code">Code</button>
+Float32List         <strong>skinningData</strong> <a class="anchor-link"
+            href="#skinningData"
+            title="Permalink to SkinnedMesh.skinningData">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32List skinningData
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="sw">
+<button class="show-code">Code</button>
+final Stopwatch         <strong>sw</strong> <a class="anchor-link"
+            href="#sw"
+            title="Permalink to SkinnedMesh.sw">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Stopwatch sw = new Stopwatch()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="vertex">
+<button class="show-code">Code</button>
+final Float32List         <strong>vertex</strong> <a class="anchor-link"
+            href="#vertex"
+            title="Permalink to SkinnedMesh.vertex">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Float32List vertex = new Float32List(12)
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="vertex4">
+<button class="show-code">Code</button>
+final Float32x4List         <strong>vertex4</strong> <a class="anchor-link"
+            href="#vertex4"
+            title="Permalink to SkinnedMesh.vertex4">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Float32x4List vertex4 = new Float32x4List(3)
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="vertexArray">
+<button class="show-code">Code</button>
+final <a href="../spectre/VertexBuffer.html">VertexBuffer</a>         <strong>vertexArray</strong> <a class="anchor-link"
+            href="#vertexArray"
+            title="Permalink to SkinnedMesh.vertexArray">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+VertexBuffer get vertexArray =&gt; _deviceVertexBuffer;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="vertexData">
+<button class="show-code">Code</button>
+Float32List         <strong>vertexData</strong> <a class="anchor-link"
+            href="#vertexData"
+            title="Permalink to SkinnedMesh.vertexData">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32List vertexData
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="vertexData4">
+<button class="show-code">Code</button>
+Float32x4List         <strong>vertexData4</strong> <a class="anchor-link"
+            href="#vertexData4"
+            title="Permalink to SkinnedMesh.vertexData4">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32x4List vertexData4
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="weightData">
+<button class="show-code">Code</button>
+Float32List         <strong>weightData</strong> <a class="anchor-link"
+            href="#weightData"
+            title="Permalink to SkinnedMesh.weightData">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Float32List weightData
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="dispose">
+<button class="show-code">Code</button>
+void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to SkinnedMesh.dispose">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Disposes of the object. If nothing else has this object pinned,
+the finalizer will be called. See <code>pin</code> for inverse. Throws
+an exception if the object is already disposed.</p>
+<pre class="source">
+void dispose() {
+ if (_disposed) {
+   throw new StateError('It is an error to dispose a disposed object.');
+   return;
+ }
+ _referenceCount--;
+ if (_referenceCount == 0) {
+   finalize();
+   _disposed = true;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="finalize">
+<button class="show-code">Code</button>
+void <strong>finalize</strong>() <a class="anchor-link" href="#finalize"
+              title="Permalink to SkinnedMesh.finalize">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Clean up any object state here. </p>
+<div class="docs-inherited-from">docs inherited from <a href="../disposable/Disposable.html">Disposable</a> </div></div>
+<pre class="source">
+void finalize() {
+ _deviceVertexBuffer.dispose();
+ _deviceIndexBuffer.dispose();
+ _deviceSkinningBuffer.dispose();
+ _deviceVertexBuffer = null;
+ _deviceIndexBuffer = null;
+ _deviceSkinningBuffer = null;
+ count = 0;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="fromJson">
+<button class="show-code">Code</button>
+void <strong>fromJson</strong>(a) <a class="anchor-link" href="#fromJson"
+              title="Permalink to SkinnedMesh.fromJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+void fromJson(dynamic a) {
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="pin">
+<button class="show-code">Code</button>
+void <strong>pin</strong>() <a class="anchor-link" href="#pin"
+              title="Permalink to SkinnedMesh.pin">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Pin the disposable object. See <code>dispose</code> for inverse.
+Throws an exception if this object is already disposed.</p>
+<pre class="source">
+void pin() {
+ if (_disposed) {
+   throw new StateError('It is an error to pin a disposed object.');
+   return;
+ }
+ _referenceCount++;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="resetToBindPose">
+<button class="show-code">Code</button>
+void <strong>resetToBindPose</strong>() <a class="anchor-link" href="#resetToBindPose"
+              title="Permalink to SkinnedMesh.resetToBindPose">#</a></h4>
+<div class="doc">
+<pre class="source">
+void resetToBindPose() {
+ int numVertices = baseVertexData.length~/_floatsPerVertex;
+ int vertexBase = 0;
+ for (int v = 0; v &lt; numVertices; v++) {
+   vertexData4[vertexBase] = baseVertexData4[vertexBase];
+   vertexBase += _floatsPerVertex ~/ 4;
+ }
+ vertexArray.uploadSubData(0, vertexData);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="skin">
+<button class="show-code">Code</button>
+void <strong>skin</strong>(<a href="../spectre/PosedSkeleton.html">PosedSkeleton</a> pose, bool useSimdSkinning) <a class="anchor-link" href="#skin"
+              title="Permalink to SkinnedMesh.skin">#</a></h4>
+<div class="doc">
+<pre class="source">
+void skin(PosedSkeleton pose, bool useSimdSkinning) {
+ if (useSimdSkinning) {
+   _updateVerticesSIMD(pose);
+ } else {
+   _updateVertices(pose);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toJson">
+<button class="show-code">Code</button>
+dynamic <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to SkinnedMesh.toJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+dynamic toJson() {
+ return '';
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to SkinnedMesh.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() =&gt; name;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.609</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

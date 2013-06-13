@@ -1,0 +1,197 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>TextureMagFilter class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="TextureMagFilter">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/TextureMagFilter.html">TextureMagFilter</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>TextureMagFilter</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Defines filtering types for magnification during texture sampling.</p>
+<pre class="source">
+class TextureMagFilter extends Enum {
+ /// Use linear filtering for magnification.
+ static const int Linear = WebGL.LINEAR;
+ /// Use point filtering for magnification.
+ static const int Point = WebGL.NEAREST;
+ /// Use point filtering to expand, and point filtering between mipmap levels.
+ static const int PointMipPoint = WebGL.NEAREST_MIPMAP_NEAREST;
+ /// Use point filtering to expand, and linear filtering between mipmap levels.
+ static const int PointMipLinear = WebGL.NEAREST_MIPMAP_LINEAR;
+ /// Use linear filtering to expand, and point filtering between mipmap levels.
+ static const int LinearMipPoint = WebGL.LINEAR_MIPMAP_NEAREST;
+ /// Use linear filtering to expand, and linear filtering between mipmap levels.
+ static const int LinearMipLinear = WebGL.LINEAR_MIPMAP_LINEAR;
+
+ static Map&lt;String, int&gt; _values = {
+   'TextureMagFilter.Linear' : Linear,
+   'TextureMagFilter.Point' : Point,
+   'TextureMagFilter.PointMipPoint' : PointMipPoint,
+   'TextureMagFilter.PointMipLinear' : PointMipLinear,
+   'TextureMagFilter.LinearMipPoint' : LinearMipPoint,
+   'TextureMagFilter.LinearMipLinear' : LinearMipLinear,
+ };
+
+ /// Convert a [String] to a [TextureMagFilter].
+ static int parse(String name) =&gt; Enum._parse(_values, name);
+ /// Convert a [TextureMagFilter] to a [String].
+ static String stringify(int value) =&gt; Enum._stringify(_values, value);
+ /// Checks whether the value is a valid enumeration.
+ static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../spectre/Enum.html">Enum</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>TextureMagFilter</strong></span></p>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="Linear">
+<button class="show-code">Code</button>
+const int         <strong>Linear</strong> <a class="anchor-link"
+            href="#Linear"
+            title="Permalink to TextureMagFilter.Linear">#</a>
+        </h4>
+        <div class="doc">
+<p>Use linear filtering for magnification.</p>
+<pre class="source">
+static const int Linear = WebGL.LINEAR
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="LinearMipLinear">
+<button class="show-code">Code</button>
+const int         <strong>LinearMipLinear</strong> <a class="anchor-link"
+            href="#LinearMipLinear"
+            title="Permalink to TextureMagFilter.LinearMipLinear">#</a>
+        </h4>
+        <div class="doc">
+<p>Use linear filtering to expand, and linear filtering between mipmap levels.</p>
+<pre class="source">
+static const int LinearMipLinear = WebGL.LINEAR_MIPMAP_LINEAR
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="LinearMipPoint">
+<button class="show-code">Code</button>
+const int         <strong>LinearMipPoint</strong> <a class="anchor-link"
+            href="#LinearMipPoint"
+            title="Permalink to TextureMagFilter.LinearMipPoint">#</a>
+        </h4>
+        <div class="doc">
+<p>Use linear filtering to expand, and point filtering between mipmap levels.</p>
+<pre class="source">
+static const int LinearMipPoint = WebGL.LINEAR_MIPMAP_NEAREST
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Point">
+<button class="show-code">Code</button>
+const int         <strong>Point</strong> <a class="anchor-link"
+            href="#Point"
+            title="Permalink to TextureMagFilter.Point">#</a>
+        </h4>
+        <div class="doc">
+<p>Use point filtering for magnification.</p>
+<pre class="source">
+static const int Point = WebGL.NEAREST
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="PointMipLinear">
+<button class="show-code">Code</button>
+const int         <strong>PointMipLinear</strong> <a class="anchor-link"
+            href="#PointMipLinear"
+            title="Permalink to TextureMagFilter.PointMipLinear">#</a>
+        </h4>
+        <div class="doc">
+<p>Use point filtering to expand, and linear filtering between mipmap levels.</p>
+<pre class="source">
+static const int PointMipLinear = WebGL.NEAREST_MIPMAP_LINEAR
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="PointMipPoint">
+<button class="show-code">Code</button>
+const int         <strong>PointMipPoint</strong> <a class="anchor-link"
+            href="#PointMipPoint"
+            title="Permalink to TextureMagFilter.PointMipPoint">#</a>
+        </h4>
+        <div class="doc">
+<p>Use point filtering to expand, and point filtering between mipmap levels.</p>
+<pre class="source">
+static const int PointMipPoint = WebGL.NEAREST_MIPMAP_NEAREST
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="parse">
+<button class="show-code">Code</button>
+int <strong>parse</strong>(String name) <a class="anchor-link" href="#parse"
+              title="Permalink to TextureMagFilter.parse">#</a></h4>
+<div class="doc">
+<p>Convert a <code>String</code> to a <a class="crossref" href="../spectre/TextureMagFilter.html">TextureMagFilter</a>.</p>
+<pre class="source">
+static int parse(String name) =&gt; Enum._parse(_values, name);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="stringify">
+<button class="show-code">Code</button>
+String <strong>stringify</strong>(int value) <a class="anchor-link" href="#stringify"
+              title="Permalink to TextureMagFilter.stringify">#</a></h4>
+<div class="doc">
+<p>Convert a <a class="crossref" href="../spectre/TextureMagFilter.html">TextureMagFilter</a> to a <code>String</code>.</p>
+<pre class="source">
+static String stringify(int value) =&gt; Enum._stringify(_values, value);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="isValid">
+<button class="show-code">Code</button>
+bool <strong>isValid</strong>(int value) <a class="anchor-link" href="#isValid"
+              title="Permalink to TextureMagFilter.isValid">#</a></h4>
+<div class="doc">
+<p>Checks whether the value is a valid enumeration.</p>
+<pre class="source">
+static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.720</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

@@ -1,0 +1,436 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>FullscreenLayer class / spectre_renderer Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre_renderer" data-type="FullscreenLayer">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre_renderer.html">spectre_renderer</a> &rsaquo; <a href="../spectre_renderer/FullscreenLayer.html">FullscreenLayer</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>FullscreenLayer</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class FullscreenLayer extends Layer {
+ static SingleArrayMesh _mesh;
+ static void _staticInit(GraphicsDevice device) {
+   if (_mesh != null) {
+     // Already initialized.
+     return;
+   }
+   _mesh = new SingleArrayMesh('FullscreenRenderable', device);
+   Float32List vertexData = new Float32List(12);
+   // Vertex 0
+   vertexData[0] = -1.0;
+   vertexData[1] = -1.0;
+   vertexData[2] = 0.0;
+   vertexData[3] = 0.0;
+   // Vertex 1
+   vertexData[4] = 3.0;
+   vertexData[5] = -1.0;
+   vertexData[6] = 2.0;
+   vertexData[7] = 0.0;
+   // Vertex 2
+   vertexData[8] = -1.0;
+   vertexData[9] = 3.0;
+   vertexData[10] = 0.0;
+   vertexData[11] = 2.0;
+   _mesh.vertexArray.uploadData(vertexData, UsagePattern.StaticDraw);
+   _mesh.attributes['vPosition'] = new SpectreMeshAttribute(
+       'vPosition',
+       new VertexAttribute(0, 0, 0, 16, DataType.Float32, 2, false));
+   _mesh.attributes['vTexCoord'] = new SpectreMeshAttribute(
+       'vTexCoord',
+       new VertexAttribute(0, 0, 8, 16, DataType.Float32, 2, false));
+   _mesh.count = 3;
+ }
+
+ set material(Material m) {
+   _material = m;
+   if (m != null) {
+     _inputLayout.shaderProgram = m.shader.shader;
+   } else {
+     _inputLayout.shaderProgram = null;
+   }
+ }
+
+ void render(Renderer renderer, List&lt;Renderable&gt; renderables, Camera camera) {
+   if (material == null) {
+     return;
+   }
+   GraphicsDevice device = renderer.device;
+   GraphicsContext context = device.context;
+   material.apply(device);
+   material.shader.updateCameraConstants(camera);
+   context.setInputLayout(_inputLayout);
+   context.setMesh(FullscreenLayer._mesh);
+   context.drawMesh(FullscreenLayer._mesh);
+ }
+
+ String get type =&gt; 'Fullscreen';
+
+ InputLayout _inputLayout;
+
+ FullscreenLayer(String name, Renderer renderer) : super(name, renderer) {
+   _staticInit(renderer.device);
+   _inputLayout = new InputLayout('FullscreenRenderable', renderer.device);
+   _inputLayout.mesh = _mesh;
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../spectre_renderer/Layer.html">Layer</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>FullscreenLayer</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="FullscreenLayer">
+<button class="show-code">Code</button>
+new <strong>FullscreenLayer</strong>(String name, <a href="../spectre_renderer/Renderer.html">Renderer</a> renderer) <a class="anchor-link" href="#FullscreenLayer"
+              title="Permalink to FullscreenLayer.FullscreenLayer">#</a></h4>
+<div class="doc">
+<pre class="source">
+FullscreenLayer(String name, Renderer renderer) : super(name, renderer) {
+ _staticInit(renderer.device);
+ _inputLayout = new InputLayout('FullscreenRenderable', renderer.device);
+ _inputLayout.mesh = _mesh;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field inherited"><h4 id="clearColorA">
+<button class="show-code">Code</button>
+num         <strong>clearColorA</strong> <a class="anchor-link"
+            href="#clearColorA"
+            title="Permalink to FullscreenLayer.clearColorA">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Alpha color target clear value.</p>
+<pre class="source">
+num clearColorA = 1.0
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="clearColorB">
+<button class="show-code">Code</button>
+num         <strong>clearColorB</strong> <a class="anchor-link"
+            href="#clearColorB"
+            title="Permalink to FullscreenLayer.clearColorB">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Blue color target clear value.</p>
+<pre class="source">
+num clearColorB = 0.0
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="clearColorG">
+<button class="show-code">Code</button>
+num         <strong>clearColorG</strong> <a class="anchor-link"
+            href="#clearColorG"
+            title="Permalink to FullscreenLayer.clearColorG">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Green color target clear value.</p>
+<pre class="source">
+num clearColorG = 0.0
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="clearColorR">
+<button class="show-code">Code</button>
+num         <strong>clearColorR</strong> <a class="anchor-link"
+            href="#clearColorR"
+            title="Permalink to FullscreenLayer.clearColorR">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Red color target clear value.</p>
+<pre class="source">
+num clearColorR = 0.0
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="clearColorTarget">
+<button class="show-code">Code</button>
+bool         <strong>clearColorTarget</strong> <a class="anchor-link"
+            href="#clearColorTarget"
+            title="Permalink to FullscreenLayer.clearColorTarget">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Should the color target be cleared before rendering?</p>
+<pre class="source">
+bool clearColorTarget = false
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="clearDepthTarget">
+<button class="show-code">Code</button>
+bool         <strong>clearDepthTarget</strong> <a class="anchor-link"
+            href="#clearDepthTarget"
+            title="Permalink to FullscreenLayer.clearDepthTarget">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Should the depth target be cleared before rendering?</p>
+<pre class="source">
+bool clearDepthTarget = false
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="clearDepthValue">
+<button class="show-code">Code</button>
+num         <strong>clearDepthValue</strong> <a class="anchor-link"
+            href="#clearDepthValue"
+            title="Permalink to FullscreenLayer.clearDepthValue">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Depth target clear value.</p>
+<pre class="source">
+num clearDepthValue = 1.0
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="forceLayerMaterial">
+<button class="show-code">Code</button>
+bool         <strong>forceLayerMaterial</strong> <a class="anchor-link"
+            href="#forceLayerMaterial"
+            title="Permalink to FullscreenLayer.forceLayerMaterial">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Force all renderables to rendered with the layer material?</p>
+<pre class="source">
+bool forceLayerMaterial = false
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="material">
+<button class="show-code">Code</button>
+dynamic <strong>get material</strong> <a class="anchor-link" href="#material"
+              title="Permalink to FullscreenLayer.get material">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<pre class="source">
+get material =&gt; _material;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="material=">
+<button class="show-code">Code</button>
+dynamic <strong>set material</strong>(<a href="../spectre_renderer/Material.html">Material</a> m) <a class="anchor-link" href="#material="
+              title="Permalink to FullscreenLayer.set material">#</a></h4>
+<div class="doc">
+<pre class="source">
+set material(Material m) {
+ _material = m;
+ if (m != null) {
+   _inputLayout.shaderProgram = m.shader.shader;
+ } else {
+   _inputLayout.shaderProgram = null;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="name">
+<button class="show-code">Code</button>
+String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to FullscreenLayer.name">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Name of layer.</p>
+<pre class="source">
+String name
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="renderer">
+<button class="show-code">Code</button>
+final <a href="../spectre_renderer/Renderer.html">Renderer</a>         <strong>renderer</strong> <a class="anchor-link"
+            href="#renderer"
+            title="Permalink to FullscreenLayer.renderer">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<pre class="source">
+final Renderer renderer
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="renderTarget">
+<button class="show-code">Code</button>
+String         <strong>renderTarget</strong> <a class="anchor-link"
+            href="#renderTarget"
+            title="Permalink to FullscreenLayer.renderTarget">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Render target.</p>
+<pre class="source">
+String renderTarget
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="sortMode">
+<button class="show-code">Code</button>
+int <strong>get sortMode</strong> <a class="anchor-link" href="#sortMode"
+              title="Permalink to FullscreenLayer.get sortMode">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Current sort mode.</p>
+<pre class="source">
+int get sortMode =&gt; _sortMode;
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="sortMode=">
+<button class="show-code">Code</button>
+dynamic <strong>set sortMode</strong>(int sm) <a class="anchor-link" href="#sortMode="
+              title="Permalink to FullscreenLayer.set sortMode">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<p>Set the sort mode to be None, BackToFront, or FrontToBack.</p>
+<pre class="source">
+set sortMode(int sm) {
+ if (sm != SortModeNone &amp;&amp; sm != SortModeBackToFront &amp;&amp;
+     sm != SortModeFrontToBack) {
+   throw new ArgumentError('sortMode invalid.');
+ }
+ _sortMode = sm;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="type">
+<button class="show-code">Code</button>
+final String         <strong>type</strong> <a class="anchor-link"
+            href="#type"
+            title="Permalink to FullscreenLayer.type">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+String get type =&gt; 'Fullscreen';
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="clear">
+<button class="show-code">Code</button>
+void <strong>clear</strong>() <a class="anchor-link" href="#clear"
+              title="Permalink to FullscreenLayer.clear">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<pre class="source">
+void clear() {
+ GraphicsContext context = renderer.device.context;
+ if (clearColorTarget) {
+   context.setBlendState(Layer._clearBlendState);
+   context.clearColorBuffer(clearColorR, clearColorG, clearColorB,
+                            clearColorA);
+ }
+ if (clearDepthTarget) {
+   context.setDepthState(Layer._clearDepthState);
+   context.clearDepthBuffer(clearDepthValue);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="fromJson">
+<button class="show-code">Code</button>
+void <strong>fromJson</strong>(Map json, <a href="../spectre_renderer/Renderer.html">Renderer</a> renderer) <a class="anchor-link" href="#fromJson"
+              title="Permalink to FullscreenLayer.fromJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<pre class="source">
+void fromJson(Map json, Renderer renderer) {
+ name = json['name'];
+ renderTarget = json['renderTarget'];
+ clearColorTarget = json['clearColorTarget'];
+ if (json['material'] != null) {
+   material = new Material.json(json['material'], renderer);
+ }
+ clearColorR = json['clearColorR'];
+ clearColorG = json['clearColorG'];
+ clearColorB = json['clearColorB'];
+ clearColorA = json['clearColorA'];
+ clearDepthTarget = json['clearDepthTarget'];
+ clearDepthValue = json['clearDepthValue'];
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="render">
+<button class="show-code">Code</button>
+void <strong>render</strong>(<a href="../spectre_renderer/Renderer.html">Renderer</a> renderer, List&lt;<a href="../spectre_renderer/Renderable.html">Renderable</a>&gt; renderables, <a href="../spectre/Camera.html">Camera</a> camera) <a class="anchor-link" href="#render"
+              title="Permalink to FullscreenLayer.render">#</a></h4>
+<div class="doc">
+<pre class="source">
+void render(Renderer renderer, List&lt;Renderable&gt; renderables, Camera camera) {
+ if (material == null) {
+   return;
+ }
+ GraphicsDevice device = renderer.device;
+ GraphicsContext context = device.context;
+ material.apply(device);
+ material.shader.updateCameraConstants(camera);
+ context.setInputLayout(_inputLayout);
+ context.setMesh(FullscreenLayer._mesh);
+ context.drawMesh(FullscreenLayer._mesh);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toJson">
+<button class="show-code">Code</button>
+dynamic <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to FullscreenLayer.toJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre_renderer/Layer.html">Layer</a> </div><div class="doc">
+<pre class="source">
+dynamic toJson() {
+ Map json = new Map();
+ json['name'] = name;
+ json['type'] = type;
+ json['renderTarget'] = renderTarget;
+ json['material'] = material;
+ json['clearColorTarget'] = clearColorTarget;
+ json['clearColorR'] = clearColorR;
+ json['clearColorG'] = clearColorG;
+ json['clearColorB'] = clearColorB;
+ json['clearColorA'] = clearColorA;
+ json['clearDepthTarget'] = clearDepthTarget;
+ json['clearDepthValue'] = clearDepthValue;
+ return json;
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:33.150</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

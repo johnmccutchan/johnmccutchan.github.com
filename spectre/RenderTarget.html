@@ -1,0 +1,527 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>RenderTarget class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="RenderTarget">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/RenderTarget.html">RenderTarget</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>RenderTarget</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>A <a class="crossref" href="../spectre/RenderTarget.html#RenderTarget">RenderTarget</a> specifies the buffers where color, depth, and stencil
+are written to during a draw call.</p>
+<p>NOTE: To output into the system provided render target see
+<a class="crossref" href="../spectre/RenderTarget.html#systemRenderTarget">RenderTarget.systemRenderTarget</a></p>
+<pre class="source">
+class RenderTarget extends DeviceChild {
+ final int _bindTarget = WebGL.FRAMEBUFFER;
+ final int _bindingParam = WebGL.FRAMEBUFFER_BINDING;
+
+ WebGL.Framebuffer _deviceFramebuffer;
+ DeviceChild _colorTarget;
+ DeviceChild _depthTarget;
+ DeviceChild get colorTarget =&gt; _colorTarget;
+ DeviceChild get depthTarget =&gt; _depthTarget;
+ DeviceChild get stencilTarget =&gt; null;
+
+ static RenderTarget _systemRenderTarget;
+ /** System provided rendering target */
+ static RenderTarget get systemRenderTarget =&gt; _systemRenderTarget;
+
+ bool _renderable = false;
+ /** Is the render target valid and renderable? */
+ bool get isRenderable =&gt; _renderable;
+
+ RenderTarget(String name, GraphicsDevice device) :
+   super._internal(name, device) {
+   _deviceFramebuffer = device.gl.createFramebuffer();
+ }
+
+ RenderTarget.systemTarget(String name, GraphicsDevice device) :
+   super._internal(name, device) {
+   _renderable = true;
+ }
+
+ void finalize() {
+   super.finalize();
+   device.gl.deleteFramebuffer(_deviceFramebuffer);
+   _deviceFramebuffer = null;
+   _renderable = false;
+ }
+
+
+ /** Bind this texture and return the previously bound framebuffer. */
+ WebGL.Framebuffer _pushBind() {
+   WebGL.Framebuffer oldBind = device.gl.getParameter(_bindingParam);
+   device.gl.bindFramebuffer(_bindTarget, _deviceFramebuffer);
+   return oldBind;
+ }
+
+
+ /** Rebind [oldBind] */
+ void _popBind(WebGL.Framebuffer oldBind) {
+   device.gl.bindFramebuffer(_bindTarget, oldBind);
+ }
+
+
+ void _bind() {
+   device.gl.bindFramebuffer(_bindTarget, _deviceFramebuffer);
+ }
+
+
+ void _updateStatus() {
+   var oldBind = _pushBind();
+   int fbStatus = device.gl.checkFramebufferStatus(_bindTarget);
+   _renderable = fbStatus == WebGL.FRAMEBUFFER_COMPLETE;
+   _popBind(oldBind);
+ }
+
+
+ /** Set color target to be [colorBuffer].
+  *
+  * A color buffer must be a [Texture2D] or [RenderBuffer].
+  *
+  * A null color buffer indicates the system provided color buffer.
+  */
+ set colorTarget(dynamic colorBuffer) {
+   var oldBind = _pushBind();
+   if (colorBuffer == null) {
+     _colorTarget = null;
+     device.gl.framebufferRenderbuffer(_bindTarget,
+                                       WebGL.COLOR_ATTACHMENT0,
+                                       WebGL.RENDERBUFFER,
+                                       null);
+     device.gl.bindFramebuffer(WebGL.FRAMEBUFFER, oldBind);
+     _updateStatus();
+     _popBind(oldBind);
+     return;
+   }
+   if (colorBuffer is RenderBuffer) {
+     RenderBuffer rb = colorBuffer as RenderBuffer;
+     _colorTarget = rb;
+     device.gl.framebufferRenderbuffer(_bindTarget,
+                                       WebGL.COLOR_ATTACHMENT0,
+                                       WebGL.RENDERBUFFER,
+                                       rb._buffer);
+   } else if (colorBuffer is Texture2D) {
+     Texture2D t2d = colorBuffer as Texture2D;
+     _colorTarget = t2d;
+     device.gl.framebufferTexture2D(_bindTarget,
+                                    WebGL.COLOR_ATTACHMENT0,
+                                    t2d._textureTarget,
+                                    t2d._deviceTexture, 0);
+   } else {
+     throw new FallThroughError();
+   }
+   _updateStatus();
+   _popBind(oldBind);
+ }
+
+ /** Set depth buffer output to be [depth].
+  *
+  * null indicates the system provided depth buffer.
+  *
+  * The depth buffer can be a [Texture2D] or [RenderBuffer].
+  */
+ /** Set depth target to be [depthBuffer].
+  *
+  * A depth buffer must be a [Texture2D] or [RenderBuffer].
+  *
+  * A null depth buffer indicates the system provided depth buffer.
+  */
+ set depthTarget(dynamic depthBuffer) {
+   var oldBind = _pushBind();
+   if (depthBuffer == null) {
+     _depthTarget = null;
+     device.gl.framebufferRenderbuffer(_bindTarget,
+                                       WebGL.DEPTH_ATTACHMENT,
+                                       WebGL.RENDERBUFFER,
+                                       null);
+     device.gl.bindFramebuffer(WebGL.FRAMEBUFFER, oldBind);
+     _updateStatus();
+     _popBind(oldBind);
+     return;
+   }
+   if (depthBuffer is RenderBuffer) {
+     RenderBuffer rb = depthBuffer as RenderBuffer;
+     _depthTarget = rb;
+     device.gl.framebufferRenderbuffer(_bindTarget,
+                                       WebGL.DEPTH_ATTACHMENT,
+                                       WebGL.RENDERBUFFER,
+                                       rb._buffer);
+   } else if (depthBuffer is Texture2D) {
+     Texture2D t2d = depthBuffer as Texture2D;
+     _depthTarget = t2d;
+     device.gl.framebufferTexture2D(_bindTarget,
+                                    WebGL.DEPTH_ATTACHMENT,
+                                    t2d._textureTarget,
+                                    t2d._deviceTexture, 0);
+   } else {
+     throw new FallThroughError();
+   }
+   _updateStatus();
+   _popBind(oldBind);
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../disposable/Disposable.html">Disposable</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../spectre/DeviceChild.html">DeviceChild</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>RenderTarget</strong></span></p>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="systemRenderTarget">
+<button class="show-code">Code</button>
+final <a href="../spectre/RenderTarget.html">RenderTarget</a>         <strong>systemRenderTarget</strong> <a class="anchor-link"
+            href="#systemRenderTarget"
+            title="Permalink to RenderTarget.systemRenderTarget">#</a>
+        </h4>
+        <div class="doc">
+<p>System provided rendering target </p>
+<pre class="source">
+static RenderTarget get systemRenderTarget =&gt; _systemRenderTarget;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="RenderTarget">
+<button class="show-code">Code</button>
+new <strong>RenderTarget</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#RenderTarget"
+              title="Permalink to RenderTarget.RenderTarget">#</a></h4>
+<div class="doc">
+<pre class="source">
+RenderTarget(String name, GraphicsDevice device) :
+ super._internal(name, device) {
+ _deviceFramebuffer = device.gl.createFramebuffer();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="RenderTarget.systemTarget">
+<button class="show-code">Code</button>
+new <strong>RenderTarget.systemTarget</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#RenderTarget.systemTarget"
+              title="Permalink to RenderTarget.RenderTarget.systemTarget">#</a></h4>
+<div class="doc">
+<pre class="source">
+RenderTarget.systemTarget(String name, GraphicsDevice device) :
+ super._internal(name, device) {
+ _renderable = true;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="colorTarget">
+<button class="show-code">Code</button>
+<a href="../spectre/DeviceChild.html">DeviceChild</a>         <strong>colorTarget</strong> <a class="anchor-link"
+            href="#colorTarget"
+            title="Permalink to RenderTarget.colorTarget">#</a>
+        </h4>
+        <div class="doc">
+<p>Set color target to be <code>colorBuffer</code>.</p>
+<p>A color buffer must be a <a class="crossref" href="../spectre/Texture2D.html">Texture2D</a> or <a class="crossref" href="../spectre/RenderBuffer.html">RenderBuffer</a>.</p>
+<p>A null color buffer indicates the system provided color buffer.</p>
+<pre class="source">
+DeviceChild get colorTarget =&gt; _colorTarget;
+</pre>
+<pre class="source">
+set colorTarget(dynamic colorBuffer) {
+ var oldBind = _pushBind();
+ if (colorBuffer == null) {
+   _colorTarget = null;
+   device.gl.framebufferRenderbuffer(_bindTarget,
+                                     WebGL.COLOR_ATTACHMENT0,
+                                     WebGL.RENDERBUFFER,
+                                     null);
+   device.gl.bindFramebuffer(WebGL.FRAMEBUFFER, oldBind);
+   _updateStatus();
+   _popBind(oldBind);
+   return;
+ }
+ if (colorBuffer is RenderBuffer) {
+   RenderBuffer rb = colorBuffer as RenderBuffer;
+   _colorTarget = rb;
+   device.gl.framebufferRenderbuffer(_bindTarget,
+                                     WebGL.COLOR_ATTACHMENT0,
+                                     WebGL.RENDERBUFFER,
+                                     rb._buffer);
+ } else if (colorBuffer is Texture2D) {
+   Texture2D t2d = colorBuffer as Texture2D;
+   _colorTarget = t2d;
+   device.gl.framebufferTexture2D(_bindTarget,
+                                  WebGL.COLOR_ATTACHMENT0,
+                                  t2d._textureTarget,
+                                  t2d._deviceTexture, 0);
+ } else {
+   throw new FallThroughError();
+ }
+ _updateStatus();
+ _popBind(oldBind);
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="depthTarget">
+<button class="show-code">Code</button>
+<a href="../spectre/DeviceChild.html">DeviceChild</a>         <strong>depthTarget</strong> <a class="anchor-link"
+            href="#depthTarget"
+            title="Permalink to RenderTarget.depthTarget">#</a>
+        </h4>
+        <div class="doc">
+<p>Set depth buffer output to be <code>depth</code>.</p>
+<p>null indicates the system provided depth buffer.</p>
+<p>The depth buffer can be a <a class="crossref" href="../spectre/Texture2D.html">Texture2D</a> or <a class="crossref" href="../spectre/RenderBuffer.html">RenderBuffer</a>.</p>
+<p>Set depth target to be <code>depthBuffer</code>.</p>
+<p>A depth buffer must be a <a class="crossref" href="../spectre/Texture2D.html">Texture2D</a> or <a class="crossref" href="../spectre/RenderBuffer.html">RenderBuffer</a>.</p>
+<p>A null depth buffer indicates the system provided depth buffer.</p>
+<pre class="source">
+DeviceChild get depthTarget =&gt; _depthTarget;
+</pre>
+<pre class="source">
+set depthTarget(dynamic depthBuffer) {
+ var oldBind = _pushBind();
+ if (depthBuffer == null) {
+   _depthTarget = null;
+   device.gl.framebufferRenderbuffer(_bindTarget,
+                                     WebGL.DEPTH_ATTACHMENT,
+                                     WebGL.RENDERBUFFER,
+                                     null);
+   device.gl.bindFramebuffer(WebGL.FRAMEBUFFER, oldBind);
+   _updateStatus();
+   _popBind(oldBind);
+   return;
+ }
+ if (depthBuffer is RenderBuffer) {
+   RenderBuffer rb = depthBuffer as RenderBuffer;
+   _depthTarget = rb;
+   device.gl.framebufferRenderbuffer(_bindTarget,
+                                     WebGL.DEPTH_ATTACHMENT,
+                                     WebGL.RENDERBUFFER,
+                                     rb._buffer);
+ } else if (depthBuffer is Texture2D) {
+   Texture2D t2d = depthBuffer as Texture2D;
+   _depthTarget = t2d;
+   device.gl.framebufferTexture2D(_bindTarget,
+                                  WebGL.DEPTH_ATTACHMENT,
+                                  t2d._textureTarget,
+                                  t2d._deviceTexture, 0);
+ } else {
+   throw new FallThroughError();
+ }
+ _updateStatus();
+ _popBind(oldBind);
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="device">
+<button class="show-code">Code</button>
+final <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a>         <strong>device</strong> <a class="anchor-link"
+            href="#device"
+            title="Permalink to RenderTarget.device">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final GraphicsDevice device
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isDisposed">
+<button class="show-code">Code</button>
+final bool         <strong>isDisposed</strong> <a class="anchor-link"
+            href="#isDisposed"
+            title="Permalink to RenderTarget.isDisposed">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>This object has been disposed. </p>
+<pre class="source">
+bool get isDisposed =&gt; _disposed;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isRenderable">
+<button class="show-code">Code</button>
+final bool         <strong>isRenderable</strong> <a class="anchor-link"
+            href="#isRenderable"
+            title="Permalink to RenderTarget.isRenderable">#</a>
+        </h4>
+        <div class="doc">
+<p>Is the render target valid and renderable? </p>
+<pre class="source">
+bool get isRenderable =&gt; _renderable;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to RenderTarget.name">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="pinCount">
+<button class="show-code">Code</button>
+final int         <strong>pinCount</strong> <a class="anchor-link"
+            href="#pinCount"
+            title="Permalink to RenderTarget.pinCount">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Count of pins </p>
+<pre class="source">
+int get pinCount =&gt; _referenceCount;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="stencilTarget">
+<button class="show-code">Code</button>
+final <a href="../spectre/DeviceChild.html">DeviceChild</a>         <strong>stencilTarget</strong> <a class="anchor-link"
+            href="#stencilTarget"
+            title="Permalink to RenderTarget.stencilTarget">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+DeviceChild get stencilTarget =&gt; null;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="dispose">
+<button class="show-code">Code</button>
+void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to RenderTarget.dispose">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Disposes of the object. If nothing else has this object pinned,
+the finalizer will be called. See <code>pin</code> for inverse. Throws
+an exception if the object is already disposed.</p>
+<pre class="source">
+void dispose() {
+ if (_disposed) {
+   throw new StateError('It is an error to dispose a disposed object.');
+   return;
+ }
+ _referenceCount--;
+ if (_referenceCount == 0) {
+   finalize();
+   _disposed = true;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="finalize">
+<button class="show-code">Code</button>
+void <strong>finalize</strong>() <a class="anchor-link" href="#finalize"
+              title="Permalink to RenderTarget.finalize">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Clean up any object state here. </p>
+<div class="docs-inherited-from">docs inherited from <a href="../disposable/Disposable.html">Disposable</a> </div></div>
+<pre class="source">
+void finalize() {
+ super.finalize();
+ device.gl.deleteFramebuffer(_deviceFramebuffer);
+ _deviceFramebuffer = null;
+ _renderable = false;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="fromJson">
+<button class="show-code">Code</button>
+void <strong>fromJson</strong>(a) <a class="anchor-link" href="#fromJson"
+              title="Permalink to RenderTarget.fromJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+void fromJson(dynamic a) {
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="pin">
+<button class="show-code">Code</button>
+void <strong>pin</strong>() <a class="anchor-link" href="#pin"
+              title="Permalink to RenderTarget.pin">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Pin the disposable object. See <code>dispose</code> for inverse.
+Throws an exception if this object is already disposed.</p>
+<pre class="source">
+void pin() {
+ if (_disposed) {
+   throw new StateError('It is an error to pin a disposed object.');
+   return;
+ }
+ _referenceCount++;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toJson">
+<button class="show-code">Code</button>
+dynamic <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to RenderTarget.toJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+dynamic toJson() {
+ return '';
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to RenderTarget.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() =&gt; name;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.794</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

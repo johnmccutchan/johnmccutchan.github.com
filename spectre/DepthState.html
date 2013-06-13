@@ -1,0 +1,448 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>DepthState class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="DepthState">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/DepthState.html">DepthState</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>DepthState</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Contains depth state for the device.
+Set using <a class="crossref" href="../spectre/GraphicsContext.html#setDepthState">GraphicsContext.setDepthState</a></p>
+<pre class="source">
+class DepthState extends DeviceChild {
+ //---------------------------------------------------------------------
+ // Serialization names
+ //---------------------------------------------------------------------
+
+ /// Serialization name for [depthBufferEnabled].
+ static const String _depthBufferEnabledName = 'depthBufferEnabled';
+ /// Serialization name for [depthBufferWriteEnabled].
+ static const String _depthBufferWriteEnabledName = 'depthBufferWriteEnabled';
+ /// Serialization name for [depthBufferFunction].
+ static const String _depthBufferFunctionName = 'depthBufferFunction';
+
+ //---------------------------------------------------------------------
+ // Member variables
+ //---------------------------------------------------------------------
+
+ /// Whether depth buffering is enabled or disabled.
+ /// The default is true.
+ bool _depthBufferEnabled = true;
+ /// Whether writing to the depth buffer is enabled or disabled.
+ /// The default is true.
+ bool _depthBufferWriteEnabled = true;
+ /// The comparison function for the depth-buffer test.
+ /// The default is CompareFunction.LessEqual
+ int _depthBufferFunction = CompareFunction.LessEqual;
+
+ //---------------------------------------------------------------------
+ // Construction
+ //---------------------------------------------------------------------
+
+ /// Creates an instance of [DepthState] with default values.
+ DepthState(String name, GraphicsDevice device)
+   : super._internal(name, device);
+
+ /// Creates an instance of [DepthState] with a writeable depth buffer.
+ DepthState.depthWrite(String name, GraphicsDevice device)
+   : super._internal(name, device)
+   , _depthBufferEnabled = true
+   , _depthBufferWriteEnabled = true;
+
+ /// Creates an instance of [DepthState] with a read-only depth buffer.
+ DepthState.depthRead(String name, GraphicsDevice device)
+   : super._internal(name, device)
+   , _depthBufferEnabled = true
+   , _depthBufferWriteEnabled = false;
+
+ /// Creates an instance of [DepthState] which doesn't use a depth buffer.
+ DepthState.none(String name, GraphicsDevice device)
+   : super._internal(name, device)
+   , _depthBufferEnabled = false
+   , _depthBufferWriteEnabled = false;
+
+ //---------------------------------------------------------------------
+ // Properties
+ //---------------------------------------------------------------------
+
+ /// Whether depth buffering is enabled or disabled.
+ /// The default is true.
+ bool get depthBufferEnabled =&gt; _depthBufferEnabled;
+ set depthBufferEnabled(bool value) { _depthBufferEnabled = value; }
+
+ /// Whether writing to the depth buffer is enabled or disabled.
+ /// The default is true.
+ bool get depthBufferWriteEnabled =&gt; _depthBufferWriteEnabled;
+ set depthBufferWriteEnabled(bool value) { _depthBufferWriteEnabled = value; }
+
+ /// The comparison function for the depth-buffer test.
+ /// The default is CompareFunction.LessEqual
+ int get depthBufferFunction =&gt; _depthBufferFunction;
+ set depthBufferFunction(int value) {
+   if (!CompareFunction.isValid(value)) {
+     throw new ArgumentError('depthBufferFunction must be an enumeration within CompareFunction.');
+   }
+
+   _depthBufferFunction = value;
+ }
+
+ //---------------------------------------------------------------------
+ // Serialization
+ //---------------------------------------------------------------------
+
+ /// Serializes the [BlendState] to a JSON.
+ dynamic toJson() {
+   Map json = new Map();
+
+   json[_depthBufferEnabledName]      = _depthBufferEnabled;
+   json[_depthBufferWriteEnabledName] = _depthBufferWriteEnabled;
+   json[_depthBufferFunctionName]     =
+       CompareFunction.stringify(_depthBufferFunction);
+
+   return json;
+ }
+
+ /// Deserializes the [BlendState] from a JSON.
+ void fromJson(Map values) {
+   assert(values != null);
+
+   dynamic value;
+
+   value = values[_depthBufferEnabledName];
+   _depthBufferEnabled = (value != null) ? value : _depthBufferEnabled;
+
+   value = values[_depthBufferWriteEnabledName];
+   _depthBufferWriteEnabled = (value != null) ?
+       value : _depthBufferWriteEnabled;
+
+   value = values[_depthBufferFunctionName];
+   _depthBufferFunction = (value != null) ?
+       CompareFunction.parse(value) : _depthBufferFunction;
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../disposable/Disposable.html">Disposable</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../spectre/DeviceChild.html">DeviceChild</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>DepthState</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="DepthState">
+<button class="show-code">Code</button>
+new <strong>DepthState</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#DepthState"
+              title="Permalink to DepthState.DepthState">#</a></h4>
+<div class="doc">
+<p>Creates an instance of <a class="crossref" href="../spectre/DepthState.html#DepthState">DepthState</a> with default values.</p>
+<pre class="source">
+DepthState(String name, GraphicsDevice device)
+ : super._internal(name, device);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="DepthState.depthRead">
+<button class="show-code">Code</button>
+new <strong>DepthState.depthRead</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#DepthState.depthRead"
+              title="Permalink to DepthState.DepthState.depthRead">#</a></h4>
+<div class="doc">
+<p>Creates an instance of <a class="crossref" href="../spectre/DepthState.html#DepthState">DepthState</a> with a read-only depth buffer.</p>
+<pre class="source">
+DepthState.depthRead(String name, GraphicsDevice device)
+ : super._internal(name, device)
+ , _depthBufferEnabled = true
+ , _depthBufferWriteEnabled = false;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="DepthState.depthWrite">
+<button class="show-code">Code</button>
+new <strong>DepthState.depthWrite</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#DepthState.depthWrite"
+              title="Permalink to DepthState.DepthState.depthWrite">#</a></h4>
+<div class="doc">
+<p>Creates an instance of <a class="crossref" href="../spectre/DepthState.html#DepthState">DepthState</a> with a writeable depth buffer.</p>
+<pre class="source">
+DepthState.depthWrite(String name, GraphicsDevice device)
+ : super._internal(name, device)
+ , _depthBufferEnabled = true
+ , _depthBufferWriteEnabled = true;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="DepthState.none">
+<button class="show-code">Code</button>
+new <strong>DepthState.none</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#DepthState.none"
+              title="Permalink to DepthState.DepthState.none">#</a></h4>
+<div class="doc">
+<p>Creates an instance of <a class="crossref" href="../spectre/DepthState.html#DepthState">DepthState</a> which doesn't use a depth buffer.</p>
+<pre class="source">
+DepthState.none(String name, GraphicsDevice device)
+ : super._internal(name, device)
+ , _depthBufferEnabled = false
+ , _depthBufferWriteEnabled = false;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="depthBufferEnabled">
+<button class="show-code">Code</button>
+bool         <strong>depthBufferEnabled</strong> <a class="anchor-link"
+            href="#depthBufferEnabled"
+            title="Permalink to DepthState.depthBufferEnabled">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether depth buffering is enabled or disabled.
+The default is true.</p>
+<pre class="source">
+bool get depthBufferEnabled =&gt; _depthBufferEnabled;
+</pre>
+<pre class="source">
+set depthBufferEnabled(bool value) { _depthBufferEnabled = value; }
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="depthBufferFunction">
+<button class="show-code">Code</button>
+int         <strong>depthBufferFunction</strong> <a class="anchor-link"
+            href="#depthBufferFunction"
+            title="Permalink to DepthState.depthBufferFunction">#</a>
+        </h4>
+        <div class="doc">
+<p>The comparison function for the depth-buffer test.
+The default is CompareFunction.LessEqual</p>
+<pre class="source">
+int get depthBufferFunction =&gt; _depthBufferFunction;
+</pre>
+<pre class="source">
+set depthBufferFunction(int value) {
+ if (!CompareFunction.isValid(value)) {
+   throw new ArgumentError('depthBufferFunction must be an enumeration within CompareFunction.');
+ }
+
+ _depthBufferFunction = value;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="depthBufferWriteEnabled">
+<button class="show-code">Code</button>
+bool         <strong>depthBufferWriteEnabled</strong> <a class="anchor-link"
+            href="#depthBufferWriteEnabled"
+            title="Permalink to DepthState.depthBufferWriteEnabled">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether writing to the depth buffer is enabled or disabled.
+The default is true.</p>
+<pre class="source">
+bool get depthBufferWriteEnabled =&gt; _depthBufferWriteEnabled;
+</pre>
+<pre class="source">
+set depthBufferWriteEnabled(bool value) { _depthBufferWriteEnabled = value; }
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="device">
+<button class="show-code">Code</button>
+final <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a>         <strong>device</strong> <a class="anchor-link"
+            href="#device"
+            title="Permalink to DepthState.device">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final GraphicsDevice device
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isDisposed">
+<button class="show-code">Code</button>
+final bool         <strong>isDisposed</strong> <a class="anchor-link"
+            href="#isDisposed"
+            title="Permalink to DepthState.isDisposed">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>This object has been disposed. </p>
+<pre class="source">
+bool get isDisposed =&gt; _disposed;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to DepthState.name">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="pinCount">
+<button class="show-code">Code</button>
+final int         <strong>pinCount</strong> <a class="anchor-link"
+            href="#pinCount"
+            title="Permalink to DepthState.pinCount">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Count of pins </p>
+<pre class="source">
+int get pinCount =&gt; _referenceCount;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="dispose">
+<button class="show-code">Code</button>
+void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to DepthState.dispose">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Disposes of the object. If nothing else has this object pinned,
+the finalizer will be called. See <code>pin</code> for inverse. Throws
+an exception if the object is already disposed.</p>
+<pre class="source">
+void dispose() {
+ if (_disposed) {
+   throw new StateError('It is an error to dispose a disposed object.');
+   return;
+ }
+ _referenceCount--;
+ if (_referenceCount == 0) {
+   finalize();
+   _disposed = true;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="finalize">
+<button class="show-code">Code</button>
+void <strong>finalize</strong>() <a class="anchor-link" href="#finalize"
+              title="Permalink to DepthState.finalize">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Clean up any object state here. </p>
+<div class="docs-inherited-from">docs inherited from <a href="../disposable/Disposable.html">Disposable</a> </div></div>
+<pre class="source">
+void finalize() {
+ print('Finalizing ${this.runtimeType} $name.');
+ device._removeChild(this);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="fromJson">
+<button class="show-code">Code</button>
+void <strong>fromJson</strong>(Map values) <a class="anchor-link" href="#fromJson"
+              title="Permalink to DepthState.fromJson">#</a></h4>
+<div class="doc">
+<p>Deserializes the <a class="crossref" href="../spectre/BlendState.html">BlendState</a> from a JSON.</p>
+<pre class="source">
+void fromJson(Map values) {
+ assert(values != null);
+
+ dynamic value;
+
+ value = values[_depthBufferEnabledName];
+ _depthBufferEnabled = (value != null) ? value : _depthBufferEnabled;
+
+ value = values[_depthBufferWriteEnabledName];
+ _depthBufferWriteEnabled = (value != null) ?
+     value : _depthBufferWriteEnabled;
+
+ value = values[_depthBufferFunctionName];
+ _depthBufferFunction = (value != null) ?
+     CompareFunction.parse(value) : _depthBufferFunction;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="pin">
+<button class="show-code">Code</button>
+void <strong>pin</strong>() <a class="anchor-link" href="#pin"
+              title="Permalink to DepthState.pin">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Pin the disposable object. See <code>dispose</code> for inverse.
+Throws an exception if this object is already disposed.</p>
+<pre class="source">
+void pin() {
+ if (_disposed) {
+   throw new StateError('It is an error to pin a disposed object.');
+   return;
+ }
+ _referenceCount++;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toJson">
+<button class="show-code">Code</button>
+dynamic <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to DepthState.toJson">#</a></h4>
+<div class="doc">
+<p>Serializes the <a class="crossref" href="../spectre/BlendState.html">BlendState</a> to a JSON.</p>
+<pre class="source">
+dynamic toJson() {
+ Map json = new Map();
+
+ json[_depthBufferEnabledName]      = _depthBufferEnabled;
+ json[_depthBufferWriteEnabledName] = _depthBufferWriteEnabled;
+ json[_depthBufferFunctionName]     =
+     CompareFunction.stringify(_depthBufferFunction);
+
+ return json;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to DepthState.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() =&gt; name;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.879</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

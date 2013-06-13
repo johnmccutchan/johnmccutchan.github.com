@@ -1,0 +1,169 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>TextureAddressMode class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="TextureAddressMode">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/TextureAddressMode.html">TextureAddressMode</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>TextureAddressMode</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Defines modes for addressing texels using texture coordinates outside of
+the typical range of 0.0 to 1.0.</p>
+<pre class="source">
+class TextureAddressMode extends Enum {
+ /// Texture coordinates outside the range [0.0, 1.0] are set to the texture
+ /// color at 0.0 or 1.0, respectively.
+ static const int Clamp = WebGL.CLAMP_TO_EDGE;
+ /// Similar to Wrap, except that the texture is flipped at every integer
+ /// junction.
+ ///
+ /// For values between 0 and 1, for example, the texture is addressed
+ /// normally; between 1 and 2, the texture is
+ /// flipped (mirrored); between 2 and 3, the texture is normal again, and so
+ /// on.
+ static const int Mirror = WebGL.MIRRORED_REPEAT;
+ /// Tile the texture at every integer junction.
+ ///
+ /// For example, for u values between 0 and 3, the texture is repeated three
+ /// times;
+ /// no mirroring is performed.
+ static const int Wrap = WebGL.REPEAT;
+
+ static Map&lt;String, int&gt; _values = {
+   'TextureAddressMode.Clamp' : Clamp,
+   'TextureAddressMode.Mirror' : Mirror,
+   'TextureAddressMode.Wrap' : Wrap
+ };
+ /// Convert a [String] to a [TextureAddressMode].
+ static int parse(String name) =&gt; Enum._parse(_values, name);
+ /// Convert a [TextureAddressMode] to a [String].
+ static String stringify(int value) =&gt; Enum._stringify(_values, value);
+ /// Checks whether the value is a valid enumeration.
+ static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../spectre/Enum.html">Enum</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>TextureAddressMode</strong></span></p>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="Clamp">
+<button class="show-code">Code</button>
+const int         <strong>Clamp</strong> <a class="anchor-link"
+            href="#Clamp"
+            title="Permalink to TextureAddressMode.Clamp">#</a>
+        </h4>
+        <div class="doc">
+<p>Texture coordinates outside the range <code>0.0, 1.0</code> are set to the texture
+color at 0.0 or 1.0, respectively.</p>
+<pre class="source">
+static const int Clamp = WebGL.CLAMP_TO_EDGE
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Mirror">
+<button class="show-code">Code</button>
+const int         <strong>Mirror</strong> <a class="anchor-link"
+            href="#Mirror"
+            title="Permalink to TextureAddressMode.Mirror">#</a>
+        </h4>
+        <div class="doc">
+<p>Similar to Wrap, except that the texture is flipped at every integer
+junction.</p>
+<p>For values between 0 and 1, for example, the texture is addressed
+normally; between 1 and 2, the texture is
+flipped (mirrored); between 2 and 3, the texture is normal again, and so
+on.</p>
+<pre class="source">
+static const int Mirror = WebGL.MIRRORED_REPEAT
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Wrap">
+<button class="show-code">Code</button>
+const int         <strong>Wrap</strong> <a class="anchor-link"
+            href="#Wrap"
+            title="Permalink to TextureAddressMode.Wrap">#</a>
+        </h4>
+        <div class="doc">
+<p>Tile the texture at every integer junction.</p>
+<p>For example, for u values between 0 and 3, the texture is repeated three
+times;
+no mirroring is performed.</p>
+<pre class="source">
+static const int Wrap = WebGL.REPEAT
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="parse">
+<button class="show-code">Code</button>
+int <strong>parse</strong>(String name) <a class="anchor-link" href="#parse"
+              title="Permalink to TextureAddressMode.parse">#</a></h4>
+<div class="doc">
+<p>Convert a <code>String</code> to a <a class="crossref" href="../spectre/TextureAddressMode.html">TextureAddressMode</a>.</p>
+<pre class="source">
+static int parse(String name) =&gt; Enum._parse(_values, name);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="stringify">
+<button class="show-code">Code</button>
+String <strong>stringify</strong>(int value) <a class="anchor-link" href="#stringify"
+              title="Permalink to TextureAddressMode.stringify">#</a></h4>
+<div class="doc">
+<p>Convert a <a class="crossref" href="../spectre/TextureAddressMode.html">TextureAddressMode</a> to a <code>String</code>.</p>
+<pre class="source">
+static String stringify(int value) =&gt; Enum._stringify(_values, value);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="isValid">
+<button class="show-code">Code</button>
+bool <strong>isValid</strong>(int value) <a class="anchor-link" href="#isValid"
+              title="Permalink to TextureAddressMode.isValid">#</a></h4>
+<div class="doc">
+<p>Checks whether the value is a valid enumeration.</p>
+<pre class="source">
+static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.730</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

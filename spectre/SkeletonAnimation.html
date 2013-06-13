@@ -1,0 +1,176 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>SkeletonAnimation class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="SkeletonAnimation">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/SkeletonAnimation.html">SkeletonAnimation</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>SkeletonAnimation</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Key frame animation data for an entire skeleton.</p>
+<pre class="source">
+class SkeletonAnimation {
+ final String name;
+ final Map&lt;String, BoneAnimation&gt; boneAnimations =
+     new Map&lt;String, BoneAnimation&gt;();
+ final List&lt;BoneAnimation&gt; boneList;
+ SkeletonAnimation(this.name, int length) :
+   boneList = new List&lt;BoneAnimation&gt;(length);
+
+ double runTime = 0.0;
+ double timeScale = 1.0/24.0;
+
+ bool boneHasAnimation(String boneName) {
+   return boneAnimations[boneName] != null;
+ }
+
+ /// Animates [skeleton] to time [t] and updates [posedSkeleton].
+ void poseSkeleton(double t, Skeleton skeleton, PosedSkeleton posedSkeleton) {
+   throw new UnsupportedError('Implement me!');
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="SkeletonAnimation">
+<button class="show-code">Code</button>
+new <strong>SkeletonAnimation</strong>(String name, int length) <a class="anchor-link" href="#SkeletonAnimation"
+              title="Permalink to SkeletonAnimation.SkeletonAnimation">#</a></h4>
+<div class="doc">
+<pre class="source">
+SkeletonAnimation(this.name, int length) :
+ boneList = new List&lt;BoneAnimation&gt;(length);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="boneAnimations">
+<button class="show-code">Code</button>
+final Map&lt;String, <a href="../spectre/BoneAnimation.html">BoneAnimation</a>&gt;         <strong>boneAnimations</strong> <a class="anchor-link"
+            href="#boneAnimations"
+            title="Permalink to SkeletonAnimation.boneAnimations">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Map&lt;String, BoneAnimation&gt; boneAnimations =
+   new Map&lt;String, BoneAnimation&gt;()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="boneList">
+<button class="show-code">Code</button>
+final List&lt;<a href="../spectre/BoneAnimation.html">BoneAnimation</a>&gt;         <strong>boneList</strong> <a class="anchor-link"
+            href="#boneList"
+            title="Permalink to SkeletonAnimation.boneList">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final List&lt;BoneAnimation&gt; boneList
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to SkeletonAnimation.name">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="runTime">
+<button class="show-code">Code</button>
+double         <strong>runTime</strong> <a class="anchor-link"
+            href="#runTime"
+            title="Permalink to SkeletonAnimation.runTime">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+double runTime = 0.0
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="timeScale">
+<button class="show-code">Code</button>
+double         <strong>timeScale</strong> <a class="anchor-link"
+            href="#timeScale"
+            title="Permalink to SkeletonAnimation.timeScale">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+double timeScale = 1.0/24.0
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="boneHasAnimation">
+<button class="show-code">Code</button>
+bool <strong>boneHasAnimation</strong>(String boneName) <a class="anchor-link" href="#boneHasAnimation"
+              title="Permalink to SkeletonAnimation.boneHasAnimation">#</a></h4>
+<div class="doc">
+<pre class="source">
+bool boneHasAnimation(String boneName) {
+ return boneAnimations[boneName] != null;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="poseSkeleton">
+<button class="show-code">Code</button>
+void <strong>poseSkeleton</strong>(double t, <a href="../spectre/Skeleton.html">Skeleton</a> skeleton, <a href="../spectre/PosedSkeleton.html">PosedSkeleton</a> posedSkeleton) <a class="anchor-link" href="#poseSkeleton"
+              title="Permalink to SkeletonAnimation.poseSkeleton">#</a></h4>
+<div class="doc">
+<p>Animates 
+<span class="param">skeleton</span> to time 
+<span class="param">t</span> and updates 
+<span class="param">posedSkeleton</span>.</p>
+<pre class="source">
+void poseSkeleton(double t, Skeleton skeleton, PosedSkeleton posedSkeleton) {
+ throw new UnsupportedError('Implement me!');
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.615</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

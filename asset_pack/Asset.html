@@ -1,0 +1,290 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Asset class / asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="asset_pack" data-type="Asset">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../asset_pack.html">asset_pack</a> &rsaquo; <a href="../asset_pack/Asset.html">Asset</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>Asset</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>The <a class="crossref" href="../asset_pack/Asset.html#Asset">Asset</a> class holds the metadata for an imported asset. The imported
+object can be accessed via the <a class="crossref" href="../asset_pack/Asset.html#imported">imported</a> property. Assets belong to a
+<a class="crossref" href="../asset_pack/Asset.html#pack">pack</a>. They have a <a class="crossref" href="../asset_pack/Asset.html#name">name</a>. Assets loaded from a <a class="crossref" href="../asset_pack/Asset.html#url">url</a> have a
+<a class="crossref" href="../asset_pack/Asset.html#loader">loader</a> and <a class="crossref" href="../asset_pack/Asset.html#importer">importer</a>.</p>
+<pre class="source">
+class Asset {
+ final AssetPack pack;
+ /// The name of the asset.
+ final String name;
+ /// The type of the asset.
+ final String type;
+ /// The loader for the asset.
+ final AssetLoader loader;
+ /// The importer for the asset.
+ final AssetImporter importer;
+
+ final Map loaderArguments;
+ final Map importerArguments;
+
+ final String url;
+
+ String _status = '';
+ /// Status string.
+ String get status =&gt; _status;
+
+ dynamic _imported;
+
+ /// The imported object.
+ dynamic get imported =&gt; _imported;
+ set imported(dynamic import) {
+   _imported = import;
+   _status = 'OK';
+   // TODO(johnmccutchan): Fire event into stream.
+ }
+
+ /// Is [imported] a pack file?
+ bool get isPack =&gt; type == 'pack';
+
+ Asset(this.pack, this.name, this.url, this.type,
+       this.loader, this.loaderArguments, this.importer,
+       this.importerArguments);
+
+ /// Path to this asset.
+ String get path =&gt; '${pack.path}.${name}';
+
+ void _delete() {
+   if (importer != null) {
+     importer.delete(_imported);
+   }
+ }
+
+ void reload() {
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="Asset">
+<button class="show-code">Code</button>
+new <strong>Asset</strong>(<a href="../asset_pack/AssetPack.html">AssetPack</a> pack, String name, String url, String type, <a href="../asset_pack/AssetLoader.html">AssetLoader</a> loader, Map loaderArguments, <a href="../asset_pack/AssetImporter.html">AssetImporter</a> importer, Map importerArguments) <a class="anchor-link" href="#Asset"
+              title="Permalink to Asset.Asset">#</a></h4>
+<div class="doc">
+<pre class="source">
+Asset(this.pack, this.name, this.url, this.type,
+     this.loader, this.loaderArguments, this.importer,
+     this.importerArguments);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="imported">
+<button class="show-code">Code</button>
+var         <strong>imported</strong> <a class="anchor-link"
+            href="#imported"
+            title="Permalink to Asset.imported">#</a>
+        </h4>
+        <div class="doc">
+<p>The imported object.</p>
+<pre class="source">
+dynamic get imported =&gt; _imported;
+</pre>
+<pre class="source">
+set imported(dynamic import) {
+ _imported = import;
+ _status = 'OK';
+ // TODO(johnmccutchan): Fire event into stream.
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="importer">
+<button class="show-code">Code</button>
+final <a href="../asset_pack/AssetImporter.html">AssetImporter</a>         <strong>importer</strong> <a class="anchor-link"
+            href="#importer"
+            title="Permalink to Asset.importer">#</a>
+        </h4>
+        <div class="doc">
+<p>The importer for the asset.</p>
+<pre class="source">
+final AssetImporter importer
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="importerArguments">
+<button class="show-code">Code</button>
+final Map         <strong>importerArguments</strong> <a class="anchor-link"
+            href="#importerArguments"
+            title="Permalink to Asset.importerArguments">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Map importerArguments
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isPack">
+<button class="show-code">Code</button>
+final bool         <strong>isPack</strong> <a class="anchor-link"
+            href="#isPack"
+            title="Permalink to Asset.isPack">#</a>
+        </h4>
+        <div class="doc">
+<p>Is <a class="crossref" href="../asset_pack/Asset.html#imported">imported</a> a pack file?</p>
+<pre class="source">
+bool get isPack =&gt; type == 'pack';
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="loader">
+<button class="show-code">Code</button>
+final <a href="../asset_pack/AssetLoader.html">AssetLoader</a>         <strong>loader</strong> <a class="anchor-link"
+            href="#loader"
+            title="Permalink to Asset.loader">#</a>
+        </h4>
+        <div class="doc">
+<p>The loader for the asset.</p>
+<pre class="source">
+final AssetLoader loader
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="loaderArguments">
+<button class="show-code">Code</button>
+final Map         <strong>loaderArguments</strong> <a class="anchor-link"
+            href="#loaderArguments"
+            title="Permalink to Asset.loaderArguments">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final Map loaderArguments
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to Asset.name">#</a>
+        </h4>
+        <div class="doc">
+<p>The name of the asset.</p>
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="pack">
+<button class="show-code">Code</button>
+final <a href="../asset_pack/AssetPack.html">AssetPack</a>         <strong>pack</strong> <a class="anchor-link"
+            href="#pack"
+            title="Permalink to Asset.pack">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final AssetPack pack
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="path">
+<button class="show-code">Code</button>
+final String         <strong>path</strong> <a class="anchor-link"
+            href="#path"
+            title="Permalink to Asset.path">#</a>
+        </h4>
+        <div class="doc">
+<p>Path to this asset.</p>
+<pre class="source">
+String get path =&gt; '${pack.path}.${name}';
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="status">
+<button class="show-code">Code</button>
+final String         <strong>status</strong> <a class="anchor-link"
+            href="#status"
+            title="Permalink to Asset.status">#</a>
+        </h4>
+        <div class="doc">
+<p>Status string.</p>
+<pre class="source">
+String get status =&gt; _status;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="type">
+<button class="show-code">Code</button>
+final String         <strong>type</strong> <a class="anchor-link"
+            href="#type"
+            title="Permalink to Asset.type">#</a>
+        </h4>
+        <div class="doc">
+<p>The type of the asset.</p>
+<pre class="source">
+final String type
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="url">
+<button class="show-code">Code</button>
+final String         <strong>url</strong> <a class="anchor-link"
+            href="#url"
+            title="Permalink to Asset.url">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String url
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="reload">
+<button class="show-code">Code</button>
+void <strong>reload</strong>() <a class="anchor-link" href="#reload"
+              title="Permalink to Asset.reload">#</a></h4>
+<div class="doc">
+<pre class="source">
+void reload() {
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.222</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

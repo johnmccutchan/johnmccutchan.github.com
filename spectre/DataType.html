@@ -1,0 +1,199 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>DataType class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="DataType">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/DataType.html">DataType</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>DataType</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Data Type.</p>
+<pre class="source">
+class DataType extends Enum {
+ static const int Int8 = WebGL.BYTE;
+ static const int Uint8 = WebGL.UNSIGNED_BYTE;
+ static const int Int16 = WebGL.SHORT;
+ static const int Uint16 = WebGL.UNSIGNED_SHORT;
+ static const int Int32 = WebGL.INT;
+ static const int Uint32 = WebGL.UNSIGNED_INT;
+ static const int Float32 = WebGL.FLOAT;
+
+ static Map&lt;String, int&gt; _values = {
+   'DataType.Int8' : Int8,
+   'DataType.Uint8' : Uint8,
+   'DataType.Int16' : Int16,
+   'DataType.Uint16' : Uint16,
+   'DataType.Int32' : Int32,
+   'DataType.Uint32' : Uint32,
+   'DataType.Float32' : Float32
+ };
+
+ /// Convert a [String] to a [DataType].
+ static int parse(String name) =&gt; Enum._parse(_values, name);
+ /// Convert a [DataType] to a [String].
+ static String stringify(int value) =&gt; Enum._stringify(_values, value);
+ /// Checks whether the value is a valid enumeration.
+ static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../spectre/Enum.html">Enum</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>DataType</strong></span></p>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="Float32">
+<button class="show-code">Code</button>
+const int         <strong>Float32</strong> <a class="anchor-link"
+            href="#Float32"
+            title="Permalink to DataType.Float32">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int Float32 = WebGL.FLOAT
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Int16">
+<button class="show-code">Code</button>
+const int         <strong>Int16</strong> <a class="anchor-link"
+            href="#Int16"
+            title="Permalink to DataType.Int16">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int Int16 = WebGL.SHORT
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Int32">
+<button class="show-code">Code</button>
+const int         <strong>Int32</strong> <a class="anchor-link"
+            href="#Int32"
+            title="Permalink to DataType.Int32">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int Int32 = WebGL.INT
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Int8">
+<button class="show-code">Code</button>
+const int         <strong>Int8</strong> <a class="anchor-link"
+            href="#Int8"
+            title="Permalink to DataType.Int8">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int Int8 = WebGL.BYTE
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Uint16">
+<button class="show-code">Code</button>
+const int         <strong>Uint16</strong> <a class="anchor-link"
+            href="#Uint16"
+            title="Permalink to DataType.Uint16">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int Uint16 = WebGL.UNSIGNED_SHORT
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Uint32">
+<button class="show-code">Code</button>
+const int         <strong>Uint32</strong> <a class="anchor-link"
+            href="#Uint32"
+            title="Permalink to DataType.Uint32">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int Uint32 = WebGL.UNSIGNED_INT
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Uint8">
+<button class="show-code">Code</button>
+const int         <strong>Uint8</strong> <a class="anchor-link"
+            href="#Uint8"
+            title="Permalink to DataType.Uint8">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int Uint8 = WebGL.UNSIGNED_BYTE
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="parse">
+<button class="show-code">Code</button>
+int <strong>parse</strong>(String name) <a class="anchor-link" href="#parse"
+              title="Permalink to DataType.parse">#</a></h4>
+<div class="doc">
+<p>Convert a <code>String</code> to a <a class="crossref" href="../spectre/DataType.html">DataType</a>.</p>
+<pre class="source">
+static int parse(String name) =&gt; Enum._parse(_values, name);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="stringify">
+<button class="show-code">Code</button>
+String <strong>stringify</strong>(int value) <a class="anchor-link" href="#stringify"
+              title="Permalink to DataType.stringify">#</a></h4>
+<div class="doc">
+<p>Convert a <a class="crossref" href="../spectre/DataType.html">DataType</a> to a <code>String</code>.</p>
+<pre class="source">
+static String stringify(int value) =&gt; Enum._stringify(_values, value);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="isValid">
+<button class="show-code">Code</button>
+bool <strong>isValid</strong>(int value) <a class="anchor-link" href="#isValid"
+              title="Permalink to DataType.isValid">#</a></h4>
+<div class="doc">
+<p>Checks whether the value is a valid enumeration.</p>
+<pre class="source">
+static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.892</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

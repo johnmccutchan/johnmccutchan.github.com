@@ -1,0 +1,148 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>spectre_asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="favicon.ico">
+        
+        </head>
+        <body data-library="spectre_asset_pack">
+        <div class="page">
+        <div class="header">
+          <a href="index.html"><div class="logo"></div></a>
+          <a href="index.html">Dart Documentation</a>
+         &rsaquo; <a href="spectre_asset_pack.html">spectre_asset_pack</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+<h2><strong>spectre_asset_pack</strong> library</h2>
+<div class="doc"><p>Spectre asset_pack companion library </p></div>
+<div>
+<h3>Functions</h3>
+<div class="method"><h4 id="registerSpectreWithAssetManager">
+<button class="show-code">Code</button>
+void <strong>registerSpectreWithAssetManager</strong>(<a href="spectre/GraphicsDevice.html">GraphicsDevice</a> graphicsDevice, <a href="asset_pack/AssetManager.html">AssetManager</a> assetManager) <a class="anchor-link" href="#registerSpectreWithAssetManager"
+              title="Permalink to registerSpectreWithAssetManager">#</a></h4>
+<div class="doc">
+<p>Register the spectre graphics device with the asset_pack library.
+asset manager. After calling this function, the asset manager
+will be able to load meshes, textures, and shaders.</p>
+<pre class="source">
+void registerSpectreWithAssetManager(GraphicsDevice graphicsDevice,
+                                    AssetManager assetManager) {
+ assetManager.loaders['mesh'] = new TextLoader();
+ assetManager.loaders['tex2d'] = new ImageLoader();
+ assetManager.loaders['texCube'] = new _ImagePackLoader();
+ assetManager.loaders['vertexShader'] = new TextLoader();
+ assetManager.loaders['fragmentShader'] = new TextLoader();
+ assetManager.loaders['shaderProgram'] = new _TextListLoader();
+
+ assetManager.importers['mesh'] = new MeshImporter(graphicsDevice);
+ assetManager.importers['tex2d'] = new Tex2DImporter(graphicsDevice);
+ assetManager.importers['texCube'] = new TexCubeImporter(graphicsDevice);
+ assetManager.importers['vertexShader'] =
+     new VertexShaderImporter(graphicsDevice);
+ assetManager.importers['fragmentShader'] =
+     new FragmentShaderImporter(graphicsDevice);
+ assetManager.importers['shaderProgram'] =
+     new ShaderProgramImporter(graphicsDevice);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/DdsCubeMapFace.html"><strong>DdsCubeMapFace</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/DdsExtendedHeader.html"><strong>DdsExtendedHeader</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/DdsFile.html"><strong>DdsFile</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/DdsHeader.html"><strong>DdsHeader</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/DdsPixelFormat.html"><strong>DdsPixelFormat</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/DdsResourceFormat.html"><strong>DdsResourceFormat</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/FragmentShaderImporter.html"><strong>FragmentShaderImporter</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/MeshImporter.html"><strong>MeshImporter</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/ShaderProgramImporter.html"><strong>ShaderProgramImporter</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/Tex2DImporter.html"><strong>Tex2DImporter</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/TexCubeImporter.html"><strong>TexCubeImporter</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_asset_pack/VertexShaderImporter.html"><strong>VertexShaderImporter</strong></a>
+          </h4>
+          </div>
+          
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.967</div>
+        </div>
+        <script async src="client-live-nav.js"></script>
+        </body></html>
+        

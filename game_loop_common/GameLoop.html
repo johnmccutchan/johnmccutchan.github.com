@@ -1,0 +1,377 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>GameLoop abstract class / game_loop_common Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="game_loop_common" data-type="GameLoop">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../game_loop_common.html">game_loop_common</a> &rsaquo; <a href="../game_loop_common/GameLoop.html">GameLoop</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>GameLoop</strong>
+          abstract class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>The game loop </p>
+<pre class="source">
+abstract class GameLoop {
+ /** The time step used for game updates. */
+ double updateTimeStep = 0.015;
+
+ /** Maximum amount of time between subsequent request animation frame
+  * calls that is accumulated. Accumulated time is used to drive onUpdate
+  * calls.
+  */
+ double maxAccumulatedTime = 0.03;
+ /** Seconds of accumulated time. */
+ double get accumulatedTime;
+ /** Frame counter value. Incremented once per frame. */
+ int get frame;
+ /** Current time as seen by onUpdate calls. */
+ double get gameTime;
+ /** Seconds between requestAnimationFrameTime calls. */
+ double get frameTime;
+ /** Time elapsed in current frame. */
+ double get dt =&gt; updateTimeStep;
+
+ static double timeStampToSeconds(timeStamp) =&gt; timeStamp / 1000.0;
+ static double milliseconds(int x) =&gt; x / 1000.0;
+ static double seconds(int x) =&gt; x.toDouble();
+ static double minutes(int x) =&gt; x.toDouble() * 60.0;
+
+ /** Current time. */
+ double get time =&gt; timeStampToSeconds(
+     new DateTime.now().millisecondsSinceEpoch);
+
+ /** Construct a new game loop */
+ GameLoop() {
+ }
+
+ void processTimers() {
+   int _timersLength = _timers.length;
+   for (int i = 0; i &lt; _timersLength; i++) {
+     _timers[i]._update(dt);
+   }
+   for (int i = _timers.length-1; i &gt;= 0; i--) {
+     int lastElement = _timers.length-1;
+     if (_timers[i]._isDead) {
+       if (i != lastElement) {
+         // Swap into i's place.
+         _timers[i] = _timers[lastElement];
+       }
+       _timers.removeLast();
+     }
+   }
+ }
+
+ /** Start the game loop. */
+ void start();
+
+ /** Stop the game loop. */
+ void stop();
+
+ final List&lt;GameLoopTimer&gt; _timers = new List&lt;GameLoopTimer&gt;();
+
+ /** Add a new timer which calls [callback] in [delay] seconds. */
+ GameLoopTimer addTimer(GameLoopTimerFunction callback, double delay,
+                        {bool periodic: false}) {
+   var timer = new GameLoopTimer._internal(this, delay, callback,
+       _periodic: periodic);
+   _timers.add(timer);
+   return timer;
+ }
+
+ /** Clear all existing timers. */
+ void clearTimers() {
+   _timers.clear();
+ }
+
+ /** Called once per game logic frame. */
+ GameLoopUpdateFunction onUpdate;
+}
+</pre>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="timeStampToSeconds">
+<button class="show-code">Code</button>
+double <strong>timeStampToSeconds</strong>(timeStamp) <a class="anchor-link" href="#timeStampToSeconds"
+              title="Permalink to GameLoop.timeStampToSeconds">#</a></h4>
+<div class="doc">
+<pre class="source">
+static double timeStampToSeconds(timeStamp) =&gt; timeStamp / 1000.0;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="milliseconds">
+<button class="show-code">Code</button>
+double <strong>milliseconds</strong>(int x) <a class="anchor-link" href="#milliseconds"
+              title="Permalink to GameLoop.milliseconds">#</a></h4>
+<div class="doc">
+<pre class="source">
+static double milliseconds(int x) =&gt; x / 1000.0;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="seconds">
+<button class="show-code">Code</button>
+double <strong>seconds</strong>(int x) <a class="anchor-link" href="#seconds"
+              title="Permalink to GameLoop.seconds">#</a></h4>
+<div class="doc">
+<pre class="source">
+static double seconds(int x) =&gt; x.toDouble();
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="minutes">
+<button class="show-code">Code</button>
+double <strong>minutes</strong>(int x) <a class="anchor-link" href="#minutes"
+              title="Permalink to GameLoop.minutes">#</a></h4>
+<div class="doc">
+<pre class="source">
+static double minutes(int x) =&gt; x.toDouble() * 60.0;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="GameLoop">
+<button class="show-code">Code</button>
+new <strong>GameLoop</strong>() <a class="anchor-link" href="#GameLoop"
+              title="Permalink to GameLoop.GameLoop">#</a></h4>
+<div class="doc">
+<p>Construct a new game loop </p>
+<pre class="source">
+GameLoop() {
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="accumulatedTime">
+<button class="show-code">Code</button>
+final double         <strong>accumulatedTime</strong> <a class="anchor-link"
+            href="#accumulatedTime"
+            title="Permalink to GameLoop.accumulatedTime">#</a>
+        </h4>
+        <div class="doc">
+<p>Seconds of accumulated time. </p>
+<pre class="source">
+double get accumulatedTime;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="dt">
+<button class="show-code">Code</button>
+final double         <strong>dt</strong> <a class="anchor-link"
+            href="#dt"
+            title="Permalink to GameLoop.dt">#</a>
+        </h4>
+        <div class="doc">
+<p>Time elapsed in current frame. </p>
+<pre class="source">
+double get dt =&gt; updateTimeStep;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="frame">
+<button class="show-code">Code</button>
+final int         <strong>frame</strong> <a class="anchor-link"
+            href="#frame"
+            title="Permalink to GameLoop.frame">#</a>
+        </h4>
+        <div class="doc">
+<p>Frame counter value. Incremented once per frame. </p>
+<pre class="source">
+int get frame;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="frameTime">
+<button class="show-code">Code</button>
+final double         <strong>frameTime</strong> <a class="anchor-link"
+            href="#frameTime"
+            title="Permalink to GameLoop.frameTime">#</a>
+        </h4>
+        <div class="doc">
+<p>Seconds between requestAnimationFrameTime calls. </p>
+<pre class="source">
+double get frameTime;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="gameTime">
+<button class="show-code">Code</button>
+final double         <strong>gameTime</strong> <a class="anchor-link"
+            href="#gameTime"
+            title="Permalink to GameLoop.gameTime">#</a>
+        </h4>
+        <div class="doc">
+<p>Current time as seen by onUpdate calls. </p>
+<pre class="source">
+double get gameTime;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="maxAccumulatedTime">
+<button class="show-code">Code</button>
+double         <strong>maxAccumulatedTime</strong> <a class="anchor-link"
+            href="#maxAccumulatedTime"
+            title="Permalink to GameLoop.maxAccumulatedTime">#</a>
+        </h4>
+        <div class="doc">
+<p>Maximum amount of time between subsequent request animation frame
+calls that is accumulated. Accumulated time is used to drive onUpdate
+calls.</p>
+<pre class="source">
+double maxAccumulatedTime = 0.03
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="onUpdate">
+<button class="show-code">Code</button>
+<a href="../game_loop_common/GameLoopUpdateFunction.html">GameLoopUpdateFunction</a>         <strong>onUpdate</strong> <a class="anchor-link"
+            href="#onUpdate"
+            title="Permalink to GameLoop.onUpdate">#</a>
+        </h4>
+        <div class="doc">
+<p>Called once per game logic frame. </p>
+<pre class="source">
+GameLoopUpdateFunction onUpdate
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="time">
+<button class="show-code">Code</button>
+final double         <strong>time</strong> <a class="anchor-link"
+            href="#time"
+            title="Permalink to GameLoop.time">#</a>
+        </h4>
+        <div class="doc">
+<p>Current time. </p>
+<pre class="source">
+double get time =&gt; timeStampToSeconds(
+   new DateTime.now().millisecondsSinceEpoch);
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="updateTimeStep">
+<button class="show-code">Code</button>
+double         <strong>updateTimeStep</strong> <a class="anchor-link"
+            href="#updateTimeStep"
+            title="Permalink to GameLoop.updateTimeStep">#</a>
+        </h4>
+        <div class="doc">
+<p>The time step used for game updates. </p>
+<pre class="source">
+double updateTimeStep = 0.015
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="addTimer">
+<button class="show-code">Code</button>
+<a href="../game_loop_common/GameLoopTimer.html">GameLoopTimer</a> <strong>addTimer</strong>(<a href="../game_loop_common/GameLoopTimerFunction.html">GameLoopTimerFunction</a> callback, double delay, {bool periodic: false}) <a class="anchor-link" href="#addTimer"
+              title="Permalink to GameLoop.addTimer">#</a></h4>
+<div class="doc">
+<p>Add a new timer which calls 
+<span class="param">callback</span> in 
+<span class="param">delay</span> seconds. </p>
+<pre class="source">
+GameLoopTimer addTimer(GameLoopTimerFunction callback, double delay,
+                      {bool periodic: false}) {
+ var timer = new GameLoopTimer._internal(this, delay, callback,
+     _periodic: periodic);
+ _timers.add(timer);
+ return timer;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="clearTimers">
+<button class="show-code">Code</button>
+void <strong>clearTimers</strong>() <a class="anchor-link" href="#clearTimers"
+              title="Permalink to GameLoop.clearTimers">#</a></h4>
+<div class="doc">
+<p>Clear all existing timers. </p>
+<pre class="source">
+void clearTimers() {
+ _timers.clear();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="processTimers">
+<button class="show-code">Code</button>
+void <strong>processTimers</strong>() <a class="anchor-link" href="#processTimers"
+              title="Permalink to GameLoop.processTimers">#</a></h4>
+<div class="doc">
+<pre class="source">
+void processTimers() {
+ int _timersLength = _timers.length;
+ for (int i = 0; i &lt; _timersLength; i++) {
+   _timers[i]._update(dt);
+ }
+ for (int i = _timers.length-1; i &gt;= 0; i--) {
+   int lastElement = _timers.length-1;
+   if (_timers[i]._isDead) {
+     if (i != lastElement) {
+       // Swap into i's place.
+       _timers[i] = _timers[lastElement];
+     }
+     _timers.removeLast();
+   }
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="start">
+abstract void <strong>start</strong>() <a class="anchor-link" href="#start"
+              title="Permalink to GameLoop.start">#</a></h4>
+<div class="doc">
+<p>Start the game loop. </p>
+</div>
+</div>
+<div class="method"><h4 id="stop">
+abstract void <strong>stop</strong>() <a class="anchor-link" href="#stop"
+              title="Permalink to GameLoop.stop">#</a></h4>
+<div class="doc">
+<p>Stop the game loop. </p>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.405</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

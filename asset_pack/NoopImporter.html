@@ -1,0 +1,124 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>NoopImporter class / asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="asset_pack" data-type="NoopImporter">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../asset_pack.html">asset_pack</a> &rsaquo; <a href="../asset_pack/NoopImporter.html">NoopImporter</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>NoopImporter</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class NoopImporter extends AssetImporter {
+ void initialize(Asset asset) {
+   asset.imported = null;
+ }
+
+ Future&lt;Asset&gt; import(dynamic payload, Asset asset, AssetPackTrace tracer) {
+   tracer.assetImportStart(asset);
+   try {
+     asset.imported = payload;
+     return new Future.value(asset);
+   } finally {
+     tracer.assetImportEnd(asset);
+   }
+ }
+
+ void delete(dynamic imported) {
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../asset_pack/AssetImporter.html">AssetImporter</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>NoopImporter</strong></span></p>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="delete">
+<button class="show-code">Code</button>
+void <strong>delete</strong>(imported) <a class="anchor-link" href="#delete"
+              title="Permalink to NoopImporter.delete">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Delete 
+<span class="param">imported</span> object.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../asset_pack/AssetImporter.html">AssetImporter</a> </div></div>
+<pre class="source">
+void delete(dynamic imported) {
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="import">
+<button class="show-code">Code</button>
+Future&lt;<a href="../asset_pack/Asset.html">Asset</a>&gt; <strong>import</strong>(payload, <a href="../asset_pack/Asset.html">Asset</a> asset, <a href="../asset_pack/AssetPackTrace.html">AssetPackTrace</a> tracer) <a class="anchor-link" href="#import"
+              title="Permalink to NoopImporter.import">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Import 
+<span class="param">payload</span> and assign it to imported field in 
+<span class="param">asset</span>.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../asset_pack/AssetImporter.html">AssetImporter</a> </div></div>
+<pre class="source">
+Future&lt;Asset&gt; import(dynamic payload, Asset asset, AssetPackTrace tracer) {
+ tracer.assetImportStart(asset);
+ try {
+   asset.imported = payload;
+   return new Future.value(asset);
+ } finally {
+   tracer.assetImportEnd(asset);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="initialize">
+<button class="show-code">Code</button>
+void <strong>initialize</strong>(<a href="../asset_pack/Asset.html">Asset</a> asset) <a class="anchor-link" href="#initialize"
+              title="Permalink to NoopImporter.initialize">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Must initialize imported field in 
+<span class="param">asset</span>.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../asset_pack/AssetImporter.html">AssetImporter</a> </div></div>
+<pre class="source">
+void initialize(Asset asset) {
+ asset.imported = null;
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.168</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

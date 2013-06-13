@@ -1,0 +1,150 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>AssetPackTraceViewer class / asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="asset_pack" data-type="AssetPackTraceViewer">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../asset_pack.html">asset_pack</a> &rsaquo; <a href="../asset_pack/AssetPackTraceViewer.html">AssetPackTraceViewer</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>AssetPackTraceViewer</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Convert event(s) into a json in the format loadable by chrome://tracing</p><ul><li>see <a href="http://www.altdevblogaday.com/2012/08/21/using-chrometracing-to-view-your-inline-profiling-data/">Using Chrome://tracing to view your inline profiling data</a></li><li>see <a href="https://code.google.com/p/trace-viewer/wiki/TraceEventFormat">TraceEventFormat</a></li></ul>
+<pre class="source">
+class AssetPackTraceViewer {
+
+ static String toJsonFullString(List&lt;AssetPackTraceEvent&gt; events) {
+   var lists = events.map(toJsonEntry).toList();
+   return '{"traceEvents":${JSON.stringify(lists)}}';
+ }
+
+ static dynamic toJsonEntry(AssetPackTraceEvent event) {
+   Map json = new Map();
+   json['ts'] = event.microseconds;
+   var type = event.type;
+   if (type == 'AssetImportEnd') {
+     json['ph'] = 'E';
+     json['name'] = 'import ${event.label}';
+   } else if (type == AssetPackTraceEvent.AssetImportStart) {
+     json['ph'] = 'B';
+     json['name'] = 'import ${event.label}';
+   } else if (type == AssetPackTraceEvent.AssetLoadStart) {
+     json['ph'] = 'B';
+     json['name'] = 'load ${event.label}';
+   } else if (type == AssetPackTraceEvent.AssetLoadEnd) {
+     json['ph'] = 'E';
+     json['name'] = 'load ${event.label}';
+   } else if (type == AssetPackTraceEvent.PackImportEnd) {
+     json['ph'] = 'E';
+     json['name'] = 'pack ${event.label}';
+   } else if (type == AssetPackTraceEvent.PackImportStart) {
+     json['ph'] = 'B';
+     json['name'] = 'pack ${event.label}';
+   } else if (type == AssetPackTraceEvent.AssetLoadError
+       || type == AssetPackTraceEvent.AssetImportError) {
+     json['ph'] = 'I';
+     json['name'] = '${event.type} ${event.label}';
+   } else {
+     throw new ArgumentError('Unknown type ${type}');
+     assert(false);
+   }
+   json['cat'] = 'asset';
+   json['tid'] = 1;
+   json['pid'] = 1;
+   return json;
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="toJsonFullString">
+<button class="show-code">Code</button>
+String <strong>toJsonFullString</strong>(List&lt;<a href="../asset_pack/AssetPackTraceEvent.html">AssetPackTraceEvent</a>&gt; events) <a class="anchor-link" href="#toJsonFullString"
+              title="Permalink to AssetPackTraceViewer.toJsonFullString">#</a></h4>
+<div class="doc">
+<pre class="source">
+static String toJsonFullString(List&lt;AssetPackTraceEvent&gt; events) {
+ var lists = events.map(toJsonEntry).toList();
+ return '{"traceEvents":${JSON.stringify(lists)}}';
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toJsonEntry">
+<button class="show-code">Code</button>
+dynamic <strong>toJsonEntry</strong>(<a href="../asset_pack/AssetPackTraceEvent.html">AssetPackTraceEvent</a> event) <a class="anchor-link" href="#toJsonEntry"
+              title="Permalink to AssetPackTraceViewer.toJsonEntry">#</a></h4>
+<div class="doc">
+<pre class="source">
+static dynamic toJsonEntry(AssetPackTraceEvent event) {
+ Map json = new Map();
+ json['ts'] = event.microseconds;
+ var type = event.type;
+ if (type == 'AssetImportEnd') {
+   json['ph'] = 'E';
+   json['name'] = 'import ${event.label}';
+ } else if (type == AssetPackTraceEvent.AssetImportStart) {
+   json['ph'] = 'B';
+   json['name'] = 'import ${event.label}';
+ } else if (type == AssetPackTraceEvent.AssetLoadStart) {
+   json['ph'] = 'B';
+   json['name'] = 'load ${event.label}';
+ } else if (type == AssetPackTraceEvent.AssetLoadEnd) {
+   json['ph'] = 'E';
+   json['name'] = 'load ${event.label}';
+ } else if (type == AssetPackTraceEvent.PackImportEnd) {
+   json['ph'] = 'E';
+   json['name'] = 'pack ${event.label}';
+ } else if (type == AssetPackTraceEvent.PackImportStart) {
+   json['ph'] = 'B';
+   json['name'] = 'pack ${event.label}';
+ } else if (type == AssetPackTraceEvent.AssetLoadError
+     || type == AssetPackTraceEvent.AssetImportError) {
+   json['ph'] = 'I';
+   json['name'] = '${event.type} ${event.label}';
+ } else {
+   throw new ArgumentError('Unknown type ${type}');
+   assert(false);
+ }
+ json['cat'] = 'asset';
+ json['tid'] = 1;
+ json['pid'] = 1;
+ return json;
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.260</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

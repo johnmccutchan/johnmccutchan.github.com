@@ -1,0 +1,256 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>AssetPackTraceEvent class / asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="asset_pack" data-type="AssetPackTraceEvent">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../asset_pack.html">asset_pack</a> &rsaquo; <a href="../asset_pack/AssetPackTraceEvent.html">AssetPackTraceEvent</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>AssetPackTraceEvent</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class AssetPackTraceEvent {
+ static const PackImportStart = 'PackImportStart';
+ static const PackImportEnd = 'PackImportEnd';
+ static const AssetLoadStart = 'AssetLoadStart';
+ static const AssetLoadEnd = 'AssetLoadEnd';
+ static const AssetLoadError = 'AssetLoadError';
+ static const AssetImportStart = 'AssetImportStart';
+ static const AssetImportEnd = 'AssetImportEnd';
+ static const AssetImportError = 'AssetImportError';
+
+ final String type;
+ final String label;
+ final int microseconds;
+ AssetPackTraceEvent(this.type, this.label, this.microseconds);
+
+ dynamic toJson() {
+   Map json = new Map();
+   json['type'] = type;
+   json['label'] = label;
+   json['timestamp'] = microseconds;
+ }
+
+ String toString() {
+   return '${microseconds}, ${type}, ${label}';
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="AssetImportEnd">
+<button class="show-code">Code</button>
+const         <strong>AssetImportEnd</strong> <a class="anchor-link"
+            href="#AssetImportEnd"
+            title="Permalink to AssetPackTraceEvent.AssetImportEnd">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const AssetImportEnd = 'AssetImportEnd'
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="AssetImportError">
+<button class="show-code">Code</button>
+const         <strong>AssetImportError</strong> <a class="anchor-link"
+            href="#AssetImportError"
+            title="Permalink to AssetPackTraceEvent.AssetImportError">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const AssetImportError = 'AssetImportError'
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="AssetImportStart">
+<button class="show-code">Code</button>
+const         <strong>AssetImportStart</strong> <a class="anchor-link"
+            href="#AssetImportStart"
+            title="Permalink to AssetPackTraceEvent.AssetImportStart">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const AssetImportStart = 'AssetImportStart'
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="AssetLoadEnd">
+<button class="show-code">Code</button>
+const         <strong>AssetLoadEnd</strong> <a class="anchor-link"
+            href="#AssetLoadEnd"
+            title="Permalink to AssetPackTraceEvent.AssetLoadEnd">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const AssetLoadEnd = 'AssetLoadEnd'
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="AssetLoadError">
+<button class="show-code">Code</button>
+const         <strong>AssetLoadError</strong> <a class="anchor-link"
+            href="#AssetLoadError"
+            title="Permalink to AssetPackTraceEvent.AssetLoadError">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const AssetLoadError = 'AssetLoadError'
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="AssetLoadStart">
+<button class="show-code">Code</button>
+const         <strong>AssetLoadStart</strong> <a class="anchor-link"
+            href="#AssetLoadStart"
+            title="Permalink to AssetPackTraceEvent.AssetLoadStart">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const AssetLoadStart = 'AssetLoadStart'
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="PackImportEnd">
+<button class="show-code">Code</button>
+const         <strong>PackImportEnd</strong> <a class="anchor-link"
+            href="#PackImportEnd"
+            title="Permalink to AssetPackTraceEvent.PackImportEnd">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const PackImportEnd = 'PackImportEnd'
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="PackImportStart">
+<button class="show-code">Code</button>
+const         <strong>PackImportStart</strong> <a class="anchor-link"
+            href="#PackImportStart"
+            title="Permalink to AssetPackTraceEvent.PackImportStart">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const PackImportStart = 'PackImportStart'
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="AssetPackTraceEvent">
+<button class="show-code">Code</button>
+new <strong>AssetPackTraceEvent</strong>(String type, String label, int microseconds) <a class="anchor-link" href="#AssetPackTraceEvent"
+              title="Permalink to AssetPackTraceEvent.AssetPackTraceEvent">#</a></h4>
+<div class="doc">
+<pre class="source">
+AssetPackTraceEvent(this.type, this.label, this.microseconds);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="label">
+<button class="show-code">Code</button>
+final String         <strong>label</strong> <a class="anchor-link"
+            href="#label"
+            title="Permalink to AssetPackTraceEvent.label">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String label
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="microseconds">
+<button class="show-code">Code</button>
+final int         <strong>microseconds</strong> <a class="anchor-link"
+            href="#microseconds"
+            title="Permalink to AssetPackTraceEvent.microseconds">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final int microseconds
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="type">
+<button class="show-code">Code</button>
+final String         <strong>type</strong> <a class="anchor-link"
+            href="#type"
+            title="Permalink to AssetPackTraceEvent.type">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String type
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="toJson">
+<button class="show-code">Code</button>
+dynamic <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to AssetPackTraceEvent.toJson">#</a></h4>
+<div class="doc">
+<pre class="source">
+dynamic toJson() {
+ Map json = new Map();
+ json['type'] = type;
+ json['label'] = label;
+ json['timestamp'] = microseconds;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to AssetPackTraceEvent.toString">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() {
+ return '${microseconds}, ${type}, ${label}';
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.273</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

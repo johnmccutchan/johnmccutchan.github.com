@@ -1,0 +1,678 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="favicon.ico">
+        
+        </head>
+        <body data-library="spectre">
+        <div class="page">
+        <div class="header">
+          <a href="index.html"><div class="logo"></div></a>
+          <a href="index.html">Dart Documentation</a>
+         &rsaquo; <a href="spectre.html">spectre</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+<h2><strong>spectre</strong> library</h2>
+<div class="doc"><p>Spectre Library </p></div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="spectreLog">
+<button class="show-code">Code</button>
+<a href="spectre/Logger.html">Logger</a>         <strong>spectreLog</strong> <a class="anchor-link"
+            href="#spectreLog"
+            title="Permalink to spectreLog">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Logger spectreLog = new PrintLogger()
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Functions</h3>
+<div class="method"><h4 id="importSkinnedMesh2">
+<button class="show-code">Code</button>
+<a href="spectre/SkinnedMesh.html">SkinnedMesh</a> <strong>importSkinnedMesh2</strong>(String name, <a href="spectre/GraphicsDevice.html">GraphicsDevice</a> device, Map json) <a class="anchor-link" href="#importSkinnedMesh2"
+              title="Permalink to importSkinnedMesh2">#</a></h4>
+<div class="doc">
+<pre class="source">
+SkinnedMesh importSkinnedMesh2(String name, GraphicsDevice device, Map json) {
+ SkinnedMesh mesh = new SkinnedMesh(name, device);
+
+ List attributes = json['attributes'];
+ // static mesh data begins.
+ attributes.forEach((a) {
+   importAttribute(mesh, a);
+ });
+ mesh._floatsPerVertex = attributes[0]['stride']~/4;
+
+ List vertices = json['vertices'];
+ mesh.vertexData4 = new Float32x4List(json['vertices'].length~/4);
+ mesh.baseVertexData4 = new Float32x4List(mesh.vertexData4.length);
+ mesh.vertexData = new Float32List.view(mesh.vertexData4);
+ mesh.baseVertexData = new Float32List.view(mesh.baseVertexData4);
+ for (int i = 0; i &lt; json['vertices'].length; i++) {
+   mesh.vertexData[i] = json['vertices'][i].toDouble();
+   mesh.baseVertexData[i] = json['vertices'][i].toDouble();
+ }
+ mesh.vertexArray.uploadData(mesh.vertexData4,
+                             UsagePattern.DynamicDraw);
+ List indices = json['indices'];
+ mesh.indexArray.uploadData(new Uint16List.fromList(json['indices']),
+                            UsagePattern.StaticDraw);
+ List meshes = json['meshes'];
+ meshes.forEach((m) {
+   importMesh(mesh, m);
+ });
+ List bones = json['boneTable'];
+ mesh.skeleton = new Skeleton(name, bones.length);
+ // TODO: FIX THIS.
+ mesh.skeleton.globalOffsetTransform[0] = 1.0;
+ mesh.skeleton.globalOffsetTransform[6] = -1.0;
+ mesh.skeleton.globalOffsetTransform[9] = 1.0;
+ mesh.skeleton.globalOffsetTransform[15] = 1.0;
+ // Bone table.
+ bones.forEach((b) {
+   String boneName = b['name'];
+   List&lt;double&gt; transform = b['localTransform'];
+   List&lt;double&gt; offsetTransform = b['offsetTransform'];
+   int index = b['index'];
+   assert(16 == transform.length);
+   assert(16 == offsetTransform.length);
+   Bone bone = new Bone(boneName, transform, offsetTransform);
+   mesh.skeleton.boneList[index] = bone;
+   mesh.skeleton.boneList[index]._boneIndex = index;
+   mesh.skeleton.bones[boneName] = bone;
+ });
+ // Bone hierarchy.
+ bones.forEach((b) {
+   String boneName = b['name'];
+   Bone parentBone = mesh.skeleton.bones[boneName];
+   List&lt;String&gt; children = b['children'];
+   for (int i = 0; i &lt; children.length; i++) {
+     Bone childBone = mesh.skeleton.bones[children[i]];
+     if (childBone == null) {
+       print('Could not find ${children[i]}');
+       continue;
+     }
+     assert(childBone.parent == null);
+     childBone.parent = parentBone;
+     parentBone.children.add(childBone);
+   }
+ });
+
+ {
+   List boneId = json['vertexBones'];
+   List weights = json['vertexWeights'];
+   assert(boneId.length == weights.length);
+   mesh.boneData = new Int32List(boneId.length);
+   mesh.skinningData = new Float32List(boneId.length*2);
+   Float32List floatBoneData = new Float32List.view(mesh.skinningData,
+                                                    0,
+                                                    boneId.length);
+   mesh.weightData = new Float32List.view(mesh.skinningData,
+                                          boneId.length*4);
+   for (int i = 0; i &lt; boneId.length; i++) {
+     mesh.boneData[i] = boneId[i].toInt();
+     mesh.weightData[i] = weights[i].toDouble();
+
+     // This is unfortunate, but it's the only way GPU skinning will run fast
+     // on most cards.
+     floatBoneData[i] = boneId[i].toDouble();
+   }
+
+   // GPU-skinning specific attributes
+   mesh.attributes['vBoneIndices'] = new SpectreMeshAttribute('vBoneIndices',
+       new VertexAttribute(1, 0, 0, 16, DataType.Float32, 4, false));
+   mesh.attributes['vBoneWeights'] = new SpectreMeshAttribute('vBoneWeights',
+       new VertexAttribute(1, 0, boneId.length*4, 16, DataType.Float32, 4,
+                           false));
+   mesh.skinningArray.uploadData(mesh.skinningData, UsagePattern.StaticDraw);
+ }
+ return mesh;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="importAnimation">
+<button class="show-code">Code</button>
+void <strong>importAnimation</strong>(<a href="spectre/SkinnedMesh.html">SkinnedMesh</a> mesh, Map json) <a class="anchor-link" href="#importAnimation"
+              title="Permalink to importAnimation">#</a></h4>
+<div class="doc">
+<pre class="source">
+void importAnimation(SkinnedMesh mesh, Map json) {
+ String name = json['name'];
+ assert(name != null);
+ assert(name != "");
+ num ticksPerSecond = json['ticksPerSecond'];
+ num duration = json['duration'];
+ assert(ticksPerSecond != null);
+ assert(duration != null);
+ var animation = new SkeletonAnimation(name, mesh.skeleton.boneList.length);
+ animation.runTime = duration.toDouble();
+ animation.timeScale = ticksPerSecond.toDouble();
+ mesh.animations[name] = animation;
+ mesh._currentAnimation = mesh.animations[name];
+ json['boneAnimations'].forEach((ba) {
+   Bone bone = mesh.skeleton.bones[ba['name']];
+   if (bone == null) {
+     print('Cannot find ${ba['name']}');
+     return;
+   }
+   int id = bone._boneIndex;
+   importAnimationFrames(animation, id, ba);
+ });
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="importAnimationFrames">
+<button class="show-code">Code</button>
+void <strong>importAnimationFrames</strong>(<a href="spectre/SkeletonAnimation.html">SkeletonAnimation</a> animation, int boneId, Map ba) <a class="anchor-link" href="#importAnimationFrames"
+              title="Permalink to importAnimationFrames">#</a></h4>
+<div class="doc">
+<pre class="source">
+void importAnimationFrames(SkeletonAnimation animation, int boneId, Map ba) {
+ assert(boneId &gt;= 0 &amp;&amp; boneId &lt; animation.boneList.length);
+ assert(animation.boneList[boneId] == null);
+
+ List positions = ba['positions'];
+ List rotations = ba['rotations'];
+ List scales = ba['scales'];
+
+ BoneAnimation boneData = new BoneAnimation('', boneId, positions, rotations,
+                                            scales);
+ animation.boneList[boneId] = boneData;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="importAttribute">
+<button class="show-code">Code</button>
+void <strong>importAttribute</strong>(<a href="spectre/SkinnedMesh.html">SkinnedMesh</a> mesh, Map json) <a class="anchor-link" href="#importAttribute"
+              title="Permalink to importAttribute">#</a></h4>
+<div class="doc">
+<pre class="source">
+void importAttribute(SkinnedMesh mesh, Map json) {
+ String name = json['name'];
+ int offset = json['offset'];
+ int stride = json['stride'];
+ mesh.attributes[name] = new SpectreMeshAttribute(
+     name,
+     new VertexAttribute(0, 0, offset, stride, DataType.Float32, 4, false));
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="importMesh">
+<button class="show-code">Code</button>
+void <strong>importMesh</strong>(<a href="spectre/SkinnedMesh.html">SkinnedMesh</a> mesh, Map json) <a class="anchor-link" href="#importMesh"
+              title="Permalink to importMesh">#</a></h4>
+<div class="doc">
+<pre class="source">
+void importMesh(SkinnedMesh mesh, Map json) {
+ mesh.meshes.add(json);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Abstract Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="spectre/CameraController.html"><strong>CameraController</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/DeviceChild.html"><strong>DeviceChild</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/Logger.html"><strong>Logger</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SkeletonPoser.html"><strong>SkeletonPoser</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SpectreMesh.html"><strong>SpectreMesh</strong></a>
+          </h4>
+          </div>
+          
+</div>
+<div>
+<h3>Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="spectre/Animation.html"><strong>Animation</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/Blend.html"><strong>Blend</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/BlendOperation.html"><strong>BlendOperation</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/BlendState.html"><strong>BlendState</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/Bone.html"><strong>Bone</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/BoneAnimation.html"><strong>BoneAnimation</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/Camera.html"><strong>Camera</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/CompareFunction.html"><strong>CompareFunction</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/CullMode.html"><strong>CullMode</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/DataType.html"><strong>DataType</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/DebugDrawManager.html"><strong>DebugDrawManager</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/DepthState.html"><strong>DepthState</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/Enum.html"><strong>Enum</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/Float32ListHelpers.html"><strong>Float32ListHelpers</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/FpsFlyCameraController.html"><strong>FpsFlyCameraController</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/FragmentShader.html"><strong>FragmentShader</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/FrontFace.html"><strong>FrontFace</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/GraphicsContext.html"><strong>GraphicsContext</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/GraphicsDevice.html"><strong>GraphicsDevice</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/GraphicsDeviceCapabilities.html"><strong>GraphicsDeviceCapabilities</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/GraphicsDeviceConfig.html"><strong>GraphicsDeviceConfig</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/HtmlLogger.html"><strong>HtmlLogger</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/IndexBuffer.html"><strong>IndexBuffer</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/InputLayout.html"><strong>InputLayout</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/NullLogger.html"><strong>NullLogger</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/OrbitCameraController.html"><strong>OrbitCameraController</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/PosedSkeleton.html"><strong>PosedSkeleton</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/PrimitiveTopology.html"><strong>PrimitiveTopology</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/PrintLogger.html"><strong>PrintLogger</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/RasterizerState.html"><strong>RasterizerState</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/RenderBuffer.html"><strong>RenderBuffer</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/RenderTarget.html"><strong>RenderTarget</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SamplerState.html"><strong>SamplerState</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/ShaderProgram.html"><strong>ShaderProgram</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/ShaderProgramAttribute.html"><strong>ShaderProgramAttribute</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/ShaderProgramSampler.html"><strong>ShaderProgramSampler</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/ShaderProgramUniform.html"><strong>ShaderProgramUniform</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SIMDSkeletonPoser.html"><strong>SIMDSkeletonPoser</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SimpleSkeletonPoser.html"><strong>SimpleSkeletonPoser</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SingleArrayIndexedMesh.html"><strong>SingleArrayIndexedMesh</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SingleArrayMesh.html"><strong>SingleArrayMesh</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/Skeleton.html"><strong>Skeleton</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SkeletonAnimation.html"><strong>SkeletonAnimation</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SkinnedMesh.html"><strong>SkinnedMesh</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SkinnedMeshInstance.html"><strong>SkinnedMeshInstance</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SkinnedVertex.html"><strong>SkinnedVertex</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SpectreBuffer.html"><strong>SpectreBuffer</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SpectreMeshAttribute.html"><strong>SpectreMeshAttribute</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SpectreShader.html"><strong>SpectreShader</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SpectreTexture.html"><strong>SpectreTexture</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/StencilState.html"><strong>StencilState</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SurfaceFormat.html"><strong>SurfaceFormat</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/Texture2D.html"><strong>Texture2D</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/TextureAddressMode.html"><strong>TextureAddressMode</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/TextureCube.html"><strong>TextureCube</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/TextureMagFilter.html"><strong>TextureMagFilter</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/TextureMinFilter.html"><strong>TextureMinFilter</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/UsagePattern.html"><strong>UsagePattern</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/VertexAttribute.html"><strong>VertexAttribute</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/VertexBuffer.html"><strong>VertexBuffer</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/VertexShader.html"><strong>VertexShader</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/Viewport.html"><strong>Viewport</strong></a>
+          </h4>
+          </div>
+          
+</div>
+<div>
+<h3>Typedefs</h3>
+          <div class="type">
+          <h4>
+            <a href="spectre/AttributeCallback.html"><strong>AttributeCallback</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/SamplerCallback.html"><strong>SamplerCallback</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/UniformCallback.html"><strong>UniformCallback</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre/UniformSetFunction.html"><strong>UniformSetFunction</strong></a>
+          </h4>
+          </div>
+          
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.582</div>
+        </div>
+        <script async src="client-live-nav.js"></script>
+        </body></html>
+        

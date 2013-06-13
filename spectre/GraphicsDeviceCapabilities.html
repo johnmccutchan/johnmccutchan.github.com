@@ -1,0 +1,774 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>GraphicsDeviceCapabilities class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="GraphicsDeviceCapabilities">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/GraphicsDeviceCapabilities.html">GraphicsDeviceCapabilities</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>GraphicsDeviceCapabilities</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Allows the querying of the capabilities of the <a class="crossref" href="../spectre/GraphicsDevice.html">GraphicsDevice</a>.</p>
+<p>Can be used to get maximum values for the underlying WebGL implementation as
+well as access what WebGL extensions are available.</p>
+<pre class="source">
+class GraphicsDeviceCapabilities {
+ //---------------------------------------------------------------------
+ // Class variables
+ //---------------------------------------------------------------------
+
+ /// Vendor extensions to use when searching for extensions.
+ static List&lt;String&gt; _vendorExtensions = [ '', 'WEBKIT_', 'MOZ_' ];
+
+ //---------------------------------------------------------------------
+ // Device information
+ //---------------------------------------------------------------------
+
+ /// The graphics card vendor
+ String _vendor;
+ /// The renderer
+ String _renderer;
+ /// The number of texture units available.
+ int _textureUnits;
+ /// The number of texture units available in the vertex shader
+ int _vertexShaderTextureUnits;
+ /// The largest texture size available.
+ int _maxTextureSize;
+ /// The largest cube map texture size available.
+ int _maxCubeMapTextureSize;
+ /// The largest anisotropy level available.
+ int _maxAnisotropyLevel;
+ /// Maximum number of vertex attributes available.
+ int _maxVertexAttribs;
+ /// Maximum number of varying vectors available in the shader program.
+ int _maxVaryingVectors;
+ /// Maximum number of uniforms available in the vertex shader.
+ int _maxVertexShaderUniforms;
+ /// Maximum number of uniforms available in the fragment shader.
+ int _maxFragmentShaderUniforms;
+
+ //---------------------------------------------------------------------
+ // Buffer information
+ //---------------------------------------------------------------------
+
+ /// Whether a depth buffer is available.
+ bool _depthBuffer;
+ /// Whether a stencil buffer is available.
+ bool _stencilBuffer;
+ /// The size of the depth buffer in bits.
+ int _depthBufferSize;
+ /// The size of the stencil buffer in bits.
+ int _stencilBufferSize;
+
+ //---------------------------------------------------------------------
+ // Extension information
+ //---------------------------------------------------------------------
+
+ /// Whether floating point textures are available.
+ bool _floatTextures;
+ /// Whether half-floating point textures are available.
+ bool _halfFloatTextures;
+ /// Whether standard derivatives (dFdx, dFdy, fwidth) are available in the
+ /// fragment shader.
+ bool _standardDerivatives;
+ /// Whether vertex array objects are available.
+ bool _vertexArrayObjects;
+ /// Whether the renderer and vendor can be queried for debug purposes.
+ bool _debugRendererInfo;
+ /// Whether the translated shader source can be viewed.
+ bool _debugShaders;
+ /// Whether unsigned int can be used as an index.
+ bool _unsignedIntIndices;
+ /// Whether anisotropic filtering is available.
+ bool _anisotropicFiltering;
+ /// Whether context losing/restoring can be simulated.
+ bool _loseContext;
+ /// Whether S3TC compressed textures can be used.
+ bool _compressedTextureS3TC;
+ /// Whether depth textures can be used.
+ bool _depthTextures;
+ /// Whether ATC compressed textures can be used.
+ bool _compressedTextureATC;
+ /// Whether PVRTC compressed textures can be used.
+ bool _compressedTexturePVRTC;
+ /// Whether multiple render targets can be used.
+ bool _multipleRenderTargets;
+ /// Whether instanced arrays can be used.
+ bool _instancedArrays;
+
+ //---------------------------------------------------------------------
+ // Construction
+ //---------------------------------------------------------------------
+
+ /// Queries the device capabilities in the [WebGL.RenderingContext].
+ GraphicsDeviceCapabilities._fromContext(WebGL.RenderingContext gl) {
+   _queryDeviceContext(gl);
+   _queryDeviceInfo(gl);
+   _queryExtensionInfo(gl);
+
+   if (_debugRendererInfo) {
+     // \todo Add query using UNMASKED_{VENDOR|RENDERER}_WEBGL
+     // Enum to query is not exposed currently
+     _vendor = gl.getParameter(0x9245);
+     _renderer = gl.getParameter(0x9246);
+   } else {
+     _vendor = '';
+     _renderer = '';
+   }
+ }
+
+ //---------------------------------------------------------------------
+ // Properties
+ //---------------------------------------------------------------------
+
+ /// The graphics card vendor
+ String get vendor =&gt; _vendor;
+ /// The renderer
+ String get renderer =&gt; _renderer;
+ /// Whether a depth buffer is available.
+ bool get depthBuffer =&gt; _depthBuffer;
+ /// Whether a stencil buffer is available.
+ bool get stencilBuffer =&gt; _stencilBuffer;
+ /// The number of texture units available.
+ int get textureUnits =&gt; _textureUnits;
+ /// The number of texture units available in the vertex shader
+ int get vertexShaderTextureUnits =&gt; _vertexShaderTextureUnits;
+ /// The largest texture size available.
+ int get maxTextureSize =&gt; _maxTextureSize;
+ /// The largest cube map texture size available.
+ int get maxCubeMapTextureSize =&gt; _maxCubeMapTextureSize;
+ /// The largest anisotropy level available.
+ int get maxAnisotropyLevel =&gt; _maxAnisotropyLevel;
+ /// Maximum number of vertex attributes available.
+ int get maxVertexAttribs =&gt; _maxVertexAttribs;
+ /// Maximum number of varying vectors available in the shader program.
+ int get maxVaryingVectors =&gt; _maxVaryingVectors;
+ /// Maximum number of uniforms available in the vertex shader.
+ int get maxVertexShaderUniforms =&gt; _maxVertexShaderUniforms;
+ /// Maximum number of uniforms available in the fragment shader.
+ int get maxFragmentShaderUniforms =&gt; _maxFragmentShaderUniforms;
+
+ /// Whether floating point textures are available.
+ bool get hasFloatTextures =&gt; _floatTextures;
+ /// Whether half-floating point textures are available.
+ bool get hasHalfFloatTextures =&gt; _halfFloatTextures;
+ /// Whether standard derivatives (dFdx, dFdy, fwidth) are available in the
+ /// fragment shader.
+ bool get hasStandardDerivatives =&gt; _standardDerivatives;
+ /// Whether vertex array objects are available.
+ bool get hasVertexArrayObjects =&gt; _vertexArrayObjects;
+ /// Whether the renderer and vendor can be queried for debug purposes.
+ bool get hasDebugRendererInfo =&gt; _debugRendererInfo;
+ /// Whether the translated shader source can be viewed.
+ bool get hasDebugShaders =&gt; _debugShaders;
+ /// Whether unsigned int can be used as an index.
+ bool get hasUnsignedIntIndices =&gt; _unsignedIntIndices;
+ /// Whether anisotropic filtering is available.
+ bool get hasAnisotropicFiltering =&gt; _anisotropicFiltering;
+ /// Whether context losing/restoring can be simulated.
+ bool get canLoseContext =&gt; _loseContext;
+ /// Whether S3TC compressed textures can be used.
+ bool get hasCompressedTextureS3TC =&gt; _compressedTextureS3TC;
+ /// Whether depth textures can be used.
+ bool get hasDepthTextures =&gt; _depthTextures;
+ /// Whether ATC compressed textures can be used.
+ bool get hasCompressedTextureATC =&gt; _compressedTextureATC;
+ /// Whether PVRTC compressed textures can be used.
+ bool get hasCompressedTexturePVRTC =&gt; _compressedTexturePVRTC;
+ /// Whether multiple render targets can be used.
+ bool get hasMultipleRenderTargets =&gt; _multipleRenderTargets;
+ /// Whether instanced arrays can be used.
+ bool get hasInstancedArrays =&gt; _instancedArrays;
+
+ //---------------------------------------------------------------------
+ // Public methods
+ //---------------------------------------------------------------------
+
+ /// Returns a string representation of this object.
+ String toString() {
+   String vendorString = _vendor.isEmpty ? 'Unknown' : _vendor;
+   String rendererString = _renderer.isEmpty ? 'Unknown' : _renderer;
+   return
+       '''
+Vendor: $vendorString
+Renderer: $rendererString
+
+Buffer Size
+Depth: $_depthBufferSize
+Stencil: $_stencilBufferSize
+
+Device stats
+Texture Units: $_textureUnits
+Vertex Texture Units: $_vertexShaderTextureUnits
+Max Texture Size: ${_maxTextureSize}x${_maxTextureSize}
+Max Cube Map Size: ${_maxCubeMapTextureSize}x${_maxCubeMapTextureSize}
+Max Anisotropy Level: $_maxAnisotropyLevel
+Max Vertex Attributes: $_maxVertexAttribs
+Max Varying Vectors: $_maxVaryingVectors
+Max Vertex Shader Uniforms: $_maxVertexShaderUniforms
+Max Fragment Shader Uniforms: $_maxFragmentShaderUniforms
+
+Extensions
+ANGLE_instanced_arrays: $_instancedArrays
+EXT_draw_buffers: $_multipleRenderTargets
+EXT_texture_filter_anisotropic: $_anisotropicFiltering
+OES_element_index_uint: $_unsignedIntIndices
+OES_texture_float: $_floatTextures
+OES_texture_half_float: $_halfFloatTextures
+OES_standard_derivatives: $_standardDerivatives
+OES_vertex_array_object: $_vertexArrayObjects
+WEBGL_compressed_texture_s3tc: $_compressedTextureS3TC
+WEBGL_compressed_texture_atc: $_compressedTextureATC
+WEBGL_compressed_texture_pvrtc: $_compressedTexturePVRTC
+WEBGL_debug_renderer_info: $_debugRendererInfo
+WEBGL_debug_shaders: $_debugShaders
+WEBGL_depth_texture: $_depthTextures
+WEBGL_lose_context: $_loseContext
+       ''';
+ }
+
+ /// Queries context info using the [WebGL.RenderingContext].
+ void _queryDeviceContext(WebGL.RenderingContext gl) {
+   WebGL.ContextAttributes attributes = gl.getContextAttributes();
+
+   _depthBuffer = attributes.depth;
+   _stencilBuffer = attributes.stencil;
+ }
+
+ /// Queries device info using the [WebGL.RenderingContext].
+ void _queryDeviceInfo(WebGL.RenderingContext gl) {
+   _textureUnits = gl.getParameter(WebGL.MAX_TEXTURE_IMAGE_UNITS);
+   _vertexShaderTextureUnits =
+       gl.getParameter(WebGL.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
+   _maxTextureSize = gl.getParameter(WebGL.MAX_TEXTURE_SIZE);
+   _maxCubeMapTextureSize = gl.getParameter(WebGL.MAX_CUBE_MAP_TEXTURE_SIZE);
+   _maxVertexAttribs = gl.getParameter(WebGL.MAX_VERTEX_ATTRIBS);
+   _maxVaryingVectors = gl.getParameter(WebGL.MAX_VARYING_VECTORS);
+   _maxVertexShaderUniforms =
+       gl.getParameter(WebGL.MAX_VERTEX_UNIFORM_VECTORS);
+   _maxFragmentShaderUniforms =
+       gl.getParameter(WebGL.MAX_FRAGMENT_UNIFORM_VECTORS);
+
+   _depthBufferSize = gl.getParameter(WebGL.DEPTH_BITS);
+   _stencilBufferSize = gl.getParameter(WebGL.STENCIL_BITS);
+ }
+
+ /// Queries extensions using the [WebGL.RenderingContext].
+ void _queryExtensionInfo(WebGL.RenderingContext gl) {
+   // Approved
+   _floatTextures = _hasExtension(gl, 'OES_texture_float');
+   _halfFloatTextures = _hasExtension(gl, 'OES_texture_half_float');
+   _loseContext = _hasExtension(gl, 'WEBGL_lose_context');
+   _standardDerivatives = _hasExtension(gl, 'OES_standard_derivatives');
+   _vertexArrayObjects = _hasExtension(gl, 'OES_vertex_array_object');
+   _debugRendererInfo = _hasExtension(gl, 'WEBGL_debug_renderer_info');
+   _debugShaders = _hasExtension(gl, 'WEBGL_debug_shaders');
+   _compressedTextureS3TC = _hasExtension(gl, 'WEBGL_compressed_texture_s3tc');
+   _depthTextures = _hasExtension(gl, 'WEBGL_depth_texture');
+   // \todo This call is crashing on me. See if its just my machine.
+   _unsignedIntIndices = false; //_hasExtension(gl, 'OES_element_index_uint');
+
+   // Query the anisotropic extension and get the maximum anisotropy level
+   if (_hasExtension(gl, 'EXT_texture_filter_anisotropic') != null) {
+     _anisotropicFiltering = true;
+     _maxAnisotropyLevel = gl.getParameter(
+         WebGL.ExtTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+   } else {
+     _anisotropicFiltering = false;
+     _maxAnisotropyLevel = 1;
+   }
+
+   // Draft
+   _compressedTextureATC = _hasExtension(gl, 'WEBGL_compressed_texture_atc');
+   _instancedArrays = _hasExtension(gl, 'ANGLE_instanced_arrays');
+   _compressedTexturePVRTC =
+       _hasExtension(gl, 'WEBGL_compressed_texture_pvrtc');
+   _multipleRenderTargets = _hasExtension(gl, 'EXT_draw_buffers');
+ }
+
+ //---------------------------------------------------------------------
+ // Class methods
+ //---------------------------------------------------------------------
+
+ /// Queries the [WebGL.RenderingContext] to see if the given extension is
+ /// available.
+ static bool _hasExtension(WebGL.RenderingContext gl, String name) {
+   return _getExtension(gl, name) != null;
+ }
+
+ /// Queries the [WebGL.RenderingContext] to retrieve the given extension.
+ ///
+ /// Returns [null] if the extension is not supported.
+ static Object _getExtension(WebGL.RenderingContext gl, String name) {
+   Object extension;
+   int numVendorExtensions = _vendorExtensions.length;
+
+   for (int i = 0; i &lt; numVendorExtensions; ++i) {
+     extension = gl.getExtension('${_vendorExtensions[i]}${name}');
+
+     if (extension != null) {
+       return extension;
+     }
+   }
+
+   // Extension not found
+   return null;
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="canLoseContext">
+<button class="show-code">Code</button>
+final bool         <strong>canLoseContext</strong> <a class="anchor-link"
+            href="#canLoseContext"
+            title="Permalink to GraphicsDeviceCapabilities.canLoseContext">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether context losing/restoring can be simulated.</p>
+<pre class="source">
+bool get canLoseContext =&gt; _loseContext;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="depthBuffer">
+<button class="show-code">Code</button>
+final bool         <strong>depthBuffer</strong> <a class="anchor-link"
+            href="#depthBuffer"
+            title="Permalink to GraphicsDeviceCapabilities.depthBuffer">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether a depth buffer is available.</p>
+<pre class="source">
+bool get depthBuffer =&gt; _depthBuffer;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasAnisotropicFiltering">
+<button class="show-code">Code</button>
+final bool         <strong>hasAnisotropicFiltering</strong> <a class="anchor-link"
+            href="#hasAnisotropicFiltering"
+            title="Permalink to GraphicsDeviceCapabilities.hasAnisotropicFiltering">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether anisotropic filtering is available.</p>
+<pre class="source">
+bool get hasAnisotropicFiltering =&gt; _anisotropicFiltering;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasCompressedTextureATC">
+<button class="show-code">Code</button>
+final bool         <strong>hasCompressedTextureATC</strong> <a class="anchor-link"
+            href="#hasCompressedTextureATC"
+            title="Permalink to GraphicsDeviceCapabilities.hasCompressedTextureATC">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether ATC compressed textures can be used.</p>
+<pre class="source">
+bool get hasCompressedTextureATC =&gt; _compressedTextureATC;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasCompressedTexturePVRTC">
+<button class="show-code">Code</button>
+final bool         <strong>hasCompressedTexturePVRTC</strong> <a class="anchor-link"
+            href="#hasCompressedTexturePVRTC"
+            title="Permalink to GraphicsDeviceCapabilities.hasCompressedTexturePVRTC">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether PVRTC compressed textures can be used.</p>
+<pre class="source">
+bool get hasCompressedTexturePVRTC =&gt; _compressedTexturePVRTC;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasCompressedTextureS3TC">
+<button class="show-code">Code</button>
+final bool         <strong>hasCompressedTextureS3TC</strong> <a class="anchor-link"
+            href="#hasCompressedTextureS3TC"
+            title="Permalink to GraphicsDeviceCapabilities.hasCompressedTextureS3TC">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether S3TC compressed textures can be used.</p>
+<pre class="source">
+bool get hasCompressedTextureS3TC =&gt; _compressedTextureS3TC;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasDebugRendererInfo">
+<button class="show-code">Code</button>
+final bool         <strong>hasDebugRendererInfo</strong> <a class="anchor-link"
+            href="#hasDebugRendererInfo"
+            title="Permalink to GraphicsDeviceCapabilities.hasDebugRendererInfo">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether the renderer and vendor can be queried for debug purposes.</p>
+<pre class="source">
+bool get hasDebugRendererInfo =&gt; _debugRendererInfo;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasDebugShaders">
+<button class="show-code">Code</button>
+final bool         <strong>hasDebugShaders</strong> <a class="anchor-link"
+            href="#hasDebugShaders"
+            title="Permalink to GraphicsDeviceCapabilities.hasDebugShaders">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether the translated shader source can be viewed.</p>
+<pre class="source">
+bool get hasDebugShaders =&gt; _debugShaders;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasDepthTextures">
+<button class="show-code">Code</button>
+final bool         <strong>hasDepthTextures</strong> <a class="anchor-link"
+            href="#hasDepthTextures"
+            title="Permalink to GraphicsDeviceCapabilities.hasDepthTextures">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether depth textures can be used.</p>
+<pre class="source">
+bool get hasDepthTextures =&gt; _depthTextures;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasFloatTextures">
+<button class="show-code">Code</button>
+final bool         <strong>hasFloatTextures</strong> <a class="anchor-link"
+            href="#hasFloatTextures"
+            title="Permalink to GraphicsDeviceCapabilities.hasFloatTextures">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether floating point textures are available.</p>
+<pre class="source">
+bool get hasFloatTextures =&gt; _floatTextures;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasHalfFloatTextures">
+<button class="show-code">Code</button>
+final bool         <strong>hasHalfFloatTextures</strong> <a class="anchor-link"
+            href="#hasHalfFloatTextures"
+            title="Permalink to GraphicsDeviceCapabilities.hasHalfFloatTextures">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether half-floating point textures are available.</p>
+<pre class="source">
+bool get hasHalfFloatTextures =&gt; _halfFloatTextures;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasInstancedArrays">
+<button class="show-code">Code</button>
+final bool         <strong>hasInstancedArrays</strong> <a class="anchor-link"
+            href="#hasInstancedArrays"
+            title="Permalink to GraphicsDeviceCapabilities.hasInstancedArrays">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether instanced arrays can be used.</p>
+<pre class="source">
+bool get hasInstancedArrays =&gt; _instancedArrays;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasMultipleRenderTargets">
+<button class="show-code">Code</button>
+final bool         <strong>hasMultipleRenderTargets</strong> <a class="anchor-link"
+            href="#hasMultipleRenderTargets"
+            title="Permalink to GraphicsDeviceCapabilities.hasMultipleRenderTargets">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether multiple render targets can be used.</p>
+<pre class="source">
+bool get hasMultipleRenderTargets =&gt; _multipleRenderTargets;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasStandardDerivatives">
+<button class="show-code">Code</button>
+final bool         <strong>hasStandardDerivatives</strong> <a class="anchor-link"
+            href="#hasStandardDerivatives"
+            title="Permalink to GraphicsDeviceCapabilities.hasStandardDerivatives">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether standard derivatives (dFdx, dFdy, fwidth) are available in the
+fragment shader.</p>
+<pre class="source">
+bool get hasStandardDerivatives =&gt; _standardDerivatives;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasUnsignedIntIndices">
+<button class="show-code">Code</button>
+final bool         <strong>hasUnsignedIntIndices</strong> <a class="anchor-link"
+            href="#hasUnsignedIntIndices"
+            title="Permalink to GraphicsDeviceCapabilities.hasUnsignedIntIndices">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether unsigned int can be used as an index.</p>
+<pre class="source">
+bool get hasUnsignedIntIndices =&gt; _unsignedIntIndices;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasVertexArrayObjects">
+<button class="show-code">Code</button>
+final bool         <strong>hasVertexArrayObjects</strong> <a class="anchor-link"
+            href="#hasVertexArrayObjects"
+            title="Permalink to GraphicsDeviceCapabilities.hasVertexArrayObjects">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether vertex array objects are available.</p>
+<pre class="source">
+bool get hasVertexArrayObjects =&gt; _vertexArrayObjects;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="maxAnisotropyLevel">
+<button class="show-code">Code</button>
+final int         <strong>maxAnisotropyLevel</strong> <a class="anchor-link"
+            href="#maxAnisotropyLevel"
+            title="Permalink to GraphicsDeviceCapabilities.maxAnisotropyLevel">#</a>
+        </h4>
+        <div class="doc">
+<p>The largest anisotropy level available.</p>
+<pre class="source">
+int get maxAnisotropyLevel =&gt; _maxAnisotropyLevel;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="maxCubeMapTextureSize">
+<button class="show-code">Code</button>
+final int         <strong>maxCubeMapTextureSize</strong> <a class="anchor-link"
+            href="#maxCubeMapTextureSize"
+            title="Permalink to GraphicsDeviceCapabilities.maxCubeMapTextureSize">#</a>
+        </h4>
+        <div class="doc">
+<p>The largest cube map texture size available.</p>
+<pre class="source">
+int get maxCubeMapTextureSize =&gt; _maxCubeMapTextureSize;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="maxFragmentShaderUniforms">
+<button class="show-code">Code</button>
+final int         <strong>maxFragmentShaderUniforms</strong> <a class="anchor-link"
+            href="#maxFragmentShaderUniforms"
+            title="Permalink to GraphicsDeviceCapabilities.maxFragmentShaderUniforms">#</a>
+        </h4>
+        <div class="doc">
+<p>Maximum number of uniforms available in the fragment shader.</p>
+<pre class="source">
+int get maxFragmentShaderUniforms =&gt; _maxFragmentShaderUniforms;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="maxTextureSize">
+<button class="show-code">Code</button>
+final int         <strong>maxTextureSize</strong> <a class="anchor-link"
+            href="#maxTextureSize"
+            title="Permalink to GraphicsDeviceCapabilities.maxTextureSize">#</a>
+        </h4>
+        <div class="doc">
+<p>The largest texture size available.</p>
+<pre class="source">
+int get maxTextureSize =&gt; _maxTextureSize;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="maxVaryingVectors">
+<button class="show-code">Code</button>
+final int         <strong>maxVaryingVectors</strong> <a class="anchor-link"
+            href="#maxVaryingVectors"
+            title="Permalink to GraphicsDeviceCapabilities.maxVaryingVectors">#</a>
+        </h4>
+        <div class="doc">
+<p>Maximum number of varying vectors available in the shader program.</p>
+<pre class="source">
+int get maxVaryingVectors =&gt; _maxVaryingVectors;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="maxVertexAttribs">
+<button class="show-code">Code</button>
+final int         <strong>maxVertexAttribs</strong> <a class="anchor-link"
+            href="#maxVertexAttribs"
+            title="Permalink to GraphicsDeviceCapabilities.maxVertexAttribs">#</a>
+        </h4>
+        <div class="doc">
+<p>Maximum number of vertex attributes available.</p>
+<pre class="source">
+int get maxVertexAttribs =&gt; _maxVertexAttribs;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="maxVertexShaderUniforms">
+<button class="show-code">Code</button>
+final int         <strong>maxVertexShaderUniforms</strong> <a class="anchor-link"
+            href="#maxVertexShaderUniforms"
+            title="Permalink to GraphicsDeviceCapabilities.maxVertexShaderUniforms">#</a>
+        </h4>
+        <div class="doc">
+<p>Maximum number of uniforms available in the vertex shader.</p>
+<pre class="source">
+int get maxVertexShaderUniforms =&gt; _maxVertexShaderUniforms;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="renderer">
+<button class="show-code">Code</button>
+final String         <strong>renderer</strong> <a class="anchor-link"
+            href="#renderer"
+            title="Permalink to GraphicsDeviceCapabilities.renderer">#</a>
+        </h4>
+        <div class="doc">
+<p>The renderer</p>
+<pre class="source">
+String get renderer =&gt; _renderer;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="stencilBuffer">
+<button class="show-code">Code</button>
+final bool         <strong>stencilBuffer</strong> <a class="anchor-link"
+            href="#stencilBuffer"
+            title="Permalink to GraphicsDeviceCapabilities.stencilBuffer">#</a>
+        </h4>
+        <div class="doc">
+<p>Whether a stencil buffer is available.</p>
+<pre class="source">
+bool get stencilBuffer =&gt; _stencilBuffer;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="textureUnits">
+<button class="show-code">Code</button>
+final int         <strong>textureUnits</strong> <a class="anchor-link"
+            href="#textureUnits"
+            title="Permalink to GraphicsDeviceCapabilities.textureUnits">#</a>
+        </h4>
+        <div class="doc">
+<p>The number of texture units available.</p>
+<pre class="source">
+int get textureUnits =&gt; _textureUnits;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="vendor">
+<button class="show-code">Code</button>
+final String         <strong>vendor</strong> <a class="anchor-link"
+            href="#vendor"
+            title="Permalink to GraphicsDeviceCapabilities.vendor">#</a>
+        </h4>
+        <div class="doc">
+<p>The graphics card vendor</p>
+<pre class="source">
+String get vendor =&gt; _vendor;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="vertexShaderTextureUnits">
+<button class="show-code">Code</button>
+final int         <strong>vertexShaderTextureUnits</strong> <a class="anchor-link"
+            href="#vertexShaderTextureUnits"
+            title="Permalink to GraphicsDeviceCapabilities.vertexShaderTextureUnits">#</a>
+        </h4>
+        <div class="doc">
+<p>The number of texture units available in the vertex shader</p>
+<pre class="source">
+int get vertexShaderTextureUnits =&gt; _vertexShaderTextureUnits;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to GraphicsDeviceCapabilities.toString">#</a></h4>
+<div class="doc">
+<p>Returns a string representation of this object.</p>
+<pre class="source">
+String toString() {
+ String vendorString = _vendor.isEmpty ? 'Unknown' : _vendor;
+ String rendererString = _renderer.isEmpty ? 'Unknown' : _renderer;
+ return
+     '''
+Vendor: $vendorString
+Renderer: $rendererString
+
+Buffer Size
+Depth: $_depthBufferSize
+Stencil: $_stencilBufferSize
+
+Device stats
+Texture Units: $_textureUnits
+Vertex Texture Units: $_vertexShaderTextureUnits
+Max Texture Size: ${_maxTextureSize}x${_maxTextureSize}
+Max Cube Map Size: ${_maxCubeMapTextureSize}x${_maxCubeMapTextureSize}
+Max Anisotropy Level: $_maxAnisotropyLevel
+Max Vertex Attributes: $_maxVertexAttribs
+Max Varying Vectors: $_maxVaryingVectors
+Max Vertex Shader Uniforms: $_maxVertexShaderUniforms
+Max Fragment Shader Uniforms: $_maxFragmentShaderUniforms
+
+Extensions
+ANGLE_instanced_arrays: $_instancedArrays
+EXT_draw_buffers: $_multipleRenderTargets
+EXT_texture_filter_anisotropic: $_anisotropicFiltering
+OES_element_index_uint: $_unsignedIntIndices
+OES_texture_float: $_floatTextures
+OES_texture_half_float: $_halfFloatTextures
+OES_standard_derivatives: $_standardDerivatives
+OES_vertex_array_object: $_vertexArrayObjects
+WEBGL_compressed_texture_s3tc: $_compressedTextureS3TC
+WEBGL_compressed_texture_atc: $_compressedTextureATC
+WEBGL_compressed_texture_pvrtc: $_compressedTexturePVRTC
+WEBGL_debug_renderer_info: $_debugRendererInfo
+WEBGL_debug_shaders: $_debugShaders
+WEBGL_depth_texture: $_depthTextures
+WEBGL_lose_context: $_loseContext
+     ''';
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.843</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

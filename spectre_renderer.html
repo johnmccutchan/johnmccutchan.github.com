@@ -1,0 +1,175 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>spectre_renderer Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="favicon.ico">
+        
+        </head>
+        <body data-library="spectre_renderer">
+        <div class="page">
+        <div class="header">
+          <a href="index.html"><div class="logo"></div></a>
+          <a href="index.html">Dart Documentation</a>
+         &rsaquo; <a href="spectre_renderer.html">spectre_renderer</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+<h2><strong>spectre_renderer</strong> library</h2>
+<div>
+<h3>Functions</h3>
+<div class="method"><h4 id="registerSpectreRendererWithAssetManager">
+<button class="show-code">Code</button>
+void <strong>registerSpectreRendererWithAssetManager</strong>(<a href="spectre_renderer/Renderer.html">Renderer</a> renderer, <a href="asset_pack/AssetManager.html">AssetManager</a> assetManager) <a class="anchor-link" href="#registerSpectreRendererWithAssetManager"
+              title="Permalink to registerSpectreRendererWithAssetManager">#</a></h4>
+<div class="doc">
+<p>Register the Spectre renderer with the asset_pack library. </p>
+<pre class="source">
+void registerSpectreRendererWithAssetManager(Renderer renderer,
+                                            AssetManager assetManager) {
+ assetManager.loaders['materialShader'] = new TextLoader();
+ assetManager.loaders['material'] = new TextLoader();
+ assetManager.loaders['rendererConfig'] = new TextLoader();
+ assetManager.loaders['layerList'] = new TextLoader();
+
+ /*
+ assetManager.importers['materialShader'] =
+     new MaterialShaderImporter(renderer);
+ assetManager.importers['material'] =
+     new MaterialImporter(renderer);
+ assetManager.importers['rendererConfig'] =
+     new RendererConfigImporter(renderer);
+ assetManager.importers['layerList'] =
+     new LayerListImporter(renderer);
+ */
+ assetManager.importers['materialShader'] = new NoopImporter();
+ assetManager.importers['material'] = new NoopImporter();
+ assetManager.importers['rendererConfig'] = new NoopImporter();
+ assetManager.importers['layerList'] = new NoopImporter();
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Abstract Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/Layer.html"><strong>Layer</strong></a>
+          </h4>
+          </div>
+          
+</div>
+<div>
+<h3>Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/DebugDrawLayer.html"><strong>DebugDrawLayer</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/FullscreenLayer.html"><strong>FullscreenLayer</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/LayerListImporter.html"><strong>LayerListImporter</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/Material.html"><strong>Material</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/MaterialConstant.html"><strong>MaterialConstant</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/MaterialImporter.html"><strong>MaterialImporter</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/MaterialShader.html"><strong>MaterialShader</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/MaterialShaderImporter.html"><strong>MaterialShaderImporter</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/MaterialTexture.html"><strong>MaterialTexture</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/MeshRenderable.html"><strong>MeshRenderable</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/Renderable.html"><strong>Renderable</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/Renderer.html"><strong>Renderer</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/RendererConfigImporter.html"><strong>RendererConfigImporter</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/SceneLayer.html"><strong>SceneLayer</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="spectre_renderer/SkyboxRenderable.html"><strong>SkyboxRenderable</strong></a>
+          </h4>
+          </div>
+          
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:33.061</div>
+        </div>
+        <script async src="client-live-nav.js"></script>
+        </body></html>
+        

@@ -1,0 +1,242 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>CompareFunction class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="CompareFunction">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/CompareFunction.html">CompareFunction</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>CompareFunction</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Defines comparison functions that can be chosen for stencil,
+or depth-buffer tests.</p>
+<pre class="source">
+class CompareFunction extends Enum {
+ /// Always pass the test.
+ static const int Always = WebGL.ALWAYS;
+ /// Accept the new pixel if its value is equal to the value of the current
+ /// pixel.
+ static const int Equal = WebGL.EQUAL;
+ /// Accept the new pixel if its value is greater than the value of the
+ /// current pixel.
+ static const int Greater = WebGL.GREATER;
+ /// Accept the new pixel if its value is greater than or equal to the value
+ /// of the current pixel.
+ static const int GreaterEqual = WebGL.GEQUAL;
+ /// Accept the new pixel if its value is less than the value of the current
+ /// pixel.
+ static const int Less = WebGL.LESS;
+ /// Accept the new pixel if its value is less than or equal to the value of
+ /// the current pixel.
+ static const int LessEqual = WebGL.LEQUAL;
+ /// Always fail the test.
+ static const int Fail = WebGL.NEVER;
+ ///  Accept the new pixel if its value does not equal the value of the
+ /// current pixel.
+ static const int NotEqual = WebGL.NOTEQUAL;
+
+ static Map&lt;String, int&gt; _values = {
+   'CompareFunction.Always' : Always,
+   'CompareFunction.Equal' : Equal,
+   'CompareFunction.Greater' : Greater,
+   'CompareFunction.GreaterEqual' : GreaterEqual,
+   'CompareFunction.Less' : Less,
+   'CompareFunction.LessEqual' : LessEqual,
+   'CompareFunction.Fail' : Fail,
+   'CompareFunction.NotEqual' : NotEqual
+ };
+
+ /// Convert a [String] to a [CompareFunction].
+ static int parse(String name) =&gt; Enum._parse(_values, name);
+ /// Convert a [CompareFunction] to a [String].
+ static String stringify(int value) =&gt; Enum._stringify(_values, value);
+ /// Checks whether the value is a valid enumeration.
+ static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../spectre/Enum.html">Enum</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>CompareFunction</strong></span></p>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="Always">
+<button class="show-code">Code</button>
+const int         <strong>Always</strong> <a class="anchor-link"
+            href="#Always"
+            title="Permalink to CompareFunction.Always">#</a>
+        </h4>
+        <div class="doc">
+<p>Always pass the test.</p>
+<pre class="source">
+static const int Always = WebGL.ALWAYS
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Equal">
+<button class="show-code">Code</button>
+const int         <strong>Equal</strong> <a class="anchor-link"
+            href="#Equal"
+            title="Permalink to CompareFunction.Equal">#</a>
+        </h4>
+        <div class="doc">
+<p>Accept the new pixel if its value is equal to the value of the current
+pixel.</p>
+<pre class="source">
+static const int Equal = WebGL.EQUAL
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Fail">
+<button class="show-code">Code</button>
+const int         <strong>Fail</strong> <a class="anchor-link"
+            href="#Fail"
+            title="Permalink to CompareFunction.Fail">#</a>
+        </h4>
+        <div class="doc">
+<p>Always fail the test.</p>
+<pre class="source">
+static const int Fail = WebGL.NEVER
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Greater">
+<button class="show-code">Code</button>
+const int         <strong>Greater</strong> <a class="anchor-link"
+            href="#Greater"
+            title="Permalink to CompareFunction.Greater">#</a>
+        </h4>
+        <div class="doc">
+<p>Accept the new pixel if its value is greater than the value of the
+current pixel.</p>
+<pre class="source">
+static const int Greater = WebGL.GREATER
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="GreaterEqual">
+<button class="show-code">Code</button>
+const int         <strong>GreaterEqual</strong> <a class="anchor-link"
+            href="#GreaterEqual"
+            title="Permalink to CompareFunction.GreaterEqual">#</a>
+        </h4>
+        <div class="doc">
+<p>Accept the new pixel if its value is greater than or equal to the value
+of the current pixel.</p>
+<pre class="source">
+static const int GreaterEqual = WebGL.GEQUAL
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Less">
+<button class="show-code">Code</button>
+const int         <strong>Less</strong> <a class="anchor-link"
+            href="#Less"
+            title="Permalink to CompareFunction.Less">#</a>
+        </h4>
+        <div class="doc">
+<p>Accept the new pixel if its value is less than the value of the current
+pixel.</p>
+<pre class="source">
+static const int Less = WebGL.LESS
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="LessEqual">
+<button class="show-code">Code</button>
+const int         <strong>LessEqual</strong> <a class="anchor-link"
+            href="#LessEqual"
+            title="Permalink to CompareFunction.LessEqual">#</a>
+        </h4>
+        <div class="doc">
+<p>Accept the new pixel if its value is less than or equal to the value of
+the current pixel.</p>
+<pre class="source">
+static const int LessEqual = WebGL.LEQUAL
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="NotEqual">
+<button class="show-code">Code</button>
+const int         <strong>NotEqual</strong> <a class="anchor-link"
+            href="#NotEqual"
+            title="Permalink to CompareFunction.NotEqual">#</a>
+        </h4>
+        <div class="doc">
+<p> Accept the new pixel if its value does not equal the value of the
+current pixel.</p>
+<pre class="source">
+static const int NotEqual = WebGL.NOTEQUAL
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="parse">
+<button class="show-code">Code</button>
+int <strong>parse</strong>(String name) <a class="anchor-link" href="#parse"
+              title="Permalink to CompareFunction.parse">#</a></h4>
+<div class="doc">
+<p>Convert a <code>String</code> to a <a class="crossref" href="../spectre/CompareFunction.html">CompareFunction</a>.</p>
+<pre class="source">
+static int parse(String name) =&gt; Enum._parse(_values, name);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="stringify">
+<button class="show-code">Code</button>
+String <strong>stringify</strong>(int value) <a class="anchor-link" href="#stringify"
+              title="Permalink to CompareFunction.stringify">#</a></h4>
+<div class="doc">
+<p>Convert a <a class="crossref" href="../spectre/CompareFunction.html">CompareFunction</a> to a <code>String</code>.</p>
+<pre class="source">
+static String stringify(int value) =&gt; Enum._stringify(_values, value);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="isValid">
+<button class="show-code">Code</button>
+bool <strong>isValid</strong>(int value) <a class="anchor-link" href="#isValid"
+              title="Permalink to CompareFunction.isValid">#</a></h4>
+<div class="doc">
+<p>Checks whether the value is a valid enumeration.</p>
+<pre class="source">
+static bool isValid(int value) =&gt; Enum._isValid(_values, value);
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.898</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

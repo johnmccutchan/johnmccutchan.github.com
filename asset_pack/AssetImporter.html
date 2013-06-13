@@ -1,0 +1,88 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>AssetImporter abstract class / asset_pack Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="asset_pack" data-type="AssetImporter">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../asset_pack.html">asset_pack</a> &rsaquo; <a href="../asset_pack/AssetImporter.html">AssetImporter</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>AssetImporter</strong>
+          abstract class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Interface of an <a class="crossref" href="../asset_pack/AssetImporter.html">AssetImporter</a>. An asset importer is responsible for
+Initializing the <a class="crossref" href="../asset_pack/Asset.html#imported">Asset.imported</a> field and importing an object
+returned from a loader.</p>
+<pre class="source">
+abstract class AssetImporter {
+ /// Must initialize imported field in [asset].
+ void initialize(Asset asset);
+ /// Import [payload] and assign it to imported field in [asset].
+ Future&lt;Asset&gt; import(dynamic payload, Asset asset, AssetPackTrace tracer);
+ /// Delete [imported] object.
+ void delete(dynamic imported);
+}
+</pre>
+</div>
+<h3>Subclasses</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../spectre_asset_pack/FragmentShaderImporter.html">FragmentShaderImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../asset_pack/JsonImporter.html">JsonImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../spectre_renderer/LayerListImporter.html">LayerListImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../spectre_renderer/MaterialImporter.html">MaterialImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../spectre_renderer/MaterialShaderImporter.html">MaterialShaderImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../spectre_asset_pack/MeshImporter.html">MeshImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../asset_pack/NoopImporter.html">NoopImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../asset_pack/PackImporter.html">PackImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../spectre_renderer/RendererConfigImporter.html">RendererConfigImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../spectre_asset_pack/ShaderProgramImporter.html">ShaderProgramImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../spectre_asset_pack/Tex2DImporter.html">Tex2DImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../spectre_asset_pack/TexCubeImporter.html">TexCubeImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../asset_pack/TextImporter.html">TextImporter</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../spectre_asset_pack/VertexShaderImporter.html">VertexShaderImporter</a></span></p>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="delete">
+abstract void <strong>delete</strong>(imported) <a class="anchor-link" href="#delete"
+              title="Permalink to AssetImporter.delete">#</a></h4>
+<div class="doc">
+<p>Delete 
+<span class="param">imported</span> object.</p>
+</div>
+</div>
+<div class="method"><h4 id="import">
+abstract Future&lt;<a href="../asset_pack/Asset.html">Asset</a>&gt; <strong>import</strong>(payload, <a href="../asset_pack/Asset.html">Asset</a> asset, <a href="../asset_pack/AssetPackTrace.html">AssetPackTrace</a> tracer) <a class="anchor-link" href="#import"
+              title="Permalink to AssetImporter.import">#</a></h4>
+<div class="doc">
+<p>Import 
+<span class="param">payload</span> and assign it to imported field in 
+<span class="param">asset</span>.</p>
+</div>
+</div>
+<div class="method"><h4 id="initialize">
+abstract void <strong>initialize</strong>(<a href="../asset_pack/Asset.html">Asset</a> asset) <a class="anchor-link" href="#initialize"
+              title="Permalink to AssetImporter.initialize">#</a></h4>
+<div class="doc">
+<p>Must initialize imported field in 
+<span class="param">asset</span>.</p>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.210</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

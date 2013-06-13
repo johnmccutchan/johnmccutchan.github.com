@@ -1,0 +1,297 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>SingleArrayIndexedMesh class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="SingleArrayIndexedMesh">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/SingleArrayIndexedMesh.html">SingleArrayIndexedMesh</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>SingleArrayIndexedMesh</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class SingleArrayIndexedMesh extends SpectreMesh {
+ VertexBuffer _deviceVertexBuffer;
+ IndexBuffer _deviceIndexBuffer;
+ IndexBuffer get indexArray =&gt; _deviceIndexBuffer;
+ VertexBuffer get vertexArray =&gt; _deviceVertexBuffer;
+
+ SingleArrayIndexedMesh(String name, GraphicsDevice device)
+     : super(name, device) {
+   _deviceVertexBuffer = new VertexBuffer(name, device);
+   _deviceIndexBuffer = new IndexBuffer(name, device);
+ }
+
+ void finalize() {
+   super.finalize();
+   _deviceVertexBuffer.dispose();
+   _deviceIndexBuffer.dispose();
+   count = 0;
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../disposable/Disposable.html">Disposable</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../spectre/DeviceChild.html">DeviceChild</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../spectre/SpectreMesh.html">SpectreMesh</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>SingleArrayIndexedMesh</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="SingleArrayIndexedMesh">
+<button class="show-code">Code</button>
+new <strong>SingleArrayIndexedMesh</strong>(String name, <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a> device) <a class="anchor-link" href="#SingleArrayIndexedMesh"
+              title="Permalink to SingleArrayIndexedMesh.SingleArrayIndexedMesh">#</a></h4>
+<div class="doc">
+<pre class="source">
+SingleArrayIndexedMesh(String name, GraphicsDevice device)
+   : super(name, device) {
+ _deviceVertexBuffer = new VertexBuffer(name, device);
+ _deviceIndexBuffer = new IndexBuffer(name, device);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field inherited"><h4 id="attributes">
+<button class="show-code">Code</button>
+final Map&lt;String, <a href="../spectre/SpectreMeshAttribute.html">SpectreMeshAttribute</a>&gt;         <strong>attributes</strong> <a class="anchor-link"
+            href="#attributes"
+            title="Permalink to SingleArrayIndexedMesh.attributes">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/SpectreMesh.html">SpectreMesh</a> </div><div class="doc">
+<pre class="source">
+final Map&lt;String, SpectreMeshAttribute&gt; attributes =
+   new Map&lt;String, SpectreMeshAttribute&gt;()
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="count">
+<button class="show-code">Code</button>
+int         <strong>count</strong> <a class="anchor-link"
+            href="#count"
+            title="Permalink to SingleArrayIndexedMesh.count">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/SpectreMesh.html">SpectreMesh</a> </div><div class="doc">
+<pre class="source">
+int count = 0
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="device">
+<button class="show-code">Code</button>
+final <a href="../spectre/GraphicsDevice.html">GraphicsDevice</a>         <strong>device</strong> <a class="anchor-link"
+            href="#device"
+            title="Permalink to SingleArrayIndexedMesh.device">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final GraphicsDevice device
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="indexArray">
+<button class="show-code">Code</button>
+final <a href="../spectre/IndexBuffer.html">IndexBuffer</a>         <strong>indexArray</strong> <a class="anchor-link"
+            href="#indexArray"
+            title="Permalink to SingleArrayIndexedMesh.indexArray">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+IndexBuffer get indexArray =&gt; _deviceIndexBuffer;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isDisposed">
+<button class="show-code">Code</button>
+final bool         <strong>isDisposed</strong> <a class="anchor-link"
+            href="#isDisposed"
+            title="Permalink to SingleArrayIndexedMesh.isDisposed">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>This object has been disposed. </p>
+<pre class="source">
+bool get isDisposed =&gt; _disposed;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to SingleArrayIndexedMesh.name">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="pinCount">
+<button class="show-code">Code</button>
+final int         <strong>pinCount</strong> <a class="anchor-link"
+            href="#pinCount"
+            title="Permalink to SingleArrayIndexedMesh.pinCount">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Count of pins </p>
+<pre class="source">
+int get pinCount =&gt; _referenceCount;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="primitiveTopology">
+<button class="show-code">Code</button>
+int         <strong>primitiveTopology</strong> <a class="anchor-link"
+            href="#primitiveTopology"
+            title="Permalink to SingleArrayIndexedMesh.primitiveTopology">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../spectre/SpectreMesh.html">SpectreMesh</a> </div><div class="doc">
+<pre class="source">
+int primitiveTopology = PrimitiveTopology.Triangles
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="vertexArray">
+<button class="show-code">Code</button>
+final <a href="../spectre/VertexBuffer.html">VertexBuffer</a>         <strong>vertexArray</strong> <a class="anchor-link"
+            href="#vertexArray"
+            title="Permalink to SingleArrayIndexedMesh.vertexArray">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+VertexBuffer get vertexArray =&gt; _deviceVertexBuffer;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="dispose">
+<button class="show-code">Code</button>
+void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to SingleArrayIndexedMesh.dispose">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Disposes of the object. If nothing else has this object pinned,
+the finalizer will be called. See <code>pin</code> for inverse. Throws
+an exception if the object is already disposed.</p>
+<pre class="source">
+void dispose() {
+ if (_disposed) {
+   throw new StateError('It is an error to dispose a disposed object.');
+   return;
+ }
+ _referenceCount--;
+ if (_referenceCount == 0) {
+   finalize();
+   _disposed = true;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="finalize">
+<button class="show-code">Code</button>
+void <strong>finalize</strong>() <a class="anchor-link" href="#finalize"
+              title="Permalink to SingleArrayIndexedMesh.finalize">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Clean up any object state here. </p>
+<div class="docs-inherited-from">docs inherited from <a href="../disposable/Disposable.html">Disposable</a> </div></div>
+<pre class="source">
+void finalize() {
+ super.finalize();
+ _deviceVertexBuffer.dispose();
+ _deviceIndexBuffer.dispose();
+ count = 0;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="fromJson">
+<button class="show-code">Code</button>
+void <strong>fromJson</strong>(a) <a class="anchor-link" href="#fromJson"
+              title="Permalink to SingleArrayIndexedMesh.fromJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+void fromJson(dynamic a) {
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="pin">
+<button class="show-code">Code</button>
+void <strong>pin</strong>() <a class="anchor-link" href="#pin"
+              title="Permalink to SingleArrayIndexedMesh.pin">#</a></h4>
+<div class="inherited-from">inherited from <a href="../disposable/Disposable.html">Disposable</a> </div><div class="doc">
+<p>Pin the disposable object. See <code>dispose</code> for inverse.
+Throws an exception if this object is already disposed.</p>
+<pre class="source">
+void pin() {
+ if (_disposed) {
+   throw new StateError('It is an error to pin a disposed object.');
+   return;
+ }
+ _referenceCount++;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toJson">
+<button class="show-code">Code</button>
+dynamic <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to SingleArrayIndexedMesh.toJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<pre class="source">
+dynamic toJson() {
+ return '';
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to SingleArrayIndexedMesh.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../spectre/DeviceChild.html">DeviceChild</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() =&gt; name;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.643</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

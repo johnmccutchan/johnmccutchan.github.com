@@ -1,0 +1,372 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>FpsFlyCameraController class / spectre Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="spectre" data-type="FpsFlyCameraController">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../spectre.html">spectre</a> &rsaquo; <a href="../spectre/FpsFlyCameraController.html">FpsFlyCameraController</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>FpsFlyCameraController</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class FpsFlyCameraController extends CameraController {
+ bool up;
+ bool down;
+ bool strafeLeft;
+ bool strafeRight;
+ bool forward;
+ bool backward;
+
+ num floatVelocity;
+ num strafeVelocity;
+ num forwardVelocity;
+ num mouseSensitivity;
+
+ int accumDX;
+ int accumDY;
+
+ FpsFlyCameraController() {
+   floatVelocity = 5.0;
+   strafeVelocity = 5.0;
+   forwardVelocity = 5.0;
+   up = false;
+   down = false;
+   strafeLeft = false;
+   strafeRight = false;
+   forward = false;
+   backward = false;
+   accumDX = 0;
+   accumDY = 0;
+   mouseSensitivity = 360.0;
+ }
+
+ void updateCamera(num seconds, Camera cam) {
+   _MoveFloat(seconds, up, down, cam);
+   _MoveStrafe(seconds, strafeRight, strafeLeft, cam);
+   _MoveForward(seconds, forward, backward, cam);
+   _RotateView(seconds, cam);
+ }
+
+ void _MoveFloat(num dt, bool positive, bool negative, Camera cam) {
+   num scale = 0.0;
+   if (positive) {
+     scale += 1.0;
+   }
+   if (negative) {
+     scale -= 1.0;
+   }
+   if (scale == 0.0) {
+     return;
+   }
+   scale = scale * dt * floatVelocity;
+   Vector3 upDirection = new Vector3(0.0, 1.0, 0.0);
+   upDirection.scale(scale);
+   cam.focusPosition.add(upDirection);
+   cam.position.add(upDirection);
+ }
+
+ void _MoveStrafe(num dt, bool positive, bool negative, Camera cam) {
+   num scale = 0.0;
+   if (positive) {
+     scale += 1.0;
+   }
+   if (negative) {
+     scale -= 1.0;
+   }
+   if (scale == 0.0) {
+     return;
+   }
+   scale = scale * dt * strafeVelocity;
+   Vector3 frontDirection = cam.frontDirection;
+   frontDirection.normalize();
+   Vector3 upDirection = new Vector3(0.0, 1.0, 0.0);
+   Vector3 strafeDirection = frontDirection.cross(upDirection);
+   strafeDirection.scale(scale);
+   cam.focusPosition.add(strafeDirection);
+   cam.position.add(strafeDirection);
+ }
+
+ void _MoveForward(num dt, bool positive, bool negative, Camera cam) {
+   num scale = 0.0;
+   if (positive) {
+     scale += 1.0;
+   }
+   if (negative) {
+     scale -= 1.0;
+   }
+   if (scale == 0.0) {
+     return;
+   }
+   scale = scale * dt * forwardVelocity;
+
+   Vector3 frontDirection = cam.frontDirection;
+   frontDirection.normalize();
+   frontDirection.scale(scale);
+   cam.focusPosition.add(frontDirection);
+   cam.position.add(frontDirection);
+ }
+
+ void _RotateView(num dt, Camera cam) {
+   Vector3 frontDirection = cam.frontDirection;
+   frontDirection.normalize();
+   Vector3 upDirection = new Vector3(0.0, 1.0, 0.0);
+   Vector3 strafeDirection = frontDirection.cross(upDirection);
+   strafeDirection.normalize();
+
+   num mouseYawDelta = accumDX/mouseSensitivity;
+   num mousePitchDelta = accumDY/mouseSensitivity;
+   accumDX = 0;
+   accumDY = 0;
+
+   final num f_dot_up = frontDirection.dot(upDirection);
+   final num pitchAngle = Math.acos(f_dot_up);
+   final num minPitchAngle = 0.785398163;
+   final num maxPitchAngle = 2.35619449;
+   final num pitchDegrees = degrees(pitchAngle);
+   final num minPitchDegrees = degrees(minPitchAngle);
+   final num maxPitchDegrees = degrees(maxPitchAngle);
+   if (pitchAngle+mousePitchDelta &lt;= maxPitchAngle &amp;&amp;
+       pitchAngle+mousePitchDelta &gt;= minPitchAngle) {
+     _RotateEyeAndLook(mousePitchDelta, strafeDirection, cam);
+   }
+   _RotateEyeAndLook(mouseYawDelta, upDirection, cam);
+ }
+
+ void _RotateEyeAndLook(num delta_angle, Vector3 axis, Camera cam) {
+   Quaternion q = new Quaternion.axisAngle(axis, delta_angle);
+   Vector3 frontDirection = cam.frontDirection;
+   frontDirection.normalize();
+   q.rotate(frontDirection);
+   frontDirection.normalize();
+   cam.focusPosition = cam.position + frontDirection;
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../spectre/CameraController.html">CameraController</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>FpsFlyCameraController</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="FpsFlyCameraController">
+<button class="show-code">Code</button>
+new <strong>FpsFlyCameraController</strong>() <a class="anchor-link" href="#FpsFlyCameraController"
+              title="Permalink to FpsFlyCameraController.FpsFlyCameraController">#</a></h4>
+<div class="doc">
+<pre class="source">
+FpsFlyCameraController() {
+ floatVelocity = 5.0;
+ strafeVelocity = 5.0;
+ forwardVelocity = 5.0;
+ up = false;
+ down = false;
+ strafeLeft = false;
+ strafeRight = false;
+ forward = false;
+ backward = false;
+ accumDX = 0;
+ accumDY = 0;
+ mouseSensitivity = 360.0;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="accumDX">
+<button class="show-code">Code</button>
+int         <strong>accumDX</strong> <a class="anchor-link"
+            href="#accumDX"
+            title="Permalink to FpsFlyCameraController.accumDX">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int accumDX
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="accumDY">
+<button class="show-code">Code</button>
+int         <strong>accumDY</strong> <a class="anchor-link"
+            href="#accumDY"
+            title="Permalink to FpsFlyCameraController.accumDY">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int accumDY
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="backward">
+<button class="show-code">Code</button>
+bool         <strong>backward</strong> <a class="anchor-link"
+            href="#backward"
+            title="Permalink to FpsFlyCameraController.backward">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+bool backward
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="down">
+<button class="show-code">Code</button>
+bool         <strong>down</strong> <a class="anchor-link"
+            href="#down"
+            title="Permalink to FpsFlyCameraController.down">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+bool down
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="floatVelocity">
+<button class="show-code">Code</button>
+num         <strong>floatVelocity</strong> <a class="anchor-link"
+            href="#floatVelocity"
+            title="Permalink to FpsFlyCameraController.floatVelocity">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+num floatVelocity
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="forward">
+<button class="show-code">Code</button>
+bool         <strong>forward</strong> <a class="anchor-link"
+            href="#forward"
+            title="Permalink to FpsFlyCameraController.forward">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+bool forward
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="forwardVelocity">
+<button class="show-code">Code</button>
+num         <strong>forwardVelocity</strong> <a class="anchor-link"
+            href="#forwardVelocity"
+            title="Permalink to FpsFlyCameraController.forwardVelocity">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+num forwardVelocity
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="mouseSensitivity">
+<button class="show-code">Code</button>
+num         <strong>mouseSensitivity</strong> <a class="anchor-link"
+            href="#mouseSensitivity"
+            title="Permalink to FpsFlyCameraController.mouseSensitivity">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+num mouseSensitivity
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="strafeLeft">
+<button class="show-code">Code</button>
+bool         <strong>strafeLeft</strong> <a class="anchor-link"
+            href="#strafeLeft"
+            title="Permalink to FpsFlyCameraController.strafeLeft">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+bool strafeLeft
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="strafeRight">
+<button class="show-code">Code</button>
+bool         <strong>strafeRight</strong> <a class="anchor-link"
+            href="#strafeRight"
+            title="Permalink to FpsFlyCameraController.strafeRight">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+bool strafeRight
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="strafeVelocity">
+<button class="show-code">Code</button>
+num         <strong>strafeVelocity</strong> <a class="anchor-link"
+            href="#strafeVelocity"
+            title="Permalink to FpsFlyCameraController.strafeVelocity">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+num strafeVelocity
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="up">
+<button class="show-code">Code</button>
+bool         <strong>up</strong> <a class="anchor-link"
+            href="#up"
+            title="Permalink to FpsFlyCameraController.up">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+bool up
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="updateCamera">
+<button class="show-code">Code</button>
+void <strong>updateCamera</strong>(num seconds, <a href="../spectre/Camera.html">Camera</a> cam) <a class="anchor-link" href="#updateCamera"
+              title="Permalink to FpsFlyCameraController.updateCamera">#</a></h4>
+<div class="doc">
+<pre class="source">
+void updateCamera(num seconds, Camera cam) {
+ _MoveFloat(seconds, up, down, cam);
+ _MoveStrafe(seconds, strafeRight, strafeLeft, cam);
+ _MoveForward(seconds, forward, backward, cam);
+ _RotateView(seconds, cam);
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-06-13 15:38:32.819</div>
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        
