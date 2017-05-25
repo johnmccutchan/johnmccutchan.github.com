@@ -1,10 +1,100 @@
 <!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 </head>
+<style>
+* {
+font-family: 'Inconsolata', monospace;
+}
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+ul {
+  list-style-type: none;
+}
+li {
+  margin: 1em;
+}
+#page {
+  display: flex;
+}
+#left {
+  flex-grow: 0;
+  padding: 2em;
+}
+#right {
+  flex-grow: 0;
+  padding: 2em;
+}
+#main {
+  flex-grow: 1;
+}
+</style>
 <body>
-Hello!
+<header>
+<h1>John McCutchan</h1>
+</header>
+<div id="page">
+  <div id="left">
+    <h2>Links</h2>
+      <div>
+        <a href="http://www.google.com/recaptcha/mailhide/d?k=01DaK8LAmYHrDJeKD76AlnXw==&amp;c=k48_WuVa_ZP6GPa89Q9jSvAG4RjdUtEmhXBfX55Xepg=" onclick="window.open('http://www.google.com/recaptcha/mailhide/d?k\x3d01DaK8LAmYHrDJeKD76AlnXw\x3d\x3d\x26c\x3dk48_WuVa_ZP6GPa89Q9jSvAG4RjdUtEmhXBfX55Xepg\x3d', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;" title="Reveal this e-mail address">Email</a>
+      </div>
+      <div>
+        <a href="https://github.com/johnmccutchan">GitHub</a>
+      </div>
+      <div>
+        <a href="https://www.linkedin.com/in/johnmccutchan">LinkedIn</a>
+      </div>
+      <div>
+        <a href="https://twitter.com/johnmccutchan">Twitter</a>
+      </div>
+  </div>
+  <div id="main">
+    <h2>About</h2>
+    <div>
+      <ul>
+      <li>American born Canadian. Grew up in <a href="https://en.wikipedia.org/wiki/Kitchener,_Ontario">Kitchener</a>-<a href="https://en.wikipedia.org/wiki/Waterloo,_Ontario">Waterloo</a>, <a href="https://en.wikipedia.org/wiki/Ontario">Ontario</a>, <a href="https://en.wikipedia.org/wiki/Canada">Canada</a></li>
+      <li>Received an M.Sc. in Computer Science from <a href="https://en.wikipedia.org/wiki/McMaster_University">McMaster University</a></li>
+      <li>Works at <a href="https://www.google.com">Google</a> on technical infrastructure</li>
+      <li>Lives in <a href="https://en.wikipedia.org/wiki/Berkeley,_California">Berkeley, California</a></li>
+      </ul>
+    </div>
+    <h2>Major Works</h2>
+    <div>
+    <ul>
+      <li>Creator of <a href="https://flutter.io/">Flutter Hot Reload</a> (2015)</li>
+      <li>Lead of Dart's performance analysis tool <a href="https://dart-lang.github.io/observatory/">Observatory</a> (2014)</li>
+      <li>Defined <a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a> computation model for dynamically typed programming languages (2013)</li>
+      <li>Added SIMD computation to <a href="https://www.dartlang.org">Dart virtual machine</a> (2012)</li>
+      <li>Worked on  <a href="https://en.wikipedia.org/wiki/Bullet_(software)">Bullet physics engine</a> (2008)</li>
+      <li>Created <a href="https://en.wikipedia.org/wiki/Inotify">inotify</a> (2005)</li>
+    </ul>
+    </div>
+    <h2>Publications</h2>
+    <ul>
+      <li><a href="http://www.amazon.com/Game-Development-Essentials-Paula-Berinstein-ebook/dp/B00IGKE2HI/">Game Development Tool Essentials</a></li>
+      <li><a href="http://www.amazon.com/HTML5-Game-Development-Insights-McAnlis-ebook/dp/B00HX4PJ8E/">HTML5 Game Development Insights</a></li>
+      <li>John McCutchan, Haitao Feng, Nicholas Matsakis, Zachary Anderson, Peter Jensen (2014) A SIMD Programming Model for Dart, JavaScript, and Other Dynamically Typed Scripting Languages, Proceedings of the 2014 Workshop on Programming models for SIMD/Vector processing</li>
+      <li>Jacques Carette, Spencer Smith, John McCutchan, Christopher Anand and Alexandre Korobkine (2008) Case Studies in Model Manipulation for Scientific Computing, Proceedings of the 9th International Conference on Artificial Intelligence and Symbolic Computation (AISC)</li>
+      <li>Spencer Smith, Jacques Carette, John McCutchan (2008) Commonality Analysis of Families of Physical Models for use in Scientific Computing, First International Workshop on Software Engineering for Computational Science and Engineering, Leipzig, Germany</li>
+      <li>Jacques Carette, Spencer Smith, John McCutchan, Christopher Anand and Alexandre Korobkine (2007) Model manipulation as part of a better development process for scientific computing code, Technical Report 48, Software Quality Research Laboratory, McMaster University</li>
+      <li>John McCutchan (2007) A generative approach to a virtual material testing laboratory, Masters Thesis, McMaster University</li>
+    </ul>
+    <div>
+    </div>
+  </div>
+  <div id="right">
+    <img src="images/headshot.png">
+  </div>
+<div>
+<footer>
+</footer>
 </body>
 </html>
